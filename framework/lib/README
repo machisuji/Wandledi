@@ -7,5 +7,3 @@ a Wandledi application, since the servlet container on which it is deployed
 should provide the necessary API.
 
 Exchange the JPA provider with the one you like for deployment.
-
-You will also need Jetty by the way.
