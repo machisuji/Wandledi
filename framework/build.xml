@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Wandledi" default="build" basedir=".">
+
+  <property name="jetty.home" value="/home/markus/Entwicklung/lib/jetty-7.1.1"/>
+  <!-- /usr/share/jetty -->
+
+  <property name="build" value="build"/>
+  <property name="dist" value="dist"/>
+  <property name="src" value="src"/>
+  <property name="lib" value="lib"/>
+  <property name="doc" value="doc"/>
+
+  <path id="classpath">
+    <fileset dir="${lib}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${jetty.home}/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+
+  <target name="compile" description="Compiles Wandledi">
+    <echo>Compiling Wandledi</echo>
+    <mkdir dir="${build}/classes"/>
+    <javac classpathref="classpath" srcdir="${src}" includeAntRuntime="false"
+        destdir="${build}/classes" excludes="conf/**">
+      <!-- <compilerarg value="-Xlint"/> -->
+    </javac>
+    <copy file="${src}/conf/wandledi.tld"
+        todir="${build}/classes/META-INF/tags"/>
+  </target>
+
+  <target name="test">
+    <echo>Shamefully there are no tests at all! This ought to be corrected.</echo>
+  </target>
+
+  <target name="dist" depends="compile" description="Builds Wandledi.jar">
+    <echo>Building Wandledi.jar</echo>
+    <mkdir dir="${dist}"/>
+    <jar destfile="${dist}/Wandledi.jar" basedir="${build}/classes"/>
+  </target>
+
+  <target name="build" depends="compile, dist"/>
+
+  <target name="clean-build" depends="clean, build"/>
+
+  <target name="javadoc">
+    <mkdir dir="${doc}/api"/>
+    <javadoc
+        destdir="${doc}/api"
+        author="true"
+        version="true"
+        use="true"
+        windowtitle="Wandledi API">
+
+      <packageset dir="${src}/java" defaultexcludes="yes">
+        <include name="wandledi/**"/>
+      </packageset>
+
+      <doctitle><![CDATA[<h1>Wandledi API</h1>]]></doctitle>
+      <bottom><![CDATA[<i>That's the bottom of it.</i>]]></bottom>
+      <tag name="todo" scope="all" description="To do:"/>
+      <link offline="true" href="http://java.sun.com/j2se/1.5.0/docs/api/"
+          packagelistLoc="/tmp"/>
+      <link href="http://developer.java.sun.com/developer/products/xml/docs/api/"/>
+    </javadoc>
+  </target>
+</project>

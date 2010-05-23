@@ -1,0 +1,8 @@
+Wandledi is a little Java web framework still based on the Java Servlet 2.5 specification.
+
+
+
+Structure:
+
+    framework - The actual Wandledi project
+    example   - An example web application using Wandledi

@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="WandlediApplication" default="run" basedir=".">
+
+  <property name="build" value="build"/>
+  <property name="dist" value="dist"/>
+  <property name="src" value="src"/>
+  <property name="lib" value="lib"/>
+  <property name="web" value="web"/>
+  <property name="app" value="${ant.project.name}"/>
+
+  <property file="build.properties"/>
+  <fail unless="version" message="Please: cat default.build.properties > build.properties"/>
+  
+  <path id="classpath">
+    <fileset dir="${lib}">
+      <include name="**/*.jar"/>
+    </fileset>
+  </path>
+  
+  <path id="runtime.classpath">
+    <fileset dir="${lib}">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${jetty.home}/lib">
+      <include name="**/*.jar"/>
+    </fileset>
+    <fileset dir="${src}/java">
+      <exclude name="**/*.java"/>
+    </fileset>
+    <pathelement location="${build}/WEB-INF/classes"/>
+    <pathelement location="${src}/java"/> <!-- for propertie files and such -->
+  </path>
+  
+  <target name="clean">
+    <delete dir="${build}"/>
+    <delete dir="${dist}"/>
+  </target>
+  
+  <target name="build.wandledi" if="wandledi.framework"
+      description="Builds Wandledi if it's there.">
+    <echo>Calling Wandledi's build.xml</echo>
+    <ant dir="${wandledi.framework}" target="build" inheritAll="false"/>
+    <copy file="${wandledi.framework}/dist/Wandledi.jar" todir="${lib}"/>
+  </target>
+  
+  <target name="compile" depends="build.wandledi"
+      description="Compiles the application">
+    <echo>Compiling all classes</echo>
+    <mkdir dir="${build}/WEB-INF/classes"/>
+    <javac classpathref="classpath" srcdir="${src}/java" destdir="${build}/WEB-INF/classes"
+      includeAntRuntime="false"/>
+    <copy file="${src}/conf/persistence.xml" todir="${build}/WEB-INF/classes/META-INF"/>
+    <copy todir="${build}/WEB-INF/classes/">
+      <fileset dir="${src}/java">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="test">
+    <echo>Shamefully there are no tests at all! This ought to be corrected.
+    But I don't know how much sense it makes at this point.
+    Test first next time, damn it!
+    </echo>
+  </target>
+  
+  <target name="run" depends="compile" description="Runs ${app} with embedded Jetty">
+    <echo>Starting ${app} ...</echo>
+    <echo>Using Jetty: ${jetty.home}</echo>
+    <java classpathref="runtime.classpath" fork="true" dir="."
+        classname="wandledi.jetty.Application">
+      <classpath refid="runtime.classpath"/>
+    </java>
+  </target>
+  
+  <target name="jar" depends="compile">
+    <echo>Building ${app}.jar</echo>
+    <mkdir dir="${dist}"/>
+    <jar destfile="${dist}/${app}.jar">
+      <fileset dir="${build}/WEB-INF/classes"/>
+      <fileset dir="${src}/java">
+        <exclude name="**/*.java"/>
+      </fileset>
+    </jar>
+  </target>
+  
+  <target name="war" depends="compile" description="Builds the webapp">
+    <echo>Building ${app}.war</echo>
+    <mkdir dir="${dist}"/>
+    <war destfile="${dist}/${app}.war" webxml="${src}/conf/web.xml">
+      <fileset dir="${web}"/>
+      <lib dir="${lib}">
+        <exclude name="compile/*.jar"/>
+      </lib>
+      <classes dir="${build}/WEB-INF/classes"/>
+      <fileset dir="${build}">
+        <include name="WEB-INF"/>
+        <exclude name="**/*.class"/>
+      </fileset>
+      <manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Implementation-Title" value="${app}"/>
+        <attribute name="Implementation-Version" value="${version}"/>
+      </manifest>
+    </war>
+  </target>
+  
+  <target name="build" depends="war">
+    <echo>Built ${app}</echo>
+  </target>
+  
+  <target name="clean-build" depends="clean, build">
+    <echo>Performed clean build of ${app}</echo>
+  </target>
+</project>

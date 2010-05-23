@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.1" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-jsptaglibrary_2_1.xsd">
+    <tlib-version>1.0</tlib-version>
+    <short-name>w</short-name>
+    <uri>/wandledi/taglib/core</uri>
+    <function>
+        <name>linkToUri</name>
+        <function-class>wandledi.taglib.Core</function-class>
+        <function-signature>java.lang.String linkToUri( java.lang.String )</function-signature>
+    </function>
+    <function>
+        <name>linkTo</name>
+        <function-class>wandledi.taglib.Core</function-class>
+        <function-signature>java.lang.String linkTo( java.lang.String,
+        java.lang.String )</function-signature>
+    </function>
+    <function>
+        <name>linkToId</name>
+        <function-class>wandledi.taglib.Core</function-class>
+        <function-signature>java.lang.String linkToId( java.lang.String,
+        java.lang.String, java.lang.Long )</function-signature>
+    </function>
+    <function>
+        <name>message</name>
+        <function-class>wandledi.taglib.Core</function-class>
+        <function-signature>java.lang.String message(java.lang.String, java.lang.String, java.lang.Object[])</function-signature>
+    </function>
+    <function>
+        <name>message1</name>
+        <function-class>wandledi.taglib.Core</function-class>
+        <function-signature>java.lang.String message1(java.lang.String, java.lang.String, java.lang.Object)</function-signature>
+    </function>
+    <function>
+        <name>inputSafe</name>
+        <function-class>wandledi.taglib.Core</function-class>
+        <function-signature>java.lang.String inputSafe(java.lang.String)</function-signature>
+    </function>
+</taglib>
