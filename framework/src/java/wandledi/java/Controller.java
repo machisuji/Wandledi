@@ -139,6 +139,11 @@ public class Controller implements Serializable {
         return request.getParameterValues(name);
     }
 
+    public boolean isSpellController() {
+
+        return false;
+    }
+
     /**Signals that the action wants to write output directly
      * with the response object rather than displaying a template.
      *

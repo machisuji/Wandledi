@@ -1,5 +1,6 @@
 package wandledi.java;
 
+import java.io.FileReader;
 import wandledi.java.annotations.Stateful;
 import wandledi.java.annotations.InterceptWith;
 import java.io.IOException;
@@ -16,6 +17,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import wandledi.core.Grimoire;
+import wandledi.core.GrimoireSection;
+import wandledi.core.Wandler;
 
 /**The Switchboard is the central Wandledi component.
  * It dispatches requests to Wandledi controllers.
@@ -41,7 +45,7 @@ public class Switchboard {
 
         singleton = switchboard;
     }
-    
+
     public static String getUrlPlusQuery(HttpServletRequest request) {
 
         StringBuffer url = request.getRequestURL();
@@ -59,7 +63,7 @@ public class Switchboard {
      */
     public void addControllers(Class<? extends Controller>... controllers) {
 
-        for (Class<? extends Controller> controller: controllers) {
+        for (Class<? extends Controller> controller : controllers) {
             addController(controller);
         }
     }
@@ -77,7 +81,8 @@ public class Switchboard {
         } catch (InstantiationException ex) {
             throw new RuntimeException("Cannot create controller!", ex);
         } catch (IllegalAccessException ex) {
-            throw new RuntimeException("A controller needs to have a public empty constructor!", ex);
+            throw new RuntimeException(
+                    "A controller needs to have a public empty constructor!", ex);
         }
     }
 
@@ -119,13 +124,19 @@ public class Switchboard {
                 if (performAction(controller, action.getController(), action.getName(),
                         request, response)) {
                     if (!controller.getWandlediRequest().isViewless()) {
-                        if (i18n()) {
-                            request.setAttribute("message", getMessages(request));
+                        if (!controller.isSpellController()) {
+                            if (i18n()) {
+                                request.setAttribute("message", getMessages(request));
+                            }
+                            String template = controller.getWandlediRequest().getView() == null
+                                    ? template(action.getController(), action.getName())
+                                    : template(controller.getWandlediRequest().getView());
+                            request.getRequestDispatcher(template).include(wRequest, response);
+                        } else {
+                            wandle(controller, action, 
+                                    template(action.getController(),
+                                    action.getName()), response);
                         }
-                        String template = controller.getWandlediRequest().getView() == null ?
-                                template(action.getController(), action.getName()) :
-                                template(controller.getWandlediRequest().getView());
-                        request.getRequestDispatcher(template).include(wRequest, response);
                     }
                     dispatched = true;
                 }
@@ -135,6 +146,19 @@ public class Switchboard {
             closeDatabaseConnection(request);
         }
         return dispatched;
+    }
+
+    private void wandle(Controller controller, Action action, String template,
+            HttpServletResponse response) throws IOException {
+
+        GrimoireSection grimoire = ((PageController) controller).getPages().getGrimoireSection();
+        Wandler wandler = new Wandler();
+        if (grimoire.getView() != null) {
+            template = viewDirectory + grimoire.getView();
+        }
+        template = servletContext.getRealPath(template.replace(".jsp", ".xhtml"));
+        wandler.setGrimoire(grimoire);
+        wandler.wandle(new FileReader(template), response.getWriter());
     }
 
     private void closeDatabaseConnection(HttpServletRequest request) {
@@ -147,7 +171,7 @@ public class Switchboard {
 
     protected Messages getMessages(HttpServletRequest request) {
 
-        String lang = (String)request.getSession().getAttribute("lang");
+        String lang = (String) request.getSession().getAttribute("lang");
         if (lang == null) {
             lang = Locale.getDefault().getLanguage();
         }
@@ -329,8 +353,8 @@ public class Switchboard {
         Method[] methods = controller.getClass().getMethods();
         for (Method method : methods) {
             if (Modifier.isPublic(method.getModifiers()) && method.getName().equals(action)
-                    && method.getReturnType().isAssignableFrom(void.class) &&
-                    method.getParameterTypes().length == 0) {
+                    && method.getReturnType().isAssignableFrom(void.class)
+                    && method.getParameterTypes().length == 0) {
                 return method;
             }
         }
