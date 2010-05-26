@@ -65,12 +65,12 @@ Magic. That is Spells. Spell is just a funny word for transformation
 I came up with because transformation had to many syllables for my taste
 and overall I have the unhealthy habit of using overly figurative names.
 
-At the moment the class that uses these spells is called PageController.
+At the moment the class that uses these spells is called Pages.
 Not very enchanting, but the namespace is pure chaos right now anyway.
-The PageController provides methods to the actual controller to transform
+The Pages class provides methods to the actual controller to transform
 every HTML page.
 
-So this leaves us with the three parts: Controller, PageController, XHTML file.
+So this leaves us with the three parts: Controller, Pages, XHTML file.
 
 \**XHTML to be more precise since currently I'm simply using \*SAX\* to parse
 the pages.*
@@ -96,7 +96,7 @@ the pages.*
         }
     }
     
-Pages:
+**Pages**:
 
     import wandledi.java.Pages;
     
@@ -110,7 +110,7 @@ Pages:
         }
     }
     
-XHTML file:
+**XHTML file**:
 
     <html>
       <body>
