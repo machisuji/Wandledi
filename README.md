@@ -56,7 +56,7 @@ confused HTML editing software like Dreamweaver but also your web designer.
 The Wandledi approach
 ---------------------
 
-So I'd rather like to do keep the HTML clean and express stuff like if and loops
+So I'd rather like to keep the HTML clean and express stuff like if and loops
 in a real programming language. Now let's see how this is done in Wandledi.
 First Wandledi introduces a third member to the party after throwing out
 the template and replacing it with plain HTML*.
