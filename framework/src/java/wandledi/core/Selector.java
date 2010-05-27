@@ -30,6 +30,42 @@ public class Selector implements Comparable {
         this(label, attributes.getValue("class"), attributes.getValue("id"));
     }
 
+    public static Selector valueOf(String selector) {
+
+        Selector ret;
+        if (selector.indexOf("#") != -1) { // ids
+            String id = selector.substring(selector.indexOf('#') + 1);
+            ret = new Selector(id);
+        } else if (selector.indexOf(".") != -1) { // classes
+            String klass = selector.substring(selector.indexOf('.') + 1);
+            String label = selector.substring(0, selector.indexOf('.'));
+            ret = new Selector(label.length() > 0 ? label : null, klass, null);
+        } else { // labels
+            String label = selector;
+            ret = new Selector(label, null, null);
+        }
+        return ret;
+    }
+
+    @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        if (isId()) {
+            sb.append("#");
+            sb.append(id);
+        } else {
+            if (gotLabel()) {
+                sb.append(label);
+            }
+            if (gotElementClass()) {
+                sb.append(".");
+                sb.append(elementClass);
+            }
+        }
+        return sb.toString();
+    }
+
     /**DOES NOT GIVE A DAMN ABOUT THE EQUALS-HASHCODE CONTRACT !!!
      *
      * @param o
@@ -43,6 +79,14 @@ public class Selector implements Comparable {
             if (isId()) {
                 return this.id.equals(selector.id);
             } else {
+                boolean equals = gotLabel() || gotElementClass();
+                if (gotLabel()) {
+                    equals &= this.label.equals(selector.label);
+                }
+                if (gotElementClass()) {
+                    equals &= this.elementClass.equals(selector.elementClass);
+                }
+                /*
                 boolean gotLabel = selector.gotLabel();
                 boolean gotClass = selector.gotElementClass();
                 boolean equals = gotLabel || gotClass;
@@ -52,6 +96,7 @@ public class Selector implements Comparable {
                 if (gotClass) {
                     equals &= selector.elementClass.equals(this.elementClass);
                 }
+                */
                 return equals;
             }
         }

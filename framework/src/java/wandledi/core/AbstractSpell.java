@@ -12,6 +12,15 @@ public abstract class AbstractSpell implements Spell {
     protected Spell parent;
     protected LinkedList<SpellLine> lines = new LinkedList<SpellLine>();
 
+    @Override
+    public abstract Spell clone();
+
+    @Override
+    public boolean hierarchyContains(Spell spell) {
+
+        return this == spell || parent.hierarchyContains(spell);
+    }
+
     protected void reset() {
 
         clearLines();
@@ -39,6 +48,14 @@ public abstract class AbstractSpell implements Spell {
 
     public void setParent(Spell parent) {
         this.parent = parent;
+    }
+
+    public void startTransformedElement(String name, Attributes attributes) {
+        parent.startTransformedElement(name, attributes);
+    }
+
+    public void endTransformedElement(String name) {
+        parent.endTransformedElement(name);
     }
 
     public void startElement(String name, Attributes attributes) {

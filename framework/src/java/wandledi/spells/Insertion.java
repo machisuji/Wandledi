@@ -30,19 +30,27 @@ public class Insertion extends AbstractSpell {
         this(intent, false);
     }
 
+    @Override
     public void startTransformedElement(String name, Attributes attributes) {
 
-        parent.startElement(name, attributes);
+        super.startTransformedElement(name, attributes);
         if (!insertAtEnd) {
             intent.insert(parent);
         }
     }
 
+    @Override
     public void endTransformedElement(String name) {
 
         if (insertAtEnd) {
             intent.insert(parent);
         }
-        parent.endElement(name);
+        super.endTransformedElement(name);
+    }
+
+    @Override
+    public Insertion clone() {
+
+        return new Insertion(intent, insertAtEnd);
     }
 }

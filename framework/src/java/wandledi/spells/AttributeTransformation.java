@@ -4,6 +4,7 @@ import org.xml.sax.Attributes;
 import wandledi.core.AbstractSpell;
 import wandledi.core.Attribute;
 import wandledi.core.SimpleAttributes;
+import wandledi.core.Spell;
 
 /**
  *
@@ -27,13 +28,16 @@ public class AttributeTransformation extends AbstractSpell {
         });
     }
 
-    public void startTransformedElement(String name, Attributes attributes) {
+    @Override
+    public Spell clone() {
 
-        super.startElement(name, new SimpleAttributes(attributes, 
-                intent.getAttributes(name, attributes)));
+        return new AttributeTransformation(intent);
     }
 
-    public void endTransformedElement(String name) {
-        super.endElement(name);
+    @Override
+    public void startTransformedElement(String name, Attributes attributes) {
+
+        super.startTransformedElement(name, new SimpleAttributes(attributes,
+                intent.getAttributes(name, attributes)));
     }
 }

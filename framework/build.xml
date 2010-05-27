@@ -29,7 +29,7 @@
     <mkdir dir="${build}/classes"/>
     <javac classpathref="classpath" srcdir="${src}" includeAntRuntime="false"
         destdir="${build}/classes" excludes="conf/**">
-      <!-- <compilerarg value="-Xlint"/> -->
+      <!-- <compilerarg value="-g"/> -->
     </javac>
     <copy file="${src}/conf/wandledi.tld"
         todir="${build}/classes/META-INF/tags"/>

@@ -6,5 +6,5 @@ package wandledi.java.html;
  */
 public interface Spell1<T> {
 
-    public abstract void hex(Element e, T items);
+    public abstract void hex(Element e, T item);
 }

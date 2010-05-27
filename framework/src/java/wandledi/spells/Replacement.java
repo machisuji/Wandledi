@@ -2,6 +2,7 @@ package wandledi.spells;
 
 import org.xml.sax.Attributes;
 import wandledi.core.AbstractSpell;
+import wandledi.core.Spell;
 
 /**
  *
@@ -22,6 +23,12 @@ public class Replacement extends AbstractSpell {
     public Replacement(ReplacementIntent intent) {
 
         this(intent, false);
+    }
+
+    @Override
+    public Spell clone() {
+
+        return new Replacement(intent, contentsOnly);
     }
 
     public void startTransformedElement(String name, Attributes attributes) {

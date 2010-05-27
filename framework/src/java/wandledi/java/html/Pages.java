@@ -1,6 +1,6 @@
 package wandledi.java.html;
 
-import wandledi.core.GrimoireSection;
+import wandledi.core.Scroll;
 
 /**An HTML page.
  *
@@ -8,7 +8,7 @@ import wandledi.core.GrimoireSection;
  */
 public class Pages {
 
-    private GrimoireSection gs = new GrimoireSection();
+    private Scroll scroll = new Scroll();
     private String file;
 
     public Pages() {
@@ -20,13 +20,13 @@ public class Pages {
         this.file = file;
     }
 
-    public GrimoireSection getGrimoireSection() {
+    public Scroll getScroll() {
 
-        return gs;
+        return scroll;
     }
     
     public Element get(String selector) {
 
-        return new ElementImpl(selector, gs);
+        return new ElementImpl(selector, scroll);
     }
 }

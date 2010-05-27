@@ -17,8 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import wandledi.core.Grimoire;
-import wandledi.core.GrimoireSection;
+import wandledi.core.Scroll;
 import wandledi.core.Wandler;
 
 /**The Switchboard is the central Wandledi component.
@@ -151,13 +150,13 @@ public class Switchboard {
     private void wandle(Controller controller, Action action, String template,
             HttpServletResponse response) throws IOException {
 
-        GrimoireSection grimoire = ((PageController) controller).getPages().getGrimoireSection();
+        Scroll scroll = ((PageController) controller).getPages().getScroll();
         Wandler wandler = new Wandler();
-        if (grimoire.getView() != null) {
-            template = viewDirectory + grimoire.getView();
+        if (scroll.getView() != null) {
+            template = viewDirectory + scroll.getView();
         }
         template = servletContext.getRealPath(template.replace(".jsp", ".xhtml"));
-        wandler.setGrimoire(grimoire);
+        wandler.useScroll(scroll);
         wandler.wandle(new FileReader(template), response.getWriter());
     }
 

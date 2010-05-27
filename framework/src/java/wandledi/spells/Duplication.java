@@ -7,6 +7,7 @@ import wandledi.core.Characters;
 import wandledi.core.ElementEnd;
 import wandledi.core.ElementStart;
 import wandledi.core.SimpleAttributes;
+import wandledi.core.Spell;
 import wandledi.core.SpellLine;
 
 /**This transformations needs to store the whole element tree of the targetted
@@ -31,6 +32,12 @@ public class Duplication extends AbstractSpell {
                 return number;
             }
         };
+    }
+
+    @Override
+    public Spell clone() {
+
+        return new Duplication(intent);
     }
 
     public void startTransformedElement(String name, Attributes attributes) {

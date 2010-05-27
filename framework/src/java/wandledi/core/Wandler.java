@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -30,7 +32,7 @@ public class Wandler implements ContentHandler, Spell {
     private boolean startUnderConstruction = false;
     private long calls = 0;
     private long lastStart = -1;
-    private GrimoireSection grimoire = new GrimoireSection();
+    private Scroll scroll = new Scroll();
     private LinkedList<SpellLevel> spellLevels = new LinkedList<SpellLevel>();
     private final static Map<String, Boolean> preserveMap = new HashMap<String, Boolean>(1);
 
@@ -45,8 +47,20 @@ public class Wandler implements ContentHandler, Spell {
             parser.setContentHandler(this);
             parser.setEntityResolver(new VoidResolver());
         } catch (SAXException ex) {
-            new RuntimeException("Could not create Wandler", ex);
+            throw new RuntimeException("Could not create Wandler", ex);
         }
+    }
+
+    @Override
+    public Spell clone() {
+
+        throw new UnsupportedOperationException("Sorry, but this won't work.");
+    }
+
+    @Override
+    public boolean hierarchyContains(Spell spell) {
+
+        return spell == this; // Wandler is the end of the hierarchy
     }
 
     protected boolean preserveSpace(String localName) {
@@ -133,8 +147,31 @@ public class Wandler implements ContentHandler, Spell {
 
     private void checkSpell(String label, Attributes attributes) {
 
-        Spell spell = getGrimoire().findSpellFor(label, attributes);
-        if (spell != null) {
+        if (false) {
+            checkSingleSpell(label, attributes);
+            return;
+        }
+        List<Spell> spells = usedScroll().readSpellsFor(label, attributes);
+        Spell parent = this;
+        if (spellLevels.size() > 0) {
+            parent = spellLevels.getLast().spell;
+        }
+        Iterator<Spell> i = spells.iterator();
+        while (i.hasNext()) {
+            Spell spell = copyIfNested(i.next());
+            spell.setParent(parent);
+            parent = spell;
+            if (!i.hasNext()) {
+                spellLevels.add(new SpellLevel(spell));
+            }
+        }
+    }
+
+    private void checkSingleSpell(String label, Attributes attributes) {
+
+        List<Spell> spells = usedScroll().readSpellsFor(label, attributes);
+        if (spells.size() > 0) {
+            Spell spell = copyIfNested(spells.get(0));
             Spell parent = this;
             if (spellLevels.size() > 0) {
                 parent = spellLevels.getLast().spell;
@@ -142,6 +179,25 @@ public class Wandler implements ContentHandler, Spell {
             spell.setParent(parent);
             spellLevels.add(new SpellLevel(spell));
         }
+    }
+
+    /**If the very same spell is applied to nested elements we
+     * need to clone the spell for any further appliance to prevent
+     * an infinite loop.
+     *
+     * @param spell
+     * @return
+     */
+    private Spell copyIfNested(Spell spell) {
+
+        if (spellLevels.size() > 0 && spellLevels.getLast().spell.hierarchyContains(spell)) {
+            return spell.clone();
+        }
+        if (true) return spell;
+        for (SpellLevel level: spellLevels) {
+            if (level.spell == spell) return spell.clone();
+        }
+        return spell;
     }
 
     public void startElement(String uri, String localName, String qName, Attributes atts)
@@ -252,22 +308,18 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
+        startElement(name, attributes);
     }
 
     public void endTransformedElement(String name) {
+        endElement(name);
     }
 
-    /**
-     * @return the transformations
-     */
-    public GrimoireSection getGrimoire() {
-        return grimoire;
+    public Scroll usedScroll() {
+        return scroll;
     }
 
-    /**
-     * @param grimoire the grimoire to set
-     */
-    public void setGrimoire(GrimoireSection grimoire) {
-        this.grimoire = grimoire;
+    public void useScroll(Scroll grimoire) {
+        this.scroll = grimoire;
     }
 }

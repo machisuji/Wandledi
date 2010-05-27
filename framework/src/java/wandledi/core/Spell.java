@@ -42,4 +42,14 @@ public interface Spell {
     
     public void startTransformedElement(String name, Attributes attributes);
     public void endTransformedElement(String name);
+
+    public Spell clone();
+
+    /**Checks whether the given spell is contained within this spell's hierarchy.
+     * For this each respective parent is compared.
+     *
+     * @param spell
+     * @return
+     */
+    public boolean hierarchyContains(Spell spell);
 }

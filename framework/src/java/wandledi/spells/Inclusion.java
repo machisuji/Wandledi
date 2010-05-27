@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import wandledi.core.AbstractSpell;
+import wandledi.core.Spell;
 import wandledi.core.VoidResolver;
 import wandledi.java.Switchboard;
 
@@ -46,6 +47,12 @@ public class Inclusion extends AbstractSpell implements ContentHandler {
         } catch (SAXException ex) {
             throw new RuntimeException("Inclusion failed", ex);
         }
+    }
+
+    @Override
+    public Spell clone() {
+
+        return new Inclusion(intent);
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
