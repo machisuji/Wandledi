@@ -6,6 +6,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.eclipse.jetty.server.Connector;
 import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.bio.SocketConnector;
 import org.eclipse.jetty.server.nio.AbstractNIOConnector;
 import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
@@ -24,15 +25,15 @@ public class Application {
 
     public static void main(String[] args) {
 
-        boolean useDirectBuffers = true;
-        String directBuffers = getArgument("useDirectBuffers", args);
-        if (directBuffers != null) {
-            useDirectBuffers = Boolean.valueOf(directBuffers);
+        boolean nio = true;
+        String nios = getArgument("nio", args);
+        if (nios != null) {
+            nio = Boolean.valueOf(nios);
         }
-        new Application().start(useDirectBuffers);
+        new Application().start(nio);
     }
 
-    public void start(boolean useDirectBuffers) {
+    public void start(boolean nio) {
 
         Server server = new Server(port);
 
@@ -43,8 +44,9 @@ public class Application {
         context.setParentLoaderPriority(true);
 
         server.setHandler(context);
-        if (!useDirectBuffers) {
-            checkDirectBuffers(server);
+        if (!nio) {
+            System.out.println("Server: Using blocking IO instead of NIO");
+            server.setConnectors(new Connector[] { new SocketConnector() });
         }
         try {
             server.start();
@@ -66,23 +68,6 @@ public class Application {
             }
         }
         return null;
-    }
-
-    /**On Windows there is a problem with direct buffers, because of which
-     * static files (css, html, etc.) are locked by Jetty and hence cannot
-     * be edited while it is running.
-     *
-     * @param server
-     */
-    protected void checkDirectBuffers(Server server) {
-
-        Connector[] connectors = server.getConnectors();
-        for (Connector connector: connectors) {
-            if (connector instanceof AbstractNIOConnector) {
-                ((AbstractNIOConnector)connector).setUseDirectBuffers(false);
-                System.out.println("Server: Don't use direct buffers.");
-            }
-        }
     }
 
     public int getPort() {

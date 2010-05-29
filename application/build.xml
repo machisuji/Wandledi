@@ -70,7 +70,7 @@
     <java classpathref="runtime.classpath" fork="true" dir="."
         classname="wandledi.jetty.Application">
       <classpath refid="runtime.classpath"/>
-      <arg value="useDirectBuffers=${jetty.directBuffers}"/>
+      <arg value="nio=${jetty.nio}"/>
     </java>
   </target>
   
