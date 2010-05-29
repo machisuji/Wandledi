@@ -44,10 +44,15 @@ public class Application {
         context.setParentLoaderPriority(true);
 
         server.setHandler(context);
+        Connector connector = null;
         if (!nio) {
-            System.out.println("Server: Using blocking IO instead of NIO");
-            server.setConnectors(new Connector[] { new SocketConnector() });
+            System.out.println("Jetty: Using blocking IO instead of NIO");
+            connector = new SocketConnector();
+        } else {
+            connector = new SelectChannelConnector();
         }
+        connector.setPort(8080);
+        server.setConnectors(new Connector[] { connector });
         try {
             server.start();
             server.join();
