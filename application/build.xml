@@ -28,7 +28,7 @@
       <exclude name="**/*.java"/>
     </fileset>
     <pathelement location="${build}/WEB-INF/classes"/>
-    <pathelement location="${src}/java"/> <!-- for propertie files and such -->
+    <pathelement location="${src}/java"/> <!-- for property files and such -->
   </path>
   
   <target name="clean">

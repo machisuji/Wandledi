@@ -51,13 +51,21 @@ public class Wandler implements ContentHandler, Spell {
         }
     }
 
+    public void reset() {
+
+        preserve = false;
+        startUnderConstruction = false;
+        calls = 0;
+        lastStart = -1;
+        spellLevels.clear();
+    }
+
     @Override
     public Spell clone() {
 
         throw new UnsupportedOperationException("Sorry, but this won't work.");
     }
 
-    @Override
     public boolean hierarchyContains(Spell spell) {
 
         return spell == this; // Wandler is the end of the hierarchy
@@ -71,6 +79,7 @@ public class Wandler implements ContentHandler, Spell {
     public void wandle(Reader in, Writer out) {
 
         try {
+            reset();
             this.out = new BufferedWriter(out, 2048);
             parser.parse(new InputSource(in));
         } catch (IOException ex) {

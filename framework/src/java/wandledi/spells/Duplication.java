@@ -10,7 +10,7 @@ import wandledi.core.SimpleAttributes;
 import wandledi.core.Spell;
 import wandledi.core.SpellLine;
 
-/**This transformations needs to store the whole element tree of the targetted
+/**This transformations needs to store the whole element tree of the targeted
  * element in memory in order to be able to duplicate it.
  * I'm just saying, keep this in mind.
  *
@@ -50,15 +50,18 @@ public class Duplication extends AbstractSpell {
 
         ElementStart start = (ElementStart) pullLine();
 
-        start.perform(parent);
         for (int i = 0; i < intent.duplications(); ++i) {
+            start.perform(parent);
             Iterator<SpellLine> e = lines.iterator();
             while (e.hasNext()) {
                 SpellLine line = e.next();
                 line.perform(parent);
             }
+            if (i < intent.duplications() - 1) {
+                parent.endElement(name);
+            }
         }
-        parent.endElement(name);
+        super.endTransformedElement(name);
         clearLines();
     }
 

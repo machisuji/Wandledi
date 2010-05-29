@@ -35,8 +35,8 @@ public class ExamplePages extends Pages {
         get("textarea.content").setAttribute("name", "content");
         get("form.message").setAttribute("action", "guestbookEntry");
         get(".messages").clone(messages.size());
-        get(".message").foreachIn(messages).cast(new Spell1<Message>() {
-            public void hex(Element e, Message msg) {
+        get(".message").foreachIn(messages).apply(new Plan<Message>() {
+            public void execute(Element e, Message msg) {
                 e.get(".author").insert(msg.author + " (" + msg.createdAt + ")");
                 e.get(".content").insert(msg.content);
             }

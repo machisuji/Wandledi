@@ -1,6 +1,8 @@
 package wandledi.java.html;
 
 import java.util.Collection;
+import java.util.Iterator;
+
 import org.xml.sax.Attributes;
 import wandledi.core.Attribute;
 import wandledi.core.Scroll;
@@ -22,6 +24,16 @@ public class ElementImpl implements Element {
 
         this.selector = selector;
         this.scroll = scroll;
+    }
+
+    public void cast(Spell spell) {
+
+        scroll.addSpell(selector, spell);
+    }
+
+    public void cast(Spell spell, int charges) {
+
+        scroll.addSpell(selector, spell, charges);
     }
 
     public void setAttribute(String name, String value) {
@@ -77,12 +89,10 @@ public class ElementImpl implements Element {
         });
     }
 
-    public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
+    public <T> ElementForeach<T> foreachIn(final Collection<T> collection) {
 
         ElementForeach<T> foreach = new ElementForeach<T>() {
-            public void cast(Spell1<T> spell) {
-                // Spell Queue für Spells mit selbem Selector?
-                spell.hex(ElementImpl.this, null);
+            public void apply(Plan<T> spell) {
             }
         };
         return foreach;

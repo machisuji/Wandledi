@@ -234,7 +234,7 @@ public class Database {
 
     /**Convenience variant of the original method which returns a plain List.
      * <p>
-     *   // You have to cast normally.
+     *   // You have to apply normally.
      *   List<String> strings = (List<String>) db.query("SELECT u.name FROM User", 0, 10)
      *   // This way you only have to provide the class of entries.
      *   List<String> strings = db.query(String.class, "SELECT u.name FROM User", 0, 10)

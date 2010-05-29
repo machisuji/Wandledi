@@ -1,6 +1,8 @@
 package wandledi.java.html;
 
 import java.util.Collection;
+
+import wandledi.core.Spell;
 import wandledi.spells.InsertionIntent;
 import wandledi.spells.ReplacementIntent;
 
@@ -10,6 +12,7 @@ import wandledi.spells.ReplacementIntent;
  */
 public interface Element {
 
+    public void cast(Spell spell);
     public void setAttribute(String name, String value);
     public void clone(int times);
     public void includeFile(String name);

@@ -15,7 +15,6 @@ public abstract class AbstractSpell implements Spell {
     @Override
     public abstract Spell clone();
 
-    @Override
     public boolean hierarchyContains(Spell spell) {
 
         return this == spell || parent.hierarchyContains(spell);

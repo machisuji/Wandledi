@@ -17,7 +17,7 @@ import wandledi.core.VoidResolver;
 import wandledi.java.Switchboard;
 
 /**With this spell you can include other html files into the current one.
- * Note that the element this spell is cast upon will cease existing.
+ * Note that the element this spell is apply upon will cease existing.
  * You could say that it is sacrificed for the summoning of the
  * new content.
  *
@@ -55,13 +55,16 @@ public class Inclusion extends AbstractSpell implements ContentHandler {
         return new Inclusion(intent);
     }
 
+    public String getPath(String file) {
+
+        Switchboard board = Switchboard.getInstance();
+        return board.getServletContext().getRealPath(board.getViewDirectory() + file);
+    }
+
     public void startTransformedElement(String name, Attributes attributes) {
         
         try {
-            Switchboard board = Switchboard.getInstance();
-            String file = board.getServletContext().getRealPath(
-                    board.getViewDirectory() + intent.getFile());
-            parser.parse(new InputSource(new FileReader(intent.getFile())));
+            parser.parse(new InputSource(new FileReader(getPath(intent.getFile()))));
         } catch (IOException ex) {
             Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {
@@ -69,9 +72,13 @@ public class Inclusion extends AbstractSpell implements ContentHandler {
         }
     }
 
-    public void endTransformedElement(String name) {
+    public void startElement(String name, Attributes attributes) { }
 
-    }
+    public void endElement(String name) { }
+
+    public void writeCharacters(char[] characters, int offset, int length) { }
+
+    public void endTransformedElement(String name) { }
 
     public void startElement(String uri, String localName, String qName, Attributes atts)
             throws SAXException {

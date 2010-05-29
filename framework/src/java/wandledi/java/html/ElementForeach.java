@@ -6,5 +6,5 @@ package wandledi.java.html;
  */
 public interface ElementForeach<T> {
 
-    public void cast(Spell1<T> spell);
+    public void apply(Plan<T> spell);
 }
