@@ -7,9 +7,7 @@ import org.xml.sax.Attributes;
 import wandledi.core.Attribute;
 import wandledi.core.Scroll;
 import wandledi.core.Spell;
-import wandledi.spells.InsertionIntent;
-import wandledi.spells.Invisibility;
-import wandledi.spells.ReplacementIntent;
+import wandledi.spells.*;
 
 /**
  *
@@ -19,6 +17,7 @@ public class ElementImpl implements Element {
 
     private String selector;
     private Scroll scroll;
+    private int charges = -1;
 
     public ElementImpl(String selector, Scroll scroll) {
 
@@ -26,9 +25,15 @@ public class ElementImpl implements Element {
         this.scroll = scroll;
     }
 
+    protected ElementImpl(String selector, Scroll scroll, int charges) {
+
+        this(selector, scroll);
+        this.charges = charges;
+    }
+
     public void cast(Spell spell) {
 
-        scroll.addSpell(selector, spell);
+        scroll.addSpell(selector, spell, charges);
     }
 
     public void cast(Spell spell, int charges) {
@@ -38,22 +43,22 @@ public class ElementImpl implements Element {
 
     public void setAttribute(String name, String value) {
 
-        scroll.changeAttributes(selector, new Attribute(name, value));
+        cast(new AttributeTransformation(new Attribute(name, value)));
     }
 
     public void clone(int times) {
 
-        scroll.duplicate(selector, times);
+        cast(new Duplication(times));
     }
 
     public void includeFile(String name) {
 
-        scroll.include(selector, name);
+        cast(new Inclusion(name));
     }
 
     public void insert(boolean atEnd, InsertionIntent intent) {
 
-        scroll.insert(selector, atEnd, intent);
+        cast(new Insertion(intent, atEnd));
     }
 
     public void insert(String content) {
@@ -68,31 +73,37 @@ public class ElementImpl implements Element {
 
     public void insert(final String content, boolean atEnd) {
 
-        scroll.insert(selector, atEnd, new InsertionIntent() {
+        InsertionIntent intent = new InsertionIntent() {
             public void insert(Spell parent) {
                 parent.writeString(content);
             }
-        });
+        };
+        cast(new Insertion(intent, atEnd));
     }
 
     public void replace(boolean contentsOnly, ReplacementIntent intent) {
 
-        scroll.replace(selector, contentsOnly, intent);
+        cast(new Replacement(intent, contentsOnly));
     }
 
     public void replace(boolean contentsOnly, final String content) {
 
-        scroll.replace(selector, contentsOnly, new ReplacementIntent() {
+        ReplacementIntent intent = new ReplacementIntent() {
             public void replace(String label, Attributes attributes, Spell parent) {
                 parent.writeString(content);
             }
-        });
+        };
+        cast(new Replacement(intent, contentsOnly));
     }
 
     public <T> ElementForeach<T> foreachIn(final Collection<T> collection) {
 
         ElementForeach<T> foreach = new ElementForeach<T>() {
-            public void apply(Plan<T> spell) {
+            public void apply(Plan<T> plan) {
+                Element chargedElement = new ElementImpl(selector, scroll, 1);
+                for (T item: collection) {
+                    plan.execute(chargedElement, item);
+                }
             }
         };
         return foreach;
@@ -105,7 +116,6 @@ public class ElementImpl implements Element {
 
     public void hide() {
 
-        scroll.addSpell(selector, new Invisibility());
+        cast(new Invisibility());
     }
-
 }

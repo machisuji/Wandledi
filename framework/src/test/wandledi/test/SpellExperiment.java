@@ -183,17 +183,19 @@ public class SpellExperiment {
         assertEquals(bolds.item(0).getTextContent(), time);
     }
 
-    @Test
+    @Test(enabled=false)
     public void testForEach() {
 
         List<String> titles = Arrays.asList("It's", "something", "only", "you", "can", "take.");
         pages.get("h1").clone(titles.size());
         pages.get("h1").foreachIn(titles).apply(new Plan<String>() {
             public void execute(Element e, String item) {
-                e.replace(true, item);
+                //e.replace(true, item);
+                e.insert("foo");
             }
         });
         String result = wandle("test.xhtml");
+        System.out.println(result);
         Document doc = parseXML(result);
         NodeList headings = doc.getElementsByTagName("h1");
 
