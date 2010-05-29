@@ -11,6 +11,8 @@ import org.eclipse.jetty.server.nio.SelectChannelConnector;
 import org.eclipse.jetty.webapp.WebAppContext;
 import wandledi.java.WandlediFilter;
 
+import javax.swing.*;
+
 /**
  * @author Markus Kahl
  */
@@ -22,10 +24,15 @@ public class Application {
 
     public static void main(String[] args) {
 
-        new Application().start();
+        boolean useDirectBuffers = true;
+        String directBuffers = getArgument("useDirectBuffers", args);
+        if (directBuffers != null) {
+            useDirectBuffers = Boolean.valueOf(directBuffers);
+        }
+        new Application().start(useDirectBuffers);
     }
 
-    public void start() {
+    public void start(boolean useDirectBuffers) {
 
         Server server = new Server(port);
 
@@ -36,13 +43,29 @@ public class Application {
         context.setParentLoaderPriority(true);
 
         server.setHandler(context);
-        checkDirectBuffers(server);
+        if (!useDirectBuffers) {
+            checkDirectBuffers(server);
+        }
         try {
             server.start();
             server.join();
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static String getArgument(String name, String[] args) {
+
+        for (String arg: args) {
+            if (arg.startsWith(name)) {
+                if (arg.contains("=")) {
+                    return arg.substring(arg.indexOf('=') + 1);
+                } else {
+                    return "";
+                }
+            }
+        }
+        return null;
     }
 
     /**On Windows there is a problem with direct buffers, because of which
@@ -53,20 +76,13 @@ public class Application {
      */
     protected void checkDirectBuffers(Server server) {
 
-        if (isWindows()) {
-            Connector[] connectors = server.getConnectors();
-            for (Connector connector: connectors) {
-                if (connector instanceof AbstractNIOConnector) {
-                    ((AbstractNIOConnector)connector).setUseDirectBuffers(false);
-                }
+        Connector[] connectors = server.getConnectors();
+        for (Connector connector: connectors) {
+            if (connector instanceof AbstractNIOConnector) {
+                ((AbstractNIOConnector)connector).setUseDirectBuffers(false);
+                System.out.println("Server: Don't use direct buffers.");
             }
         }
-    }
-
-    protected boolean isWindows() {
-
-        String os = System.getenv("OS");
-        return os != null && os.toLowerCase().contains("windows");
     }
 
     public int getPort() {

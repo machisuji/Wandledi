@@ -39,7 +39,7 @@
   <target name="build.wandledi" if="wandledi.framework"
       description="Builds Wandledi if it's there.">
     <echo>Calling Wandledi's build.xml</echo>
-    <ant dir="${wandledi.framework}" target="build" inheritAll="false"/>
+    <!-- <ant dir="${wandledi.framework}" target="build" inheritAll="false"/> -->
     <copy file="${wandledi.framework}/dist/Wandledi.jar" todir="${lib}"/>
   </target>
   
@@ -70,6 +70,7 @@
     <java classpathref="runtime.classpath" fork="true" dir="."
         classname="wandledi.jetty.Application">
       <classpath refid="runtime.classpath"/>
+      <arg value="useDirectBuffers=${jetty.directBuffers}"/>
     </java>
   </target>
   
