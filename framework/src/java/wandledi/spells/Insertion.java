@@ -15,9 +15,8 @@ public class Insertion extends AbstractSpell {
     /**Creates a new Insertion.
      *
      * @param insertAtEnd If true the insertion is made just before the end of
-     * the enclosing element. If false it is made just after the beginning of it.
      */
-    public Insertion(InsertionIntent intent, boolean insertAtEnd) {
+    public Insertion(boolean insertAtEnd, InsertionIntent intent) {
 
         this.intent = intent;
         this.insertAtEnd = insertAtEnd;
@@ -27,7 +26,7 @@ public class Insertion extends AbstractSpell {
      */
     public Insertion(InsertionIntent intent) {
 
-        this(intent, false);
+        this(false, intent);
     }
 
     @Override
@@ -51,6 +50,6 @@ public class Insertion extends AbstractSpell {
     @Override
     public Insertion clone() {
 
-        return new Insertion(intent, insertAtEnd);
+        return new Insertion(insertAtEnd, intent);
     }
 }

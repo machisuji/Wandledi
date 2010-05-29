@@ -64,7 +64,7 @@ public class Scroll {
      */
     public void insert(String selector, boolean insertAtEnd, InsertionIntent intent) {
 
-        addSpell(selector, new Insertion(intent, insertAtEnd));
+        addSpell(selector, new Insertion(insertAtEnd, intent));
     }
 
     /**Replaces the target element (or only its contents) according the given intent.

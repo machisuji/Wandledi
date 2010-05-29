@@ -34,7 +34,9 @@
     <javac classpathref="classpath" srcdir="${src}/java" includeAntRuntime="false"
            destdir="${build}/classes"/>
     <javac classpathref="classpath" classpath="${build}/classes" srcdir="${src}/test" includeAntRuntime="false"
-           destdir="${build}/test-classes"/>
+           destdir="${build}/test-classes">
+        <compilerarg value="-g"/>
+    </javac>
     <copy file="${src}/conf/wandledi.tld"
         todir="${build}/classes/META-INF/tags"/>
   </target>

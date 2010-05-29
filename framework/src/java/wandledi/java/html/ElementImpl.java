@@ -1,7 +1,6 @@
 package wandledi.java.html;
 
 import java.util.Collection;
-import java.util.Iterator;
 
 import org.xml.sax.Attributes;
 import wandledi.core.Attribute;
@@ -58,7 +57,7 @@ public class ElementImpl implements Element {
 
     public void insert(boolean atEnd, InsertionIntent intent) {
 
-        cast(new Insertion(intent, atEnd));
+        cast(new Insertion(atEnd, intent));
     }
 
     public void insert(String content) {
@@ -78,7 +77,7 @@ public class ElementImpl implements Element {
                 parent.writeString(content);
             }
         };
-        cast(new Insertion(intent, atEnd));
+        cast(new Insertion(atEnd, intent));
     }
 
     public void replace(boolean contentsOnly, ReplacementIntent intent) {

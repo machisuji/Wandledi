@@ -1,6 +1,7 @@
 package wandledi.core;
 
-import java.util.LinkedList;
+import java.util.*;
+
 import org.xml.sax.Attributes;
 
 /**

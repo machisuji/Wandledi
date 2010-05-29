@@ -8,16 +8,11 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import wandledi.core.Attribute;
-import wandledi.core.SimpleAttributes;
-import wandledi.core.Spell;
-import wandledi.core.Wandler;
+import wandledi.core.*;
 import wandledi.java.html.Element;
 import wandledi.java.html.Pages;
 import wandledi.java.html.Plan;
-import wandledi.spells.Inclusion;
-import wandledi.spells.InsertionIntent;
-import wandledi.spells.ReplacementIntent;
+import wandledi.spells.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -61,7 +56,7 @@ public class SpellExperiment {
     @Test
     public void testDuplication() {
 
-        int number = random.nextInt(10);
+        int number = 1 + random.nextInt(10);
         pages.get("#time").clone(number);
 
         String result = wandle("test.xhtml");
@@ -203,6 +198,30 @@ public class SpellExperiment {
         for (int i = 0; i < titles.size(); ++i) {
             assertEquals(headings.item(i).getTextContent(), titles.get(i));
         }
+    }
+
+    @Test
+    public void testComplexSpell() {
+
+        String style = "color: red;";
+        Spell attr = new AttributeTransformation(new Attribute("style", style));
+        Spell insrt = new Insertion(false, new InsertionIntent() {
+            public void insert(Spell parent) {
+                parent.writeString("HALLO");
+            }
+        });
+        Spell cmplx = new ComplexSpell(attr, insrt, new Duplication(2));
+        pages.get("h1").cast(cmplx);
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList headings = doc.getElementsByTagName("h1");
+
+        assertEquals(headings.getLength(), 2);
+        assertTrue(headings.item(0).isEqualNode(headings.item(1)), "Nodes duplicated.");
+        assertTrue(headings.item(0).getTextContent().startsWith("HALLO"), "Starts with 'HALLO'");
+        assertNotNull(headings.item(0).getAttributes().getNamedItem("style"), "Style not null");
+        assertEquals(headings.item(0).getAttributes().getNamedItem("style").getTextContent(), style);
     }
 
     @Test

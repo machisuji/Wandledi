@@ -156,10 +156,6 @@ public class Wandler implements ContentHandler, Spell {
 
     private void checkSpell(String label, Attributes attributes) {
 
-        if (false) {
-            checkSingleSpell(label, attributes);
-            return;
-        }
         List<Spell> spells = usedScroll().readSpellsFor(label, attributes);
         Spell parent = this;
         if (spellLevels.size() > 0) {
@@ -201,10 +197,6 @@ public class Wandler implements ContentHandler, Spell {
 
         if (spellLevels.size() > 0 && spellLevels.getLast().spell.hierarchyContains(spell)) {
             return spell.clone();
-        }
-        if (true) return spell;
-        for (SpellLevel level: spellLevels) {
-            if (level.spell == spell) return spell.clone();
         }
         return spell;
     }
