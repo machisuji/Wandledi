@@ -186,9 +186,10 @@ public class SpellExperiment {
         pages.get("h1").foreachIn(titles).apply(new Plan<String>() {
             public void execute(Element e, String item) {
                 e.replace(true, item);
-                e.insert("foo");
-                if (item.equals("bar")) {
-                    
+                if (odd()) { // alternating background colors
+                    e.setAttribute("style", "background-color: red;");
+                } else {
+                    e.setAttribute("style", "background-color: blue;");
                 }
             }
         });
@@ -200,6 +201,13 @@ public class SpellExperiment {
         assertEquals(headings.getLength(), titles.size());
         for (int i = 0; i < titles.size(); ++i) {
             assertEquals(headings.item(i).getTextContent(), titles.get(i));
+            if (i % 2 == 1) {
+                assertTrue(headings.item(i).getAttributes().getNamedItem("style").getTextContent().contains("red"),
+                        "red background");
+            } else {
+                assertTrue(headings.item(i).getAttributes().getNamedItem("style").getTextContent().contains("blue"),
+                        "blue background");
+            }
         }
     }
 
