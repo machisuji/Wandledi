@@ -102,17 +102,6 @@ public class Scroll {
             passages.add(passage);
             Collections.sort(passages);
         }
-        if (true) return;
-        Passage passage = findPassage(selector);
-        if (passage == null) {
-            passage = new Passage(Selector.valueOf(selector));
-            passage.addSpell(spell, charges);
-
-            passages.add(passage);
-            Collections.sort(passages);
-        } else {
-            passage.addSpell(spell, charges);
-        }
     }
 
     /**Finds the spells for the element with the given label

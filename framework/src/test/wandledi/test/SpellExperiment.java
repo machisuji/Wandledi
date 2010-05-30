@@ -185,8 +185,11 @@ public class SpellExperiment {
         pages.get("h1").clone(titles.size());
         pages.get("h1").foreachIn(titles).apply(new Plan<String>() {
             public void execute(Element e, String item) {
-                //e.replace(true, item);
+                e.replace(true, item);
                 e.insert("foo");
+                if (item.equals("bar")) {
+                    
+                }
             }
         });
         String result = wandle("test.xhtml");

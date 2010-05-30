@@ -14,9 +14,9 @@ import wandledi.spells.*;
  */
 public class ElementImpl implements Element {
 
-    private String selector;
-    private Scroll scroll;
-    private int charges = -1;
+    protected String selector;
+    protected Scroll scroll;
+    protected int charges = -1;
 
     public ElementImpl(String selector, Scroll scroll) {
 

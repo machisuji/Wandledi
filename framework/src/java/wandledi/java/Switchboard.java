@@ -34,6 +34,7 @@ public class Switchboard {
     private String messageBaseName;
     private Map<String, Messages> messages = new HashMap<String, Messages>();
     private String viewDirectory = "/WEB-INF/view/";
+    private boolean skipBootstrap = false;
 
     public static Switchboard getInstance() {
 
@@ -43,6 +44,22 @@ public class Switchboard {
     public static void setInstance(Switchboard switchboard) {
 
         singleton = switchboard;
+    }
+
+    /**Set by stand-alone controllers for instance.
+     * This way the controlelrs are registered with the Switchboard from somewhere
+     * else than the Bootstrap.
+     *
+     * @param skipBootstrap
+     */
+    protected void setSkipBootstrap(boolean skipBootstrap) {
+
+        this.skipBootstrap = skipBootstrap;
+    }
+
+    protected boolean getSkipBootstrap() {
+
+        return skipBootstrap;
     }
 
     public static String getUrlPlusQuery(HttpServletRequest request) {
@@ -215,7 +232,6 @@ public class Switchboard {
 
     /**Gets the controller for the given path (url).
      *
-     * @param path
      * @param request
      * @param response
      * @return
@@ -251,7 +267,6 @@ public class Switchboard {
 
     /**Creates a new controller instance to handle the given request.
      *
-     * @param path
      * @param request
      * @param response
      * @return
@@ -303,8 +318,6 @@ public class Switchboard {
     /**Retrieves an existing controller instance from the session to handle the given request.
      *
      * @param request
-     * @param path
-     * @param clazz
      * @param response
      * @return
      */

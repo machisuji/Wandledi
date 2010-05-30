@@ -83,7 +83,9 @@ public class WandlediFilter implements Filter {
     public void init(FilterConfig filterConfig) {
 
         this.filterConfig = filterConfig;
-        this.bootstrap(filterConfig.getServletContext());
+        if (!Switchboard.getInstance().getSkipBootstrap()) {
+            this.bootstrap(filterConfig.getServletContext());
+        }
         Switchboard.getInstance().setServletContext(filterConfig.getServletContext());
     }
 
