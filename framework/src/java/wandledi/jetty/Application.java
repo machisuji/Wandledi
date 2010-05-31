@@ -23,14 +23,28 @@ public class Application {
     private String descriptor = "src/conf/web.xml";
     private String webDirectory = "web";
 
+    public Application() {
+
+    }
+
+    public Application(int port) {
+
+        this.port = port;
+    }
+
     public static void main(String[] args) {
 
         boolean nio = true;
+        int port = 8080;
         String nios = getArgument("nio", args);
+        String ports = getArgument("port", args);
         if (nios != null) {
             nio = Boolean.valueOf(nios);
         }
-        new Application().start(nio);
+        if (ports != null) {
+            port = Integer.valueOf(ports);
+        }
+        new Application(port).start(nio);
     }
 
     public void start(boolean nio) {

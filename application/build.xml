@@ -71,6 +71,7 @@
         classname="wandledi.jetty.Application">
       <classpath refid="runtime.classpath"/>
       <arg value="nio=${jetty.nio}"/>
+      <arg value="port=${jetty.port}"/>
     </java>
   </target>
   

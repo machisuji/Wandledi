@@ -99,9 +99,14 @@ public class ElementImpl implements Element {
 
         ElementForeach<T> foreach = new ElementForeach<T>() {
             public void apply(Plan<T> plan) {
-                Element chargedElement = new ElementImpl(selector, scroll, 1);
+                Element element = new ElementImpl(selector, scroll) {
+                    public Element get(String selector) {
+                        throw new IllegalStateException("Sorry mate, but this is a dead end.");
+                        // don't allow iterative spells on more than one selector for now
+                    }
+                };
                 for (T item: collection) {
-                    plan.execute(chargedElement, item);
+                    plan.execute(element, item);
                 }
             }
         };
