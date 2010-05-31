@@ -42,6 +42,7 @@ public class Application {
             nio = Boolean.valueOf(nios);
         }
         if (ports != null) {
+            System.out.println("Jetty: Listen to port " + port);
             port = Integer.valueOf(ports);
         }
         new Application(port).start(nio);
