@@ -42,8 +42,8 @@ public class Application {
             nio = Boolean.valueOf(nios);
         }
         if (ports != null) {
-            System.out.println("Jetty: Listen to port " + port);
             port = Integer.valueOf(ports);
+            System.out.println("Jetty: Listen to port " + port);
         }
         new Application(port).start(nio);
     }
@@ -66,7 +66,7 @@ public class Application {
         } else {
             connector = new SelectChannelConnector();
         }
-        connector.setPort(8080);
+        connector.setPort(port);
         server.setConnectors(new Connector[] { connector });
         try {
             server.start();
