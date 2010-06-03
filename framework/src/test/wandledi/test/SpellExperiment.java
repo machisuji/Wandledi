@@ -10,6 +10,7 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import wandledi.core.*;
 import wandledi.java.html.Element;
+import wandledi.java.html.ElementImpl;
 import wandledi.java.html.Pages;
 import wandledi.java.html.Plan;
 import wandledi.spells.*;
@@ -176,6 +177,24 @@ public class SpellExperiment {
         assertEquals(bolds.getLength(), 1);
         assertEquals(titles.item(0).getTextContent(), title);
         assertEquals(bolds.item(0).getTextContent(), time);
+    }
+
+    @Test
+    public void testChargedSpell() {
+
+        ElementImpl e = (ElementImpl) pages.get("div");
+        int charges = 2;
+        e.cast(new AttributeTransformation(new Attribute("foo", "bar")), charges);
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList divs = doc.getElementsByTagName("div");
+
+        assertEquals(divs.getLength(), 3);
+        assertNotNull(divs.item(0).getAttributes().getNamedItem("foo"));
+        assertEquals("bar", divs.item(0).getAttributes().getNamedItem("foo").getTextContent());
+        assertEquals("bar", divs.item(1).getAttributes().getNamedItem("foo").getTextContent());
+        assertNull(divs.item(2).getAttributes().getNamedItem("foo"));
     }
 
     @Test(enabled=false)
