@@ -25,6 +25,26 @@ public class Duplication extends AbstractSpell {
             public int duplications() {
                 return number;
             }
+            public Spell modification() {
+                return null;
+            }
+        };
+    }
+
+    /**This duplication applies a given modification during each duplication.
+     *
+     * @param number
+     * @param modification
+     */
+    public Duplication(final int number, final Spell modification) {
+
+        this.intent = new DuplicationIntent() {
+            public int duplications() {
+                return number;
+            }
+            public Spell modification() {
+                return modification;
+            }
         };
     }
 
@@ -43,6 +63,10 @@ public class Duplication extends AbstractSpell {
     public void endTransformedElement(String name) {
 
         SpellLine start = pullLine();
+        Spell parent = this.parent;
+        if (intent.modification() != null) {
+            parent = new ComplexSpell(intent.modification(), this.parent);
+        }
         for (int i = 0; i < intent.duplications(); ++i) {
             start.perform(parent);
             Iterator<SpellLine> e = lines.iterator();

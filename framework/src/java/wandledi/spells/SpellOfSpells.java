@@ -21,6 +21,11 @@ public class SpellOfSpells extends AbstractSpell {
         this.scroll = scroll;
     }
 
+    public void reset() {
+
+        spellLevels.clear();
+    }
+
     private void checkSpell(String label, Attributes attributes) {
 
         List<Spell> spells = getScroll().readSpellsFor(label, attributes);
@@ -93,6 +98,16 @@ public class SpellOfSpells extends AbstractSpell {
                 level.spell.endTransformedElement(name);
                 spellLevels.removeLast();
             }
+        }
+    }
+
+    public void writeCharacters(char[] characters, int offset, int length) {
+
+        if (spellLevels.size() == 0) {
+            parent.writeCharacters(characters, offset, length);
+        } else {
+            SpellLevel level = spellLevels.getLast();
+            level.spell.writeCharacters(characters, offset, length);
         }
     }
 

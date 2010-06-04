@@ -18,6 +18,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import wandledi.spells.SpellOfSpells;
 
 /**
  *
@@ -32,9 +33,9 @@ public class Wandler implements ContentHandler, Spell {
     private boolean startUnderConstruction = false;
     private long calls = 0;
     private long lastStart = -1;
-    private Scroll scroll = new Scroll();
-    private LinkedList<SpellLevel> spellLevels = new LinkedList<SpellLevel>();
     private final static Map<String, Boolean> preserveMap = new HashMap<String, Boolean>(1);
+
+    private SpellOfSpells rootSpell = new SpellOfSpells(new Scroll());
 
     static {
         preserveMap.put("script", true);
@@ -42,6 +43,7 @@ public class Wandler implements ContentHandler, Spell {
 
     public Wandler() {
 
+        rootSpell.setParent(this);
         try {
             parser = XMLReaderFactory.createXMLReader();
             parser.setContentHandler(this);
@@ -57,7 +59,7 @@ public class Wandler implements ContentHandler, Spell {
         startUnderConstruction = false;
         calls = 0;
         lastStart = -1;
-        spellLevels.clear();
+        rootSpell.reset();
     }
 
     @Override
@@ -154,94 +156,20 @@ public class Wandler implements ContentHandler, Spell {
         }
     }
 
-    private void checkSpell(String label, Attributes attributes) {
-
-        List<Spell> spells = usedScroll().readSpellsFor(label, attributes);
-        Spell parent = this;
-        if (spellLevels.size() > 0) {
-            parent = spellLevels.getLast().spell;
-        }
-        Iterator<Spell> i = spells.iterator();
-        while (i.hasNext()) {
-            Spell spell = copyIfNested(i.next());
-            spell.setParent(parent);
-            parent = spell;
-            if (!i.hasNext()) {
-                spellLevels.add(new SpellLevel(spell));
-            }
-        }
-    }
-
-    private void checkSingleSpell(String label, Attributes attributes) {
-
-        List<Spell> spells = usedScroll().readSpellsFor(label, attributes);
-        if (spells.size() > 0) {
-            Spell spell = copyIfNested(spells.get(0));
-            Spell parent = this;
-            if (spellLevels.size() > 0) {
-                parent = spellLevels.getLast().spell;
-            }
-            spell.setParent(parent);
-            spellLevels.add(new SpellLevel(spell));
-        }
-    }
-
-    /**If the very same spell is applied to nested elements we
-     * need to clone the spell for any further appliance to prevent
-     * an infinite loop.
-     *
-     * @param spell
-     * @return
-     */
-    private Spell copyIfNested(Spell spell) {
-
-        if (spellLevels.size() > 0 && spellLevels.getLast().spell.hierarchyContains(spell)) {
-            return spell.clone();
-        }
-        return spell;
-    }
-
     public void startElement(String uri, String localName, String qName, Attributes atts)
             throws SAXException {
 
-        checkSpell(localName, atts);
-        if (spellLevels.size() == 0) {
-            startElement(localName, atts);
-        } else {
-            SpellLevel level = spellLevels.getLast();
-            ++level.tagLevel;
-            if (level.tagLevel > 1) {
-                level.spell.startElement(localName, atts);
-            } else {
-                level.spell.startTransformedElement(localName, atts);
-            }
-        }
+        rootSpell.startElement(localName, atts);
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
-        if (spellLevels.size() == 0) {
-            endElement(localName);
-        } else {
-            SpellLevel level = spellLevels.getLast();
-            --level.tagLevel;
-            if (level.tagLevel > 0) {
-                level.spell.endElement(localName);
-            } else {
-                level.spell.endTransformedElement(localName);
-                spellLevels.removeLast();
-            }
-        }
+        rootSpell.endElement(localName);
     }
 
     public void characters(char[] ch, int start, int length) throws SAXException {
 
-        if (spellLevels.size() == 0) {
-            writeCharacters(ch, start, length);
-        } else {
-            SpellLevel level = spellLevels.getLast();
-            level.spell.writeCharacters(ch, start, length);
-        }
+        rootSpell.writeCharacters(ch, start, length);
     }
 
     private boolean noNestedElement() {
@@ -317,10 +245,10 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public Scroll usedScroll() {
-        return scroll;
+        return rootSpell.getScroll();
     }
 
-    public void useScroll(Scroll grimoire) {
-        this.scroll = grimoire;
+    public void useScroll(Scroll scroll) {
+        rootSpell.setScroll(scroll);
     }
 }

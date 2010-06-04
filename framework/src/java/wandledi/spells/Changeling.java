@@ -41,7 +41,6 @@ public class Changeling extends AbstractSpell {
 
     public void startTransformedElement(String name, Attributes attributes) {
 
-        System.out.println("start changeling");
         identities[index].startTransformedElement(name, attributes);
     }
 
@@ -57,7 +56,9 @@ public class Changeling extends AbstractSpell {
 
     public void setParent(Spell spell) {
 
-        identities[index].setParent(spell);
+        for (Spell id: identities) {
+            id.setParent(spell);
+        }
     }
 
     public void startElement(String name, Attributes attributes) {
@@ -68,7 +69,6 @@ public class Changeling extends AbstractSpell {
     public void endElement(String name) {
 
         identities[index].endElement(name);
-        change();
     }
 
     public void writeCharacters(char[] characters, int offset, int length) {
@@ -83,7 +83,6 @@ public class Changeling extends AbstractSpell {
 
     @Override
     public Spell clone() {
-        System.out.println("change");
         return identities[index].clone();
     }
 

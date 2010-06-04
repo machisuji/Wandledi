@@ -222,6 +222,27 @@ public class SpellExperiment {
                 "It should have the following style: " + style);
     }
 
+    @Test
+    public void testVariantDuplication() {
+
+        Spell modification = new Changeling(
+                new AttributeTransformation(new Attribute("class", "1")),
+                new AttributeTransformation(new Attribute("class", "2")),
+                new AttributeTransformation(new Attribute("class", "3"))
+        );
+        pages.get("title").cast(new Duplication(3, modification));
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList titles = doc.getElementsByTagName("title");
+
+        assertEquals(titles.getLength(), 3, "There should be as many as three titles now.");
+        for (int i = 0; i < 3; ++i) {
+            assertEquals(titles.item(i).getAttributes().getNamedItem("class").getTextContent(),
+                    String.valueOf(i + 1), (i + 1) + ". class should be " + (i + 1));
+        }
+    }
+
     @Test(enabled=false)
     public void testForEach() {
 

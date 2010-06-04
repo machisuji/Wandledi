@@ -1,5 +1,7 @@
 package wandledi.spells;
 
+import wandledi.core.Spell;
+
 /**
  *
  * @author Markus Kahl
@@ -7,4 +9,6 @@ package wandledi.spells;
 public interface DuplicationIntent {
 
     int duplications();
+
+    Spell modification();
 }
