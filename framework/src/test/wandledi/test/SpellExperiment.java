@@ -243,44 +243,21 @@ public class SpellExperiment {
         }
     }
 
-    @Test(enabled=false)
+    @Test(enabled=true)
     public void testForEach() {
 
         List<String> titles = Arrays.asList("It's", "something", "only", "you", "can", "take.");
-        Spell changeling = new Changeling(
-                new AttributeTransformation(new Attribute("style", "background-color: red;")),
-                new AttributeTransformation(new Attribute("style", "background-color: blue;")),
-                new AttributeTransformation(new Attribute("style", "background-color: red;")),
-                new AttributeTransformation(new Attribute("style", "background-color: blue;")),
-                new AttributeTransformation(new Attribute("style", "background-color: red;")),
-                new AttributeTransformation(new Attribute("style", "background-color: blue;"))
-        );
-        for (Spell spell: ((Changeling)changeling).getIdentities()) {
-            System.out.println("Identity: " + spell);
-        }
-        pages.get("h1").clone(titles.size());
-        pages.get("h1").cast(changeling);
-        /*pages.get("h1").foreachIn(titles).apply(new Plan<String>() {
+        pages.get("h1").foreachIn(titles).apply(new Plan<String>() {
             public void execute(Element e, final String item) {
-                e.castLater(new Replacement(new ReplacementIntent() {
-                    public void replace(String label, Attributes attributes, Spell parent) {
-                        parent.writeString(item);
-                    }
-                }, true), index());
-                //e.replace(true, item);
+                e.replace(true, item);
                 if (odd()) { // alternating background colors
-                    //e.setAttribute("style", "background-color: red;");
-                    e.castLater(new AttributeTransformation(new Attribute("style", "background-color: red;")),
-                            index());
+                    e.setAttribute("style", "background-color: red;");
                 } else {
-                    //e.setAttribute("style", "background-color: blue;");
-                    e.castLater(new AttributeTransformation(new Attribute("style", "background-color: blue;")),
-                            index());
+                    e.setAttribute("style", "background-color: blue;");
                 }
             }
-        });*/
+        });
         String result = wandle("test.xhtml");
-        System.out.println(result);
         Document doc = parseXML(result);
         NodeList headings = doc.getElementsByTagName("h1");
 
