@@ -197,21 +197,67 @@ public class SpellExperiment {
         assertNull(divs.item(2).getAttributes().getNamedItem("foo"));
     }
 
+    @Test
+    public void testSpellOfSpells() {
+
+        String style = "color: red;";
+        Scroll scroll = new Scroll();
+        scroll.changeAttributes("#time", new Attribute("style", style));
+        scroll.insert("#time", true, new InsertionIntent() {
+            public void insert(Spell parent) {
+                parent.writeString(" !");
+            }
+        });
+        Spell sos = new SpellOfSpells(scroll);
+
+        ((ElementImpl) pages.get("div")).cast(sos, 1);
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList spans = doc.getElementsByTagName("span");
+        assertEquals(spans.getLength(), 1, "There should be exactly one span element.");
+        Node span = spans.item(0);
+        assertNotNull(span, "There should be a span with the id 'time'.");
+        assertEquals(span.getAttributes().getNamedItem("style").getTextContent(), style,
+                "It should have the following style: " + style);
+    }
+
     @Test(enabled=false)
     public void testForEach() {
 
         List<String> titles = Arrays.asList("It's", "something", "only", "you", "can", "take.");
+        Spell changeling = new Changeling(
+                new AttributeTransformation(new Attribute("style", "background-color: red;")),
+                new AttributeTransformation(new Attribute("style", "background-color: blue;")),
+                new AttributeTransformation(new Attribute("style", "background-color: red;")),
+                new AttributeTransformation(new Attribute("style", "background-color: blue;")),
+                new AttributeTransformation(new Attribute("style", "background-color: red;")),
+                new AttributeTransformation(new Attribute("style", "background-color: blue;"))
+        );
+        for (Spell spell: ((Changeling)changeling).getIdentities()) {
+            System.out.println("Identity: " + spell);
+        }
         pages.get("h1").clone(titles.size());
-        pages.get("h1").foreachIn(titles).apply(new Plan<String>() {
-            public void execute(Element e, String item) {
-                e.replace(true, item);
+        pages.get("h1").cast(changeling);
+        /*pages.get("h1").foreachIn(titles).apply(new Plan<String>() {
+            public void execute(Element e, final String item) {
+                e.castLater(new Replacement(new ReplacementIntent() {
+                    public void replace(String label, Attributes attributes, Spell parent) {
+                        parent.writeString(item);
+                    }
+                }, true), index());
+                //e.replace(true, item);
                 if (odd()) { // alternating background colors
-                    e.setAttribute("style", "background-color: red;");
+                    //e.setAttribute("style", "background-color: red;");
+                    e.castLater(new AttributeTransformation(new Attribute("style", "background-color: red;")),
+                            index());
                 } else {
-                    e.setAttribute("style", "background-color: blue;");
+                    //e.setAttribute("style", "background-color: blue;");
+                    e.castLater(new AttributeTransformation(new Attribute("style", "background-color: blue;")),
+                            index());
                 }
             }
-        });
+        });*/
         String result = wandle("test.xhtml");
         System.out.println(result);
         Document doc = parseXML(result);

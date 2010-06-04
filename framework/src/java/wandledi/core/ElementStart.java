@@ -8,8 +8,8 @@ import org.xml.sax.Attributes;
  */
 public class ElementStart implements SpellLine {
 
-    private String name;
-    private Attributes attributes;
+    protected String name;
+    protected Attributes attributes;
 
     public ElementStart(String name, Attribute... attributes) {
 

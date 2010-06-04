@@ -6,8 +6,8 @@ package wandledi.core;
  */
 public class SpellLevel {
 
-    protected Spell spell;
-    protected int tagLevel;
+    public Spell spell;
+    public int tagLevel;
 
     public SpellLevel(Spell spell) {
 

@@ -8,16 +8,12 @@ import java.util.Collection;
  */
 public abstract class Plan<T> {
 
-    private Collection<T> items;
+    private int index = -1;
+    private boolean last;
 
-    protected void setItems(Collection<T> items) {
+    protected void setIndex(int index) {
 
-        this.items = items;
-    }
-
-    protected Collection<T> getItems() {
-
-        return items;
+        this.index = index;
     }
 
     /**Returns the index of the current item.
@@ -26,7 +22,7 @@ public abstract class Plan<T> {
      */
     public int index() {
 
-        return -1;
+        return this.index;
     }
 
     /**Checks whether the current item is the first one.
@@ -38,13 +34,18 @@ public abstract class Plan<T> {
         return index() == 0;
     }
 
+    protected void setLast(boolean last) {
+
+        this.last = last;
+    }
+
     /**Checks whether the current item is the last item.
      *
      * @return
      */
     public boolean last() {
 
-        return index() == items.size();
+        return this.last;
     }
 
     /**Checks whether the current item's index is odd.

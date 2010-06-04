@@ -89,7 +89,11 @@ public class Scroll {
         boolean newPassage = true;
         for (Passage passage: passages) {
             if (s.equals(passage)) {
-               passage.addSpell(spell, charges);
+                if (charges > 0) {
+                    passage.addTransientSpell(spell, charges);
+                } else {
+                    passage.addSpell(spell);
+                }
             }
             if (passage.toString().equals(selector)) {
                 newPassage = false;
@@ -97,8 +101,31 @@ public class Scroll {
         }
         if (newPassage) {
             Passage passage = new Passage(s);
-            passage.addSpell(spell, charges);
+            if (charges > 0) {
+                passage.addTransientSpell(spell, charges);
+            } else {
+                passage.addSpell(spell);   
+            }
+            passages.add(passage);
+            Collections.sort(passages);
+        }
+    }
 
+    public void addLateSpell(String selector, Spell spell, int offset) {
+
+        Selector s = Selector.valueOf(selector);
+        boolean newPassage = true;
+        for (Passage passage: passages) {
+            if (s.equals(passage)) {
+                passage.addSpell(spell, offset);
+            }
+            if (passage.toString().equals(selector)) {
+                newPassage = false;
+            }
+        }
+        if (newPassage) {
+            Passage passage = new Passage(s);
+            passage.addSpell(spell, offset);
             passages.add(passage);
             Collections.sort(passages);
         }

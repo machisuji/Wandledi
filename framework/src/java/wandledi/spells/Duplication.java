@@ -2,13 +2,7 @@ package wandledi.spells;
 
 import java.util.Iterator;
 import org.xml.sax.Attributes;
-import wandledi.core.AbstractSpell;
-import wandledi.core.Characters;
-import wandledi.core.ElementEnd;
-import wandledi.core.ElementStart;
-import wandledi.core.SimpleAttributes;
-import wandledi.core.Spell;
-import wandledi.core.SpellLine;
+import wandledi.core.*;
 
 /**This transformations needs to store the whole element tree of the targeted
  * element in memory in order to be able to duplicate it.
@@ -43,13 +37,12 @@ public class Duplication extends AbstractSpell {
     public void startTransformedElement(String name, Attributes attributes) {
 
         reset();
-        startElement(name, attributes);
+        pushLine(new TransformedElementStart(name, new SimpleAttributes(attributes)));
     }
 
     public void endTransformedElement(String name) {
 
-        ElementStart start = (ElementStart) pullLine();
-
+        SpellLine start = pullLine();
         for (int i = 0; i < intent.duplications(); ++i) {
             start.perform(parent);
             Iterator<SpellLine> e = lines.iterator();
@@ -57,11 +50,8 @@ public class Duplication extends AbstractSpell {
                 SpellLine line = e.next();
                 line.perform(parent);
             }
-            if (i < intent.duplications() - 1) {
-                parent.endElement(name);
-            }
+            parent.endTransformedElement(name);
         }
-        super.endTransformedElement(name);
         clearLines();
     }
 

@@ -40,6 +40,11 @@ public class ElementImpl implements Element {
         scroll.addSpell(selector, spell, charges);
     }
 
+    public void castLater(Spell spell, int offset) {
+
+        scroll.addLateSpell(selector, spell, offset);
+    }
+
     public void setAttribute(String name, String value) {
 
         cast(new AttributeTransformation(new Attribute(name, value)));
@@ -99,13 +104,21 @@ public class ElementImpl implements Element {
 
         ElementForeach<T> foreach = new ElementForeach<T>() {
             public void apply(Plan<T> plan) {
-                Element element = new ElementImpl(selector, scroll) {
+                /** An element which creates transient spells by default. */
+                Element element = new ElementImpl(selector, scroll, 1) {
                     public Element get(String selector) {
                         throw new IllegalStateException("Sorry mate, but this is a dead end.");
                         // don't allow iterative spells on more than one selector for now
                     }
                 };
+                int index = 0;
+                int size = collection.size();
+                plan.setLast(false);
                 for (T item: collection) {
+                    plan.setIndex(index++);
+                    if (index == size) {
+                        plan.setLast(true);
+                    }
                     plan.execute(element, item);
                 }
             }
