@@ -1,16 +1,19 @@
 package wandledi.core;
 
+import org.xml.sax.Attributes;
+
 import java.util.*;
 
-class Passage extends Selector {
+class Passage implements Selector {
 
+    private Selector selector;
     private List<Spell> spells = new LinkedList<Spell>();
     private Queue<ChargedEntry> transientSpells = new LinkedList<ChargedEntry>();
     private List<LateEntry> lateSpells = new ArrayList<LateEntry>();
 
     public Passage(Selector selector) {
 
-        super(selector.getLabel(), selector.getElementClass(), selector.getId());
+        this.selector = selector;
     }
 
     /**Adds the given spell with the specified amount of charges
@@ -109,6 +112,16 @@ class Passage extends Selector {
                 entries.remove();
             }
         }
+    }
+
+    public boolean matches(String label, Attributes attributes) {
+
+        return selector.matches(label, attributes);
+    }
+
+    public int compareTo(Object o) {
+
+        return selector.compareTo(o);
     }
 
     private static class ChargedEntry {

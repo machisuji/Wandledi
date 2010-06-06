@@ -1,5 +1,7 @@
 package wandledi.spells;
 
+import wandledi.core.Scroll;
+
 /**
  *
  * @author markus
@@ -7,4 +9,5 @@ package wandledi.spells;
 public interface InclusionIntent {
 
     String getFile();
+    Scroll getScroll();
 }

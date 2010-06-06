@@ -142,6 +142,29 @@ public class SpellExperiment {
     }
 
     @Test
+    public void testVariantInclusion() {
+
+        String style = "color: red;";
+        Scroll scroll = new Scroll();
+        scroll.changeAttributes("p", new Attribute("style", style));
+        pages.get(".info").cast(new Inclusion("inclusion.xhtml", scroll) {
+            public String getPath(String file) {
+                return DIR + file;
+            }
+        });
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList divs = doc.getElementsByTagName("div");
+        NodeList paragraphs = doc.getElementsByTagName("p");
+        assertEquals(divs.getLength(), 1);
+        assertEquals(paragraphs.getLength(), 1);
+        assertTrue(paragraphs.item(0).getTextContent().contains("inclusion"),
+                "Text from inclusion.xhtml included.");
+        assertEquals(paragraphs.item(0).getAttributes().getNamedItem("style").getTextContent(),
+                style, "The paragraph's style should be: " + style);
+    }
+
+    @Test
     public void testInvisibility() {
 
         pages.get("h1").hide();
@@ -243,7 +266,7 @@ public class SpellExperiment {
         }
     }
 
-    @Test(enabled=true)
+    @Test
     public void testForEach() {
 
         List<String> titles = Arrays.asList("It's", "something", "only", "you", "can", "take.");

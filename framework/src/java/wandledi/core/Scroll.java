@@ -1,7 +1,6 @@
 package wandledi.core;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class Scroll {
 
     /**Changes the attributes of the target element.
      *
-     * @param selector Selector matching the target element.
+     * @param selector CssSelector matching the target element.
      * @param attributes Attributes to be added (existing ones will be overriden).
      */
     public void changeAttributes(String selector, Attribute... attributes) {
@@ -39,7 +38,7 @@ public class Scroll {
 
     /**Duplicates the target element as often as indicated by the given number.
      *
-     * @param selector Selector matching the target element.
+     * @param selector CssSelector matching the target element.
      * @param number Number of duplications.
      */
     public void duplicate(String selector, int number) {
@@ -49,7 +48,7 @@ public class Scroll {
 
     /**Includes the specified file in place of the target element.
      *
-     * @param selector Selector matching the target element.
+     * @param selector CssSelector matching the target element.
      * @param file The file to be included (from the view directory).
      */
     public void include(String selector, String file) {
@@ -59,7 +58,7 @@ public class Scroll {
 
     /**Inserts new elements into the target element according to the given intent.
      *
-     * @param selector Selector matching the target element.
+     * @param selector CssSelector matching the target element.
      * @param intent The intent specifying what to insert.
      */
     public void insert(String selector, boolean insertAtEnd, InsertionIntent intent) {
@@ -69,7 +68,7 @@ public class Scroll {
 
     /**Replaces the target element (or only its contents) according the given intent.
      *
-     * @param selector Selector matching the target element.
+     * @param selector CssSelector matching the target element.
      * @param contentsOnly If true, only the target elements content will be replaced.
      * @param intent The intent specifying the replacement.
      */
@@ -85,50 +84,39 @@ public class Scroll {
 
     public void addSpell(String selector, Spell spell, int charges) {
 
-        Selector s = Selector.valueOf(selector);
-        boolean newPassage = true;
-        for (Passage passage: passages) {
-            if (s.equals(passage)) {
-                if (charges > 0) {
-                    passage.addTransientSpell(spell, charges);
-                } else {
-                    passage.addSpell(spell);
-                }
-            }
-            if (passage.toString().equals(selector)) {
-                newPassage = false;
-            }
-        }
-        if (newPassage) {
-            Passage passage = new Passage(s);
-            if (charges > 0) {
-                passage.addTransientSpell(spell, charges);
-            } else {
-                passage.addSpell(spell);   
-            }
-            passages.add(passage);
-            Collections.sort(passages);
+        Selector s = CssSelector.valueOf(selector);
+        Passage passage = getPassage(s);
+        if (charges > 0) {
+            passage.addTransientSpell(spell, charges);
+        } else {
+            passage.addSpell(spell);
         }
     }
 
     public void addLateSpell(String selector, Spell spell, int offset) {
 
-        Selector s = Selector.valueOf(selector);
-        boolean newPassage = true;
+        Selector s = CssSelector.valueOf(selector);
+        Passage passage = getPassage(s);
+        passage.addSpell(spell, offset);
+    }
+
+    /**Gets this Scroll's passage for the given selector.
+     *
+     * @param selector
+     * @return An existing Passage or a new one if there wasn't already a Passage for that selector.
+     */
+    protected Passage getPassage(Selector selector) {
+
         for (Passage passage: passages) {
-            if (s.equals(passage)) {
-                passage.addSpell(spell, offset);
-            }
-            if (passage.toString().equals(selector)) {
-                newPassage = false;
+            if (selector.equals(passage)) {
+                return passage;
             }
         }
-        if (newPassage) {
-            Passage passage = new Passage(s);
-            passage.addSpell(spell, offset);
-            passages.add(passage);
-            Collections.sort(passages);
-        }
+        Passage passage = new Passage(selector);
+        passages.add(passage);
+        Collections.sort(passages);
+        
+        return passage;
     }
 
     /**Finds the spells for the element with the given label
@@ -142,10 +130,9 @@ public class Scroll {
      */
     public List<Spell> readSpellsFor(String label, Attributes attributes) {
 
-        Selector selector = new Selector(label, attributes);
         List<Spell> spells = new LinkedList<Spell>();
         for (Passage passage: passages) {
-            if (passage.equals(selector)) {
+            if (passage.matches(label, attributes)) {
                 passage.transferSpellsInto(spells);
             }
         }

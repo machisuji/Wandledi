@@ -12,6 +12,7 @@ import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
 import wandledi.core.AbstractSpell;
+import wandledi.core.Scroll;
 import wandledi.core.Spell;
 import wandledi.core.VoidResolver;
 import wandledi.java.Switchboard;
@@ -23,7 +24,7 @@ import wandledi.java.Switchboard;
  *
  * @author Markus Kahl
  */
-public class Inclusion extends AbstractSpell implements ContentHandler {
+public class Inclusion extends SpellOfSpells implements ContentHandler {
 
     private XMLReader parser;
     private InclusionIntent intent;
@@ -34,11 +35,27 @@ public class Inclusion extends AbstractSpell implements ContentHandler {
             public String getFile() {
                 return file;
             }
+            public Scroll getScroll() {
+                return new Scroll();
+            }
+        });
+    }
+
+    public Inclusion(final String file, final Scroll scroll) {
+
+        this(new InclusionIntent() {
+            public String getFile() {
+                return file;
+            }
+            public Scroll getScroll() {
+                return scroll;
+            }
         });
     }
 
     public Inclusion(InclusionIntent intent) {
 
+        super(intent.getScroll() != null ? intent.getScroll() : new Scroll());
         this.intent = intent;
         try {
             parser = XMLReaderFactory.createXMLReader();
@@ -83,17 +100,17 @@ public class Inclusion extends AbstractSpell implements ContentHandler {
     public void startElement(String uri, String localName, String qName, Attributes atts)
             throws SAXException {
 
-        parent.startElement(localName, atts);
+        super.startElement(localName, atts);
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
-        parent.endElement(localName);
+        super.endElement(localName);
     }
 
     public void characters(char[] ch, int start, int length) throws SAXException {
 
-        parent.writeCharacters(ch, start, length);
+        super.writeCharacters(ch, start, length);
     }
 
     public void setDocumentLocator(Locator locator) { }
