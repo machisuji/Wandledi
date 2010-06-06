@@ -1,34 +1,35 @@
 package wandledi.java.html;
 
 import java.util.Collection;
-import java.util.LinkedList;
 
 import org.xml.sax.Attributes;
-import wandledi.core.Attribute;
-import wandledi.core.Scroll;
-import wandledi.core.Spell;
+import wandledi.core.*;
 import wandledi.spells.*;
 
 /**
  *
  * @author Markus Kahl
  */
-public class ElementImpl implements Element {
+public class ElementImpl extends SelectableImpl implements Element {
 
-    protected String selector;
-    protected Scroll scroll;
+    protected Selector selector;
     protected int charges = -1;
 
-    public ElementImpl(String selector, Scroll scroll) {
+    public ElementImpl(Selector selector, Scroll scroll) {
 
+        super(scroll);
         this.selector = selector;
-        this.scroll = scroll;
     }
 
-    protected ElementImpl(String selector, Scroll scroll, int charges) {
+    protected ElementImpl(Selector selector, Scroll scroll, int charges) {
 
         this(selector, scroll);
         this.charges = charges;
+    }
+
+    public Selector getSelector() {
+
+        return selector;
     }
 
     public void cast(Spell spell) {
@@ -101,45 +102,9 @@ public class ElementImpl implements Element {
         cast(new Replacement(intent, contentsOnly));
     }
 
-    public <T> ElementForeach<T> foreachIn(final Collection<T> collection) {
+    public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
 
-        ElementForeach<T> foreach = new ElementForeach<T>() {
-            public void apply(Plan<T> plan) {
-                Collection<Scroll> scrolls = new LinkedList<Scroll>();
-                int index = 0;
-                int size = collection.size();
-                plan.setLast(false);
-                for (T item: collection) {
-                    Scroll scroll = new Scroll();
-                    Element element = new ElementImpl(selector, scroll) {
-                        public Element get(String selector) {
-                            throw new IllegalStateException("Sorry mate, but this is a dead end.");
-                            // don't allow iterative spells on more than one selector for now
-                        }
-                    };
-                    plan.setIndex(index++);
-                    if (index == size) {
-                        plan.setLast(true);
-                    }
-                    plan.execute(element, item);
-                    scrolls.add(scroll);
-                }
-                Spell[] modifications = new Spell[scrolls.size()];
-                int mi = 0;
-                for (Scroll scroll: scrolls) {
-                    modifications[mi++] = new SpellOfSpells(scroll);
-                }
-                Spell duplication = new Duplication(size, new Changeling(modifications));
-                
-                cast(duplication);
-            }
-        };
-        return foreach;
-    }
-
-    public Element get(String selector) {
-
-        return new ElementImpl(selector, scroll);
+        return new ElementForeachImpl(this, collection);
     }
 
     public void hide() {

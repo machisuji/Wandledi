@@ -2,6 +2,7 @@ package wandledi.java.html;
 
 import java.util.Collection;
 
+import wandledi.core.Selector;
 import wandledi.core.Spell;
 import wandledi.spells.InsertionIntent;
 import wandledi.spells.ReplacementIntent;
@@ -10,8 +11,13 @@ import wandledi.spells.ReplacementIntent;
  *
  * @author Markus Kahl
  */
-public interface Element {
+public interface Element extends Selectable {
 
+    /**The Selector used to address this Element.
+     *
+     * @return
+     */
+    public Selector getSelector();
     public void cast(Spell spell);
     public void castLater(Spell spell, int offset);
     public void setAttribute(String name, String value);
@@ -24,6 +30,5 @@ public interface Element {
     public void replace(boolean contentsOnly, ReplacementIntent intent);
     public void replace(boolean contentsOnly, String content);
     public <T> ElementForeach<T> foreachIn(Collection<T> collection);
-    public Element get(String selector);
     public void hide();
 }

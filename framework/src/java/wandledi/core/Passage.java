@@ -33,6 +33,10 @@ class Passage implements Selector {
         transientSpells.add(new ChargedEntry(spell, charges));
     }
 
+    /**Adds a transient spell with a single charge.
+     *
+     * @param spell
+     */
     public void addTransientSpell(Spell spell) {
 
         addTransientSpell(spell, 1);
@@ -58,21 +62,7 @@ class Passage implements Selector {
      */
     public void addSpell(Spell spell, int offset) {
 
-        System.out.println("adding late spell: " + spell);
         lateSpells.add(new LateEntry(spell, offset));
-    }
-
-    /**With each read the charges of the containing transient spells decrease.
-     * If the charges of a transient spell fall to 0 it can't be used anymore.
-     * Persistent spells are there to stay.
-     *
-     * @return
-     */
-    public List<Spell> readSpells() {
-
-        List spells = new LinkedList();
-        transferSpellsInto(spells);
-        return spells;
     }
 
     /**Reads this scroll's spells and transfers them into the given collection.

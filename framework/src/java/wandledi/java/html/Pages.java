@@ -1,32 +1,22 @@
 package wandledi.java.html;
 
-import wandledi.core.Scroll;
+import wandledi.core.*;
 
 /**An HTML page.
  *
  * @author Markus Kahl
  */
-public class Pages {
+public class Pages extends SelectableImpl {
 
-    private Scroll scroll = new Scroll();
     private String file;
 
     public Pages() {
 
+        super(new Scroll());
     }
 
     public void setFile(String file) {
         
         this.file = file;
-    }
-
-    public Scroll getScroll() {
-
-        return scroll;
-    }
-    
-    public Element get(String selector) {
-
-        return new ElementImpl(selector, scroll);
     }
 }

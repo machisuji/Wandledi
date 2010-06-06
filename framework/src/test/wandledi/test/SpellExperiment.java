@@ -146,7 +146,7 @@ public class SpellExperiment {
 
         String style = "color: red;";
         Scroll scroll = new Scroll();
-        scroll.changeAttributes("p", new Attribute("style", style));
+        scroll.addSpell("p", new AttributeTransformation(new Attribute("style", style)));
         pages.get(".info").cast(new Inclusion("inclusion.xhtml", scroll) {
             public String getPath(String file) {
                 return DIR + file;
@@ -225,12 +225,12 @@ public class SpellExperiment {
 
         String style = "color: red;";
         Scroll scroll = new Scroll();
-        scroll.changeAttributes("#time", new Attribute("style", style));
-        scroll.insert("#time", true, new InsertionIntent() {
+        scroll.addSpell("#time", new AttributeTransformation(new Attribute("style", style)));
+        scroll.addSpell("#time", new Insertion(true, new InsertionIntent() {
             public void insert(Spell parent) {
                 parent.writeString(" !");
             }
-        });
+        }));
         Spell sos = new SpellOfSpells(scroll);
 
         ((ElementImpl) pages.get("div")).cast(sos, 1);
@@ -350,6 +350,20 @@ public class SpellExperiment {
         assertEquals(spans.getLength(), 1);
         assertEquals(spans.item(0).getAttributes().getNamedItem("style").getTextContent(), "color: red;");
         assertEquals(spans.item(0).getTextContent(), time);
+    }
+
+    @Test
+    public void testSelectionAfterAttributes() {
+
+        pages.select("meta", "http-equiv", "Content-Type").setAttribute("content", "text/xml");
+
+        String result = wandle("test.xhtml"); System.out.println(result);
+        Document doc = parseXML(result);
+        NodeList metas = doc.getElementsByTagName("meta");
+
+        assertEquals(metas.getLength(), 1, "There should be exactly one meta element.");
+        assertEquals(metas.item(0).getAttributes().getNamedItem("content").getTextContent(), "text/xml",
+                "Its content should be 'text/xml'");
     }
 
     public String wandle(String file) {

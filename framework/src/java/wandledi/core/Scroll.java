@@ -26,57 +26,6 @@ public class Scroll {
         this.name = name;
     }
 
-    /**Changes the attributes of the target element.
-     *
-     * @param selector CssSelector matching the target element.
-     * @param attributes Attributes to be added (existing ones will be overriden).
-     */
-    public void changeAttributes(String selector, Attribute... attributes) {
-
-        addSpell(selector, new AttributeTransformation(attributes));
-    }
-
-    /**Duplicates the target element as often as indicated by the given number.
-     *
-     * @param selector CssSelector matching the target element.
-     * @param number Number of duplications.
-     */
-    public void duplicate(String selector, int number) {
-
-        addSpell(selector, new Duplication(number));
-    }
-
-    /**Includes the specified file in place of the target element.
-     *
-     * @param selector CssSelector matching the target element.
-     * @param file The file to be included (from the view directory).
-     */
-    public void include(String selector, String file) {
-
-        addSpell(selector, new Inclusion(file));
-    }
-
-    /**Inserts new elements into the target element according to the given intent.
-     *
-     * @param selector CssSelector matching the target element.
-     * @param intent The intent specifying what to insert.
-     */
-    public void insert(String selector, boolean insertAtEnd, InsertionIntent intent) {
-
-        addSpell(selector, new Insertion(insertAtEnd, intent));
-    }
-
-    /**Replaces the target element (or only its contents) according the given intent.
-     *
-     * @param selector CssSelector matching the target element.
-     * @param contentsOnly If true, only the target elements content will be replaced.
-     * @param intent The intent specifying the replacement.
-     */
-    public void replace(String selector, boolean contentsOnly, ReplacementIntent intent) {
-
-        addSpell(selector, new Replacement(intent, contentsOnly));
-    }
-
     public void addSpell(String selector, Spell spell) {
 
         addSpell(selector, spell, -1);
@@ -84,8 +33,17 @@ public class Scroll {
 
     public void addSpell(String selector, Spell spell, int charges) {
 
-        Selector s = CssSelector.valueOf(selector);
-        Passage passage = getPassage(s);
+        addSpell(CssSelector.valueOf(selector), spell, charges);
+    }
+
+    public void addSpell(Selector selector, Spell spell) {
+
+        addSpell(selector, spell, -1);
+    }
+
+    public void addSpell(Selector selector, Spell spell, int charges) {
+
+        Passage passage = getPassage(selector);
         if (charges > 0) {
             passage.addTransientSpell(spell, charges);
         } else {
@@ -95,8 +53,12 @@ public class Scroll {
 
     public void addLateSpell(String selector, Spell spell, int offset) {
 
-        Selector s = CssSelector.valueOf(selector);
-        Passage passage = getPassage(s);
+        addLateSpell(CssSelector.valueOf(selector), spell, offset);
+    }
+
+    public void addLateSpell(Selector selector, Spell spell, int offset) {
+
+        Passage passage = getPassage(selector);
         passage.addSpell(spell, offset);
     }
 
@@ -137,16 +99,6 @@ public class Scroll {
             }
         }
         return spells;
-    }
-
-    private Passage findPassage(String selector) {
-
-        for (Passage passage: passages) {
-            if (passage.toString().equals(selector)) {
-                return passage;
-            }
-        }
-        return null;
     }
 
     /**
