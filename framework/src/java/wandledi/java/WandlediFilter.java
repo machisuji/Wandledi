@@ -42,7 +42,7 @@ public class WandlediFilter implements Filter {
             long ns = System.nanoTime();
             HttpServletRequest r = (HttpServletRequest) request;
             dispatched = Switchboard.getInstance().dispatch(r, (HttpServletResponse) response);
-            if (false && dispatched) {
+            if (true && dispatched) {
                 ns = System.nanoTime() - ns;
                 System.out.println("Served " + r.getRequestURI() + " within " +
                         (ns / 1000000) + " ms.");

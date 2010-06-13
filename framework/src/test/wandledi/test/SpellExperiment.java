@@ -19,10 +19,7 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.*;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 import static org.testng.Assert.*;
 
@@ -30,7 +27,7 @@ public class SpellExperiment {
 
     public static String DIR = "src/test/wandledi/test/";
 
-    Pages pages;
+    Pages pages = new Pages();
     Wandler wandler = new Wandler();
     Random random = new Random();
 
@@ -38,6 +35,12 @@ public class SpellExperiment {
     public void setUp() {
         
         pages = new Pages();
+    }
+
+    public static void main(String[] args) {
+
+        DIR = "/home/markus/Entwicklung/java/Wandledi/framework/" + DIR;
+        new SpellExperiment().testCombinedSpells();
     }
 
     @Test
@@ -207,7 +210,7 @@ public class SpellExperiment {
 
         ElementImpl e = (ElementImpl) pages.get("div");
         int charges = 2;
-        e.cast(new AttributeTransformation(new Attribute("foo", "bar")), charges);
+        e.max(charges).cast(new AttributeTransformation(new Attribute("foo", "bar")));
 
         String result = wandle("test.xhtml");
         Document doc = parseXML(result);
@@ -233,7 +236,7 @@ public class SpellExperiment {
         }));
         Spell sos = new SpellOfSpells(scroll);
 
-        ((ElementImpl) pages.get("div")).cast(sos, 1);
+        pages.get("div").max(1).cast(sos);
 
         String result = wandle("test.xhtml");
         Document doc = parseXML(result);
@@ -321,16 +324,52 @@ public class SpellExperiment {
         assertEquals(headings.item(0).getAttributes().getNamedItem("style").getTextContent(), style);
     }
 
+    /**First real bug found during implementation of AnyGood.
+     * Some problem with the replacement not propagating all events
+     * properly, so that the attribute would not be set if an replacement
+     * is applied afterwards.
+     *
+     * It worked, however, in case the replacement was applied first,
+     * because the AttributeTranformations propagates events correctly.
+     *
+     * However, this should work indepently from the order of the spells.
+     */
     @Test
+    public void testReplacementCombination() {
+
+        String value = String.valueOf(random.nextInt(1000));
+        String replacement = String.valueOf(random.nextInt(1000));
+
+        pages.get("#time").setAttribute("value", value);
+        pages.get("#time").replace(true, replacement);
+
+        pages.get("title").replace(true, replacement);
+        pages.get("title").setAttribute("value", value);
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList titles = doc.getElementsByTagName("title");
+        NodeList spans = doc.getElementsByTagName("span");
+
+        assertEquals(titles.getLength(), 1);
+        assertEquals(spans.getLength(), 1);
+        for (Node node: Arrays.asList(titles.item(0), spans.item(0))) {
+            assertEquals(node.getTextContent(), replacement, "no replacement");
+            assertNotNull(node.getAttributes().getNamedItem("value"), "attribute");
+            assertEquals(node.getAttributes().getNamedItem("value").getTextContent(), value, "value");
+        }
+    }
+
+    @Test(enabled=true)
     public void testCombinedSpells() {
 
         String time = "22:43";
         pages.get("#time").replace(true, time);
         pages.get(".info").insertLast(" Wandledi is great!");
-        pages.get("#time").setAttribute("style", "color: red;");
         pages.get("div").setAttribute("style", "font-weight: bold;");
+        pages.get("#time").setAttribute("styles", "color: red;");
 
-        String result = wandle("test.xhtml");
+        String result = wandle("test.xhtml"); System.out.println(result);
         Document doc = parseXML(result);
         NodeList divs = doc.getElementsByTagName("div");
 
@@ -357,7 +396,7 @@ public class SpellExperiment {
 
         pages.select("meta", "http-equiv", "Content-Type").setAttribute("content", "text/xml");
 
-        String result = wandle("test.xhtml"); System.out.println(result);
+        String result = wandle("test.xhtml");
         Document doc = parseXML(result);
         NodeList metas = doc.getElementsByTagName("meta");
 

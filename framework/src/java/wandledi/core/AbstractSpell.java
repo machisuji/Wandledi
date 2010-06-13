@@ -10,8 +10,10 @@ import org.xml.sax.Attributes;
  */
 public abstract class AbstractSpell implements Spell {
 
-    protected Spell parent;
+    private Spell parent;
     protected LinkedList<SpellLine> lines = new LinkedList<SpellLine>();
+    private boolean elementStarted = false;
+    private boolean elementEnded = false;
 
     @Override
     public abstract Spell clone();
@@ -51,11 +53,23 @@ public abstract class AbstractSpell implements Spell {
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
-        parent.startTransformedElement(name, attributes);
+
+        if (!elementStarted) {
+            parent.startTransformedElement(name, attributes);
+            elementStarted = true;
+        } else {
+            startElement(name, attributes);
+        }
     }
 
     public void endTransformedElement(String name) {
-        parent.endTransformedElement(name);
+
+        if (!elementEnded) {
+            parent.endTransformedElement(name);
+            elementEnded = true;
+        } else {
+            endElement(name);   
+        }
     }
 
     public void startElement(String name, Attributes attributes) {
@@ -66,6 +80,10 @@ public abstract class AbstractSpell implements Spell {
         parent.endElement(name);
     }
 
+    public void writeCharacters(char[] characters, int offset, int length, Spell parent) {
+        parent.writeCharacters(characters, offset, length);
+    }
+
     public void writeCharacters(char[] characters, int offset, int length) {
         parent.writeCharacters(characters, offset, length);
     }
@@ -74,5 +92,16 @@ public abstract class AbstractSpell implements Spell {
 
         char[] characters = string.toCharArray();
         writeCharacters(characters, 0, characters.length);
+    }
+
+    /**Checks whether the specific element this very Spell has been cast on
+     * has started. An element is started when the SAX event for
+     * the <element> arrives.
+     *
+     * @return
+     */
+    public boolean isElementStarted() {
+
+        return elementStarted;
     }
 }

@@ -23,4 +23,16 @@ public class Invisibility extends AbstractSpell {
     public void endTransformedElement(String name) {
         // nothing
     }
+
+    public void startElement(String name, Attributes attributes) {
+
+    }
+
+    public void endElement(String name) {
+
+    }
+
+    public void writeCharacters(char[] chars, int offset, int length) {
+        
+    }
 }

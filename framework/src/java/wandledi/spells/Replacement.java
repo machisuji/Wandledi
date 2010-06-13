@@ -35,7 +35,7 @@ public class Replacement extends AbstractSpell {
 
         if (contentsOnly) {
             justStarted = true;
-            parent.startElement(name, attributes);
+            super.startTransformedElement(name, attributes);
         }
         intent.replace(name, attributes, parent);
     }
@@ -43,7 +43,7 @@ public class Replacement extends AbstractSpell {
     public void endTransformedElement(String name) {
     
         if (contentsOnly) {
-            parent.endElement(name);
+            super.endTransformedElement(name);
         }
     }
 

@@ -13,7 +13,6 @@ import wandledi.spells.*;
 public class ElementImpl extends SelectableImpl implements Element {
 
     protected Selector selector;
-    protected int charges = -1;
 
     public ElementImpl(Selector selector, Scroll scroll) {
 
@@ -21,30 +20,39 @@ public class ElementImpl extends SelectableImpl implements Element {
         this.selector = selector;
     }
 
-    protected ElementImpl(Selector selector, Scroll scroll, int charges) {
+    /**Spells added to this element apply only to elements below this (incl.) in the html tree.
+     *
+     * @param selector
+     * @return
+     */
+    @Override
+    public Element get(Selector selector) {
 
-        this(selector, scroll);
-        this.charges = charges;
+        Scroll scroll = new Scroll();
+        SpellOfSpells sos = new SpellOfSpells(scroll);
+        scroll.addSpell(selector, sos);
+
+        return new ElementImpl(selector, scroll);
     }
 
     public Selector getSelector() {
 
         return selector;
     }
+    
+    public ChargedElement max(int charges) {
+
+        return new ChargedElement(selector, scroll, charges);
+    }
+
+    public LateElement at(int offset) {
+
+        return new LateElement(selector, scroll, offset);
+    }
 
     public void cast(Spell spell) {
 
-        scroll.addSpell(selector, spell, charges);
-    }
-
-    public void cast(Spell spell, int charges) {
-
-        scroll.addSpell(selector, spell, charges);
-    }
-
-    public void castLater(Spell spell, int offset) {
-
-        scroll.addLateSpell(selector, spell, offset);
+        scroll.addSpell(selector, spell);
     }
 
     public void setAttribute(String name, String value) {
@@ -60,6 +68,11 @@ public class ElementImpl extends SelectableImpl implements Element {
     public void includeFile(String name) {
 
         cast(new Inclusion(name));
+    }
+
+    public void includeFile(String name, Scroll scroll) {
+
+        cast(new Inclusion(name, scroll));
     }
 
     public void insert(boolean atEnd, InsertionIntent intent) {

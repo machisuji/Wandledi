@@ -137,6 +137,13 @@ public class Switchboard {
             Controller controller = controller(action.getController(), wRequest, response);
             if (controller != null) {
                 setImplicitObjects(wRequest);
+                if (controller.isSpellController()) {
+                    PageController pc = (PageController) controller;
+                    pc.getPages().setRequest(request);
+                    if (i18n()) {
+                        pc.getPages().setMessages(getMessages(request));
+                    }
+                }
                 if (performAction(controller, action.getController(), action.getName(),
                         request, response)) {
                     if (!controller.getWandlediRequest().isViewless()) {
@@ -151,7 +158,7 @@ public class Switchboard {
                         } else {
                             wandle(controller, action, 
                                     template(action.getController(),
-                                    action.getName()), response);
+                                    action.getName()), request, response);
                         }
                     }
                     dispatched = true;
@@ -165,12 +172,13 @@ public class Switchboard {
     }
 
     private void wandle(Controller controller, Action action, String template,
-            HttpServletResponse response) throws IOException {
+            HttpServletRequest request, HttpServletResponse response) throws IOException {
 
-        Scroll scroll = ((PageController) controller).getPages().getScroll();
+        PageController pc = (PageController) controller;
+        Scroll scroll = pc.getPages().getScroll();
         Wandler wandler = new Wandler();
-        if (scroll.getView() != null) {
-            template = viewDirectory + scroll.getView();
+        if (pc.getPages().getFile() != null) {
+            template = viewDirectory + pc.getPages().getFile();
         }
         template = servletContext.getRealPath(template.replace(".jsp", ".xhtml"));
         wandler.useScroll(scroll);

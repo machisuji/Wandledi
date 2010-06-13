@@ -97,7 +97,6 @@ class Passage implements Selector {
         while (entries.hasNext()) {
             LateEntry entry = entries.next();
             if (entry.offset-- <= 0) {
-                System.out.println("Late Spell: " + entry.spell);
                 spells.add(entry.spell);
                 entries.remove();
             }

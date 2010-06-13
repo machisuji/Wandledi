@@ -88,11 +88,6 @@ public class CssSelector implements Selector {
         }
     }
 
-    /**DOES NOT GIVE A DAMN ABOUT THE EQUALS-HASHCODE CONTRACT !!!
-     *
-     * @param o
-     * @return
-     */
     @Override
     public boolean equals(Object o) {
 
@@ -101,7 +96,7 @@ public class CssSelector implements Selector {
             if (isId()) {
                 return this.id.equals(selector.id);
             } else {
-                boolean equals = gotLabel() || gotElementClass();
+                boolean equals = true;
                 if (gotLabel()) {
                     equals &= this.label.equals(selector.label);
                 }
@@ -112,6 +107,23 @@ public class CssSelector implements Selector {
             }
         }
         return false;
+    }
+
+    @Override
+    public int hashCode() {
+
+        int hash = 3;
+        if (isId()) {
+            hash += 5 * id.hashCode();
+        } else {
+            if (gotLabel()) {
+                hash += 7 * label.hashCode();
+            }
+            if (gotElementClass()) {
+                hash += 11 * elementClass.hashCode();
+            }
+        }
+        return hash;
     }
 
     public int compareTo(Object o) {
