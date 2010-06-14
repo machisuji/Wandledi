@@ -80,10 +80,6 @@ public abstract class AbstractSpell implements Spell {
         parent.endElement(name);
     }
 
-    public void writeCharacters(char[] characters, int offset, int length, Spell parent) {
-        parent.writeCharacters(characters, offset, length);
-    }
-
     public void writeCharacters(char[] characters, int offset, int length) {
         parent.writeCharacters(characters, offset, length);
     }
