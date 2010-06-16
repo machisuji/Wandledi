@@ -7,7 +7,6 @@ import wandledi.java.Switchboard;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
-import wandledi.spells.LocalSpell;
 
 /**An HTML page.
  *
@@ -24,20 +23,29 @@ public class Pages extends SelectableImpl {
         super(new Scroll());
     }
 
+    /**Returns a new Selectable to select elements with.
+     * The Selection is relative to the element matched by the
+     * given selector and works only below it in the element tree.
+     *
+     * @param selector CSS selector
+     * @return A new Selectable
+     */
     public Selectable at(String selector) {
 
         return at(CssSelector.valueOf(selector));
     }
 
-    /**Spells added to this element apply only to elements below this (incl.) in the html tree.
+    /**Returns a new Selectable to select elements with.
+     * The Selection is relative to the element matched by the
+     * given selector and works only below it in the element tree.
      *
-     * @param selector
-     * @return
+     * @param selector a selector
+     * @return A new Selectable
      */
     public Selectable at(Selector selector) {
 
         Scroll nestedScroll = new Scroll();
-        LocalSpell localSpell = new LocalSpell(scroll, nestedScroll);
+        LocalSpells localSpell = new LocalSpells(scroll, nestedScroll);
         scroll.addSpell(selector, localSpell);
 
         return new SelectableImpl(nestedScroll);

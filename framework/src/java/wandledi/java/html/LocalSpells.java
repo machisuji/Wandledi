@@ -1,21 +1,20 @@
-package wandledi.spells;
+package wandledi.java.html;
 
 import org.xml.sax.Attributes;
 import wandledi.core.AbstractSpell;
 import wandledi.core.Scroll;
-import wandledi.core.Selector;
 import wandledi.core.Spell;
 
 /**
  *
  * @author Markus Kahl
  */
-public class LocalSpell extends AbstractSpell {
+public class LocalSpells extends AbstractSpell {
 
     private Scroll parentScroll;
     private Scroll localScroll;
 
-    public LocalSpell(Scroll parentScroll, Scroll localScroll) {
+    public LocalSpells(Scroll parentScroll, Scroll localScroll) {
 
         this.parentScroll = parentScroll;
         this.localScroll = localScroll;
@@ -23,8 +22,8 @@ public class LocalSpell extends AbstractSpell {
 
     public void startTransformedElement(String label, Attributes attributes) {
 
-        parentScroll.addScroll(localScroll);
         super.startTransformedElement(label, attributes);
+        parentScroll.addScroll(localScroll);
     }
 
     public void endTransformedElement(String label) {
@@ -36,6 +35,6 @@ public class LocalSpell extends AbstractSpell {
     @Override
     public Spell clone() {
 
-        return new LocalSpell(parentScroll, localScroll);
+        return new LocalSpells(parentScroll, localScroll);
     }
 }
