@@ -8,7 +8,6 @@ import org.xml.sax.Attributes;
 import wandledi.java.html.Element;
 import wandledi.java.html.Selectable;
 import wandledi.java.html.SelectableImpl;
-import wandledi.spells.*;
 
 /**A Scroll contains a number of spells which can be apply using the scroll.
  *
@@ -20,6 +19,7 @@ public class Scroll implements Selectable {
     private String view;
     private List<Passage> passages = new ArrayList<Passage>();
     private SelectableImpl selectable = new SelectableImpl(this);
+    private List<Scroll> scrolls = new ArrayList<Scroll>();
 
     public Scroll() {
 
@@ -28,6 +28,16 @@ public class Scroll implements Selectable {
     public Scroll(String name) {
 
         this.name = name;
+    }
+
+    public void addScroll(Scroll scroll) {
+
+        scrolls.add(scroll);
+    }
+
+    public void removeScroll(Scroll scroll) {
+
+        scrolls.remove(scroll);
     }
 
     public void addSpell(String selector, Spell spell) {
@@ -102,6 +112,9 @@ public class Scroll implements Selectable {
                 passage.transferSpellsInto(spells);
             }
         }
+        for (Scroll scroll: scrolls) {
+            spells.addAll(scroll.readSpellsFor(label, attributes));
+        }
         return spells;
     }
 
@@ -151,5 +164,18 @@ public class Scroll implements Selectable {
 
     public Element get(Selector selector) {
         return selectable.get(selector);
+    }
+
+    class ScrollEntry {
+
+        Selector selector;
+        Scroll scroll;
+        boolean active;
+
+        public ScrollEntry(Selector selector, Scroll scroll) {
+
+            this.selector = selector;
+            this.scroll = scroll;
+        }
     }
 }

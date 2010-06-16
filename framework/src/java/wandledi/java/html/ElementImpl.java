@@ -28,11 +28,11 @@ public class ElementImpl extends SelectableImpl implements Element {
     @Override
     public Element get(Selector selector) {
 
-        Scroll scroll = new Scroll();
-        ArchSpell sos = new ArchSpell(scroll);
-        scroll.addSpell(selector, sos);
+        Scroll nestedScroll = new Scroll();
+        LocalSpell localSpell = new LocalSpell(scroll, nestedScroll);
+        scroll.addSpell(selector, localSpell);
 
-        return new ElementImpl(selector, scroll);
+        return new ElementImpl(selector, nestedScroll);
     }
 
     public Selector getSelector() {

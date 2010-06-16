@@ -360,7 +360,7 @@ public class SpellExperiment {
         }
     }
 
-    @Test(enabled=true)
+    @Test
     public void testCombinedSpells() {
 
         String time = "22:43";
@@ -404,6 +404,26 @@ public class SpellExperiment {
         assertEquals(metas.getLength(), 1, "There should be exactly one meta element.");
         assertEquals(metas.item(0).getAttributes().getNamedItem("content").getTextContent(), "text/xml",
                 "Its content should be 'text/xml'");
+    }
+
+    @Test
+    public void testLocalTransformations() {
+
+        Element info = pages.get(".info");
+        info.setAttribute("test", "run");
+        info.get("div").setAttribute("attr", "value");
+
+        String result = wandle("test.xhtml"); System.out.println(result);
+        Document doc = parseXML(result);
+        NodeList divs = doc.getElementsByTagName("div");
+
+        assertEquals(divs.getLength(), 3, "number of divs");
+        for (int i = 0; i < 2; ++i) {
+            Node div = divs.item(i);
+            assertNull(div.getAttributes().getNamedItem("attr"), "no added attribute");
+        }
+        Node div = divs.item(2);
+        assertNotNull(div.getAttributes().getNamedItem("attr"), "added attribute");
     }
 
     public String wandle(String file) {

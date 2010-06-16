@@ -4,7 +4,7 @@ import org.xml.sax.Attributes;
 
 import java.util.*;
 
-class Passage implements Selector {
+public class Passage implements Selector {
 
     private Selector selector;
     private List<Spell> spells = new LinkedList<Spell>();
@@ -111,6 +111,16 @@ class Passage implements Selector {
     public int compareTo(Object o) {
 
         return selector.compareTo(o);
+    }
+
+    public boolean equals(Object o) {
+
+        return selector.equals(o);
+    }
+
+    public int hashCode() {
+
+        return selector.hashCode();
     }
 
     private static class ChargedEntry {
