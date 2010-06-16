@@ -370,7 +370,7 @@ public class SpellExperiment {
         pages.get("div").setAttribute("style", "font-weight: bold;");
         pages.get("#time").setAttribute("style", "color: red;");
 
-        String result = wandle("test.xhtml"); System.out.println(result);
+        String result = wandle("test.xhtml");
         Document doc = parseXML(result);
         NodeList divs = doc.getElementsByTagName("div");
 
