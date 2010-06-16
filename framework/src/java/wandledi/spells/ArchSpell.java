@@ -1,7 +1,6 @@
 package wandledi.spells;
 
 import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
 import wandledi.core.AbstractSpell;
 import wandledi.core.Scroll;
 import wandledi.core.Spell;
@@ -11,12 +10,12 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
-public class SpellOfSpells extends AbstractSpell {
+public class ArchSpell extends AbstractSpell {
 
     private Scroll scroll = new Scroll();
     private LinkedList<SpellLevel> spellLevels = new LinkedList<SpellLevel>();
 
-    public SpellOfSpells(Scroll scroll) {
+    public ArchSpell(Scroll scroll) {
 
         this.scroll = scroll;
     }
@@ -41,6 +40,15 @@ public class SpellOfSpells extends AbstractSpell {
             if (!i.hasNext()) {
                 spellLevels.add(new SpellLevel(spell));
             }
+        }
+    }
+
+    private void setIgnoreTransformationBounds(boolean ignore) {
+
+        if (spellLevels.size() > 1) {
+            SpellLevel wall = spellLevels.get(spellLevels.size() - 2);
+            AbstractSpell spell = (AbstractSpell) wall.spell;
+            spell.ignoreBounds(ignore);
         }
     }
 
@@ -72,6 +80,7 @@ public class SpellOfSpells extends AbstractSpell {
     public void startElement(String name, Attributes atts) {
 
         checkSpell(name, atts);
+        setIgnoreTransformationBounds(true);
         if (spellLevels.size() == 0) {
             parent.startElement(name, atts);
         } else {
@@ -96,6 +105,7 @@ public class SpellOfSpells extends AbstractSpell {
                 level.spell.endElement(name);
             } else {
                 level.spell.endTransformedElement(name);
+                setIgnoreTransformationBounds(false);
                 spellLevels.removeLast();
             }
         }
@@ -114,7 +124,7 @@ public class SpellOfSpells extends AbstractSpell {
     @Override
     public Spell clone() {
 
-        return new SpellOfSpells(scroll);
+        return new ArchSpell(scroll);
     }
 
     public LinkedList<SpellLevel> getSpellLevels() {

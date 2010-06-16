@@ -33,29 +33,39 @@ public class Replacement extends AbstractSpell {
 
     public void startTransformedElement(String name, Attributes attributes) {
 
-        if (contentsOnly) {
-            justStarted = true;
-            super.startTransformedElement(name, attributes);
+        if (ignoreBounds()) {
+            startElement(name, attributes);
+        } else {
+            if (contentsOnly) {
+                justStarted = true;
+                super.startTransformedElement(name, attributes);
+            }
+            intent.replace(name, attributes, parent);
         }
-        intent.replace(name, attributes, parent);
     }
 
     public void endTransformedElement(String name) {
-    
-        if (contentsOnly) {
-            super.endTransformedElement(name);
+
+        if (ignoreBounds()) {
+            endElement(name);
+        } else {
+            if (contentsOnly) {
+                super.endTransformedElement(name);
+            }
         }
     }
 
     @Override
     public void startElement(String name, Attributes attributes) {
-        
+
         if (contentsOnly) {
             justStarted = false;
         }
     }
-    
-    @Override public void endElement(String name) { }
+
+    @Override
+    public void endElement(String name) {
+    }
 
     @Override
     public void writeCharacters(char[] characters, int offset, int length) {

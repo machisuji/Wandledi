@@ -10,10 +10,9 @@ import org.xml.sax.Attributes;
  */
 public abstract class AbstractSpell implements Spell {
 
-    private Spell parent;
+    protected Spell parent;
     protected LinkedList<SpellLine> lines = new LinkedList<SpellLine>();
-    private boolean elementStarted = false;
-    private boolean elementEnded = false;
+    private boolean ignoreBounds = false;
 
     @Override
     public abstract Spell clone();
@@ -54,21 +53,19 @@ public abstract class AbstractSpell implements Spell {
 
     public void startTransformedElement(String name, Attributes attributes) {
 
-        if (!elementStarted) {
-            parent.startTransformedElement(name, attributes);
-            elementStarted = true;
-        } else {
+        if (ignoreBounds()) {
             startElement(name, attributes);
+        } else {
+            parent.startTransformedElement(name, attributes);
         }
     }
 
     public void endTransformedElement(String name) {
 
-        if (!elementEnded) {
-            parent.endTransformedElement(name);
-            elementEnded = true;
+        if (ignoreBounds()) {
+            endElement(name);
         } else {
-            endElement(name);   
+            parent.endTransformedElement(name);
         }
     }
 
@@ -90,14 +87,13 @@ public abstract class AbstractSpell implements Spell {
         writeCharacters(characters, 0, characters.length);
     }
 
-    /**Checks whether the specific element this very Spell has been cast on
-     * has started. An element is started when the SAX event for
-     * the <element> arrives.
-     *
-     * @return
-     */
-    public boolean isElementStarted() {
+    public void ignoreBounds(boolean ignoreBounds) {
 
-        return elementStarted;
+        this.ignoreBounds = ignoreBounds;
+    }
+
+    public boolean ignoreBounds() {
+
+        return ignoreBounds;
     }
 }

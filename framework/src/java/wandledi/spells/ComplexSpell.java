@@ -3,8 +3,6 @@ package wandledi.spells;
 import wandledi.core.AbstractSpell;
 import wandledi.core.Spell;
 
-import java.util.Arrays;
-
 /**A complex spell combines the effects of several other spells.
  *
  * For instance 'new ComplexSpell(new AttributeTransformation(...), new Duplication(n))'

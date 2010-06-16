@@ -18,7 +18,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import wandledi.spells.SpellOfSpells;
+import wandledi.spells.ArchSpell;
 
 /**
  *
@@ -35,7 +35,7 @@ public class Wandler implements ContentHandler, Spell {
     private long lastStart = -1;
     private final static Map<String, Boolean> preserveMap = new HashMap<String, Boolean>(1);
 
-    private SpellOfSpells rootSpell = new SpellOfSpells(new Scroll());
+    private ArchSpell rootSpell = new ArchSpell(new Scroll());
 
     static {
         preserveMap.put("script", true);
@@ -250,5 +250,13 @@ public class Wandler implements ContentHandler, Spell {
 
     public void useScroll(Scroll scroll) {
         rootSpell.setScroll(scroll);
+    }
+
+    public void ignoreBounds(boolean ignoreBounds) {
+        // does not matter here
+    }
+
+    public boolean ignoreBounds() {
+        return false;
     }
 }

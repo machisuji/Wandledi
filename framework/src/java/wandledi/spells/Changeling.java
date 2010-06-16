@@ -4,9 +4,6 @@ import org.xml.sax.Attributes;
 import wandledi.core.AbstractSpell;
 import wandledi.core.Spell;
 
-import java.util.Arrays;
-import java.util.LinkedList;
-import java.util.List;
 
 /**A changeling acts as another spell each time it is cast.
  */
@@ -41,7 +38,11 @@ public class Changeling extends AbstractSpell {
 
     public void startTransformedElement(String name, Attributes attributes) {
 
-        identities[index].startTransformedElement(name, attributes);
+        if (ignoreBounds()) {
+            startElement(name, attributes);
+        } else {
+            identities[index].startTransformedElement(name, attributes);
+        }
     }
 
     /**The changeling changes its identity with each element it is cast upon.
@@ -50,8 +51,12 @@ public class Changeling extends AbstractSpell {
      */
     public void endTransformedElement(String name) {
 
-        identities[index].endTransformedElement(name);
-        change();
+        if (ignoreBounds()) {
+            endElement(name);
+        } else {
+            identities[index].endTransformedElement(name);
+            change();
+        }
     }
 
     public void setParent(Spell spell) {

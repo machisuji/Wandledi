@@ -22,9 +22,11 @@ public class Duplication extends AbstractSpell {
     public Duplication(final int number) {
 
         this.intent = new DuplicationIntent() {
+
             public int duplications() {
                 return number;
             }
+
             public Spell modification() {
                 return null;
             }
@@ -39,9 +41,11 @@ public class Duplication extends AbstractSpell {
     public Duplication(final int number, final Spell modification) {
 
         this.intent = new DuplicationIntent() {
+
             public int duplications() {
                 return number;
             }
+
             public Spell modification() {
                 return modification;
             }
@@ -56,27 +60,35 @@ public class Duplication extends AbstractSpell {
 
     public void startTransformedElement(String name, Attributes attributes) {
 
-        reset();
-        pushLine(new TransformedElementStart(name, new SimpleAttributes(attributes)));
+        if (ignoreBounds()) {
+            startElement(name, attributes);
+        } else {
+            reset();
+            pushLine(new TransformedElementStart(name, new SimpleAttributes(attributes)));
+        }
     }
 
     public void endTransformedElement(String name) {
 
-        SpellLine start = pullLine();
-        Spell parent = this.parent;
-        if (intent.modification() != null) {
-            parent = new ComplexSpell(intent.modification(), this.parent);
-        }
-        for (int i = 0; i < intent.duplications(); ++i) {
-            start.perform(parent);
-            Iterator<SpellLine> e = lines.iterator();
-            while (e.hasNext()) {
-                SpellLine line = e.next();
-                line.perform(parent);
+        if (ignoreBounds()) {
+            endElement(name);
+        } else {
+            SpellLine start = pullLine();
+            Spell parent = this.parent;
+            if (intent.modification() != null) {
+                parent = new ComplexSpell(intent.modification(), this.parent);
             }
-            parent.endTransformedElement(name);
+            for (int i = 0; i < intent.duplications(); ++i) {
+                start.perform(parent);
+                Iterator<SpellLine> e = lines.iterator();
+                while (e.hasNext()) {
+                    SpellLine line = e.next();
+                    line.perform(parent);
+                }
+                parent.endTransformedElement(name);
+            }
+            clearLines();
         }
-        clearLines();
     }
 
     @Override

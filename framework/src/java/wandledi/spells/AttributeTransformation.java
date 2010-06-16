@@ -1,6 +1,7 @@
 package wandledi.spells;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.helpers.AttributesImpl;
 import wandledi.core.AbstractSpell;
 import wandledi.core.Attribute;
 import wandledi.core.SimpleAttributes;
@@ -37,7 +38,29 @@ public class AttributeTransformation extends AbstractSpell {
     @Override
     public void startTransformedElement(String name, Attributes attributes) {
 
-        super.startTransformedElement(name, new SimpleAttributes(attributes,
-                intent.getAttributes(name, attributes)));
+        if (ignoreBounds()) {
+            startElement(name, attributes);
+        } else {
+            super.startTransformedElement(name, new SimpleAttributes(attributes,
+                    intent.getAttributes(name, attributes)));
+        }
+    }
+
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder("AttrTrans [");
+        Attribute[] attributes = intent.getAttributes("", new AttributesImpl());
+        for (int i = 0; i < attributes.length; ++i) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(attributes[i].getName());
+            sb.append(" -> '");
+            sb.append(attributes[i].getValue());
+            sb.append("'");
+        }
+        sb.append("]");
+
+        return sb.toString();
     }
 }

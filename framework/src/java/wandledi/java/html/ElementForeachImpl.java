@@ -4,7 +4,7 @@ import wandledi.core.Scroll;
 import wandledi.core.Spell;
 import wandledi.spells.Changeling;
 import wandledi.spells.Duplication;
-import wandledi.spells.SpellOfSpells;
+import wandledi.spells.ArchSpell;
 
 import java.util.Collection;
 import java.util.LinkedList;
@@ -39,7 +39,7 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
         Spell[] modifications = new Spell[scrolls.size()];
         int mi = 0;
         for (Scroll scroll: scrolls) {
-            modifications[mi++] = new SpellOfSpells(scroll);
+            modifications[mi++] = new ArchSpell(scroll);
         }
         Spell duplication = new Duplication(size, new Changeling(modifications));
 

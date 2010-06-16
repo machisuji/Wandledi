@@ -234,7 +234,7 @@ public class SpellExperiment {
                 parent.writeString(" !");
             }
         }));
-        Spell sos = new SpellOfSpells(scroll);
+        Spell sos = new ArchSpell(scroll);
 
         pages.get("div").max(1).cast(sos);
 
@@ -365,9 +365,10 @@ public class SpellExperiment {
 
         String time = "22:43";
         pages.get("#time").replace(true, time);
-        pages.get(".info").insertLast(" Wandledi is great!");
+        pages.get(".info").insertLast("Wandledi is great!");
+        pages.get("div").at(2).insertLast("Wandledi is great!");
         pages.get("div").setAttribute("style", "font-weight: bold;");
-        pages.get("#time").setAttribute("styles", "color: red;");
+        pages.get("#time").setAttribute("style", "color: red;");
 
         String result = wandle("test.xhtml"); System.out.println(result);
         Document doc = parseXML(result);

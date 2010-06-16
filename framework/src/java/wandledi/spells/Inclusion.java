@@ -24,7 +24,7 @@ import wandledi.java.Switchboard;
  *
  * @author Markus Kahl
  */
-public class Inclusion extends SpellOfSpells implements ContentHandler {
+public class Inclusion extends ArchSpell implements ContentHandler {
 
     private XMLReader parser;
     private InclusionIntent intent;
@@ -79,7 +79,8 @@ public class Inclusion extends SpellOfSpells implements ContentHandler {
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
-        
+
+        if (ignoreBounds()) return;
         try {
             parser.parse(new InputSource(new FileReader(getPath(intent.getFile()))));
         } catch (IOException ex) {

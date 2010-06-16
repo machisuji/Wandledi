@@ -29,7 +29,7 @@ public class ElementImpl extends SelectableImpl implements Element {
     public Element get(Selector selector) {
 
         Scroll scroll = new Scroll();
-        SpellOfSpells sos = new SpellOfSpells(scroll);
+        ArchSpell sos = new ArchSpell(scroll);
         scroll.addSpell(selector, sos);
 
         return new ElementImpl(selector, scroll);

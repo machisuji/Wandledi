@@ -55,9 +55,9 @@ public class Application {
         Connector connector = null;
         if (!nio) {
             System.out.println("Jetty: Using blocking IO instead of NIO");
-            connector = new SocketConnector();
+            connector = (Connector) new SocketConnector();
         } else {
-            connector = new SelectChannelConnector();
+            connector = (Connector) new SelectChannelConnector();
         }
         connector.setPort(port);
         server.setConnectors(new Connector[] { connector });
