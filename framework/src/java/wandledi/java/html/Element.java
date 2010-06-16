@@ -12,7 +12,7 @@ import wandledi.spells.ReplacementIntent;
  *
  * @author Markus Kahl
  */
-public interface Element extends Selectable {
+public interface Element {
 
     /**Creates a charged version of this element whose spells have the
      * given number of charges by default.

@@ -1,5 +1,6 @@
 package wandledi.test;
 
+import wandledi.java.html.Selectable;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
@@ -409,8 +410,7 @@ public class SpellExperiment {
     @Test
     public void testLocalTransformations() {
 
-        Element info = pages.get(".info");
-        info.setAttribute("test", "run");
+        Selectable info = pages.at(".info");
         info.get("div").setAttribute("attr", "value");
 
         String result = wandle("test.xhtml"); System.out.println(result);

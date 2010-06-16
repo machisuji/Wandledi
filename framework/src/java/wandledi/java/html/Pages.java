@@ -7,8 +7,7 @@ import wandledi.java.Switchboard;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
-import java.util.Locale;
-import java.util.ResourceBundle;
+import wandledi.spells.LocalSpell;
 
 /**An HTML page.
  *
@@ -23,6 +22,25 @@ public class Pages extends SelectableImpl {
     public Pages() {
 
         super(new Scroll());
+    }
+
+    public Selectable at(String selector) {
+
+        return at(CssSelector.valueOf(selector));
+    }
+
+    /**Spells added to this element apply only to elements below this (incl.) in the html tree.
+     *
+     * @param selector
+     * @return
+     */
+    public Selectable at(Selector selector) {
+
+        Scroll nestedScroll = new Scroll();
+        LocalSpell localSpell = new LocalSpell(scroll, nestedScroll);
+        scroll.addSpell(selector, localSpell);
+
+        return new SelectableImpl(nestedScroll);
     }
 
     public String msg(Object key, Object... arguments) {

@@ -10,29 +10,15 @@ import wandledi.spells.*;
  *
  * @author Markus Kahl
  */
-public class ElementImpl extends SelectableImpl implements Element {
+public class ElementImpl implements Element {
 
+    protected Scroll scroll;
     protected Selector selector;
 
     public ElementImpl(Selector selector, Scroll scroll) {
 
-        super(scroll);
+        this.scroll = scroll;
         this.selector = selector;
-    }
-
-    /**Spells added to this element apply only to elements below this (incl.) in the html tree.
-     *
-     * @param selector
-     * @return
-     */
-    @Override
-    public Element get(Selector selector) {
-
-        Scroll nestedScroll = new Scroll();
-        LocalSpell localSpell = new LocalSpell(scroll, nestedScroll);
-        scroll.addSpell(selector, localSpell);
-
-        return new ElementImpl(selector, nestedScroll);
     }
 
     public Selector getSelector() {
