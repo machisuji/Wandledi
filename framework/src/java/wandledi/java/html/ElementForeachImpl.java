@@ -28,7 +28,7 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
         plan.setLast(false);
         for (T item: collection) {
             Scroll scroll = new Scroll();
-            Element element = new ElementImpl(this.element.getSelector(), scroll);
+            SelectableElement element = new SelectableElement(this.element.getSelector(), scroll);
             plan.setIndex(index++);
             if (index == size) {
                 plan.setLast(true);

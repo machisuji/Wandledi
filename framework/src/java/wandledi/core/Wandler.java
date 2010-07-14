@@ -5,9 +5,6 @@ import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -34,7 +31,6 @@ public class Wandler implements ContentHandler, Spell {
     private long calls = 0;
     private long lastStart = -1;
     private final static Map<String, Boolean> preserveMap = new HashMap<String, Boolean>(1);
-
     private ArchSpell rootSpell = new ArchSpell(new Scroll());
 
     static {
@@ -48,6 +44,15 @@ public class Wandler implements ContentHandler, Spell {
             parser = XMLReaderFactory.createXMLReader();
             parser.setContentHandler(this);
             parser.setEntityResolver(new VoidResolver());
+            /*try {
+                parser.setFeature("http://xml.org/sax/features/validation", false);
+                parser.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
+                parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
+                parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
+                parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
+            } catch (SAXException e) {
+                System.err.println("Cannot activate validation.");
+            }*/
         } catch (SAXException ex) {
             throw new RuntimeException("Could not create Wandler", ex);
         }
@@ -213,6 +218,10 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void skippedEntity(String name) throws SAXException {
+
+        write("&");
+        write(name);
+        write(";");
     }
 
     protected final void write(String s) {

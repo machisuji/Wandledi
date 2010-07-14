@@ -1,7 +1,5 @@
 package wandledi.java.html;
 
-import java.util.Collection;
-
 /**
  *
  * @author Markus Kahl
@@ -66,5 +64,5 @@ public abstract class Plan<T> {
         return index() % 2 == 0;
     }
 
-    public abstract void execute(Element e, T item);
+    public abstract void execute(SelectableElement e, T item);
 }

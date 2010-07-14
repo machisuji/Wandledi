@@ -46,6 +46,11 @@ public class ElementImpl implements Element {
         cast(new AttributeTransformation(new Attribute(name, value)));
     }
 
+    public void setAttribute(String name, StringTransformation transformation) {
+
+        cast(new AttributeTransformation(new TransformedAttribute(name, transformation)));
+    }
+
     public void clone(int times) {
 
         cast(new Duplication(times));

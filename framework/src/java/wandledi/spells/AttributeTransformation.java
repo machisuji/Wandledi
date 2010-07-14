@@ -29,6 +29,19 @@ public class AttributeTransformation extends AbstractSpell {
         });
     }
 
+    public AttributeTransformation(final TransformedAttribute... attributes) {
+
+        this(new AttributeTransformationIntent() {
+            public Attribute[] getAttributes(String element, Attributes atts) {
+                Attribute[] ret = new Attribute[attributes.length];
+                for (int i = 0; i < ret.length; ++i) {
+                    ret[i] = attributes[i].toAttribute(atts);
+                }
+                return ret;
+            }
+        });
+    }
+
     @Override
     public Spell clone() {
 

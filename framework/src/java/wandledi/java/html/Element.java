@@ -7,6 +7,7 @@ import wandledi.core.Selector;
 import wandledi.core.Spell;
 import wandledi.spells.InsertionIntent;
 import wandledi.spells.ReplacementIntent;
+import wandledi.spells.StringTransformation;
 
 /**An HTML element.
  *
@@ -36,6 +37,7 @@ public interface Element {
     public Selector getSelector();
     public void cast(Spell spell);
     public void setAttribute(String name, String value);
+    public void setAttribute(String name, StringTransformation transformation);
     public void clone(int times);
     public void includeFile(String name);
     public void includeFile(String name, Scroll scroll);

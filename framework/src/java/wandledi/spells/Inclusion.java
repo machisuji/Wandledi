@@ -11,7 +11,6 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import wandledi.core.AbstractSpell;
 import wandledi.core.Scroll;
 import wandledi.core.Spell;
 import wandledi.core.VoidResolver;
@@ -101,12 +100,16 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     public void startElement(String uri, String localName, String qName, Attributes atts)
             throws SAXException {
 
-        super.startElement(localName, atts);
+        if (!localName.equalsIgnoreCase("html")) {
+            super.startElement(localName, atts);
+        } // else skip HTML root element
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
 
-        super.endElement(localName);
+        if (!localName.equalsIgnoreCase("html")) {
+            super.endElement(localName);
+        } // else skip HTML root element
     }
 
     public void characters(char[] ch, int start, int length) throws SAXException {
@@ -128,5 +131,9 @@ public class Inclusion extends ArchSpell implements ContentHandler {
 
     public void processingInstruction(String target, String data) throws SAXException { }
 
-    public void skippedEntity(String name) throws SAXException { }
+    public void skippedEntity(String name) throws SAXException {
+        writeString("&");
+        writeString(name);
+        writeString(";");
+    }
 }
