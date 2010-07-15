@@ -1,0 +1,68 @@
+/* 
+    Document   : main
+    Created on : 14.07.2010, 18:02:26
+    Author     : markus
+    Description:
+        Purpose of the stylesheet follows.
+*/
+
+body {
+    background-color: #dad6fb;
+}
+
+div {
+    background-color: #f4efa1;
+    border: 2px solid black;
+    float: left;
+    padding: 3px;
+}
+
+#top {
+    margin-bottom: 20px; width: 81%; font-size: xx-large; font-weight: bolder;
+    border-radius: 1em 1em 3em 3em; padding-left: 1em;
+}
+
+#content {
+    width: 80%;
+    border-radius: 1em 1em 1em 0em;
+    margin-left: 1em;
+}
+
+#left {
+    background-color: #dad6fb;
+    float: left; width: 80%;
+    border-bottom-color: gray; border-right-color: gray;
+    border-radius: 10px 10px 10px 0px;
+    padding: 5px;
+}
+
+#right {
+    background-color: #dad6fb;
+    float: left; width: 16%; margin-left: 1%;
+    border-bottom-color: gray; border-right-color: gray;
+    border-top-right-radius: 0.6em;
+    padding-right: 2px;
+}
+
+.entry {
+    float: left;
+    background-color: white; padding: 2em;
+    margin-bottom: 15px;
+    border-radius: 10em 10em 10em 0em;
+    border-style: ridge;
+}
+
+#last {
+    margin-bottom: 0px;
+}
+
+span.heading {
+    font-weight: bold;
+}
+
+.item {
+    background-color: white;
+    padding: 3px;
+    width: 92%;
+    margin-top: 3px;
+}

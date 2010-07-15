@@ -74,7 +74,7 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     public String getPath(String file) {
 
         Switchboard board = Switchboard.getInstance();
-        return board.getServletContext().getRealPath(board.getViewDirectory() + file);
+        return board.getServletContext().getRealPath(/*board.getViewDirectory() + */file);
     }
 
     public void startTransformedElement(String name, Attributes attributes) {

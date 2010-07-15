@@ -180,6 +180,10 @@ public class Switchboard {
         if (pc.getPages().getFile() != null) {
             template = viewDirectory + pc.getPages().getFile();
         }
+        template = template.substring(viewDirectory.length());
+        if (!template.startsWith("/")) {
+            template = "/" + template;
+        }
         template = servletContext.getRealPath(template.replace(".jsp", ".xhtml"));
         wandler.useScroll(scroll);
         wandler.wandle(new FileReader(template), response.getWriter());
