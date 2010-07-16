@@ -3,6 +3,8 @@ package wandledi.example.models;
 import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Temporal;
@@ -14,6 +16,10 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class BlogEntry {
+
+    @Id
+    @GeneratedValue
+    private Integer id;
 
     private String author;
     private String title;
@@ -29,6 +35,19 @@ public class BlogEntry {
     public BlogEntry() {
 
         date = new Date();
+    }
+
+    public BlogEntry(String author, String title, String content) {
+
+        this();
+        this.author = author;
+        this.title = title;
+        this.content = content;
+    }
+
+    public boolean validate() {
+
+        return author != null && title != null && content != null;
     }
 
     /**
@@ -99,5 +118,19 @@ public class BlogEntry {
      */
     public void setComments(Collection<Comment> comments) {
         this.comments = comments;
+    }
+
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

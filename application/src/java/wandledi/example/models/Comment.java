@@ -2,6 +2,8 @@ package wandledi.example.models;
 
 import java.util.Date;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -12,6 +14,10 @@ import javax.persistence.TemporalType;
  */
 @Entity
 public class Comment {
+
+    @Id
+    @GeneratedValue
+    private Integer id;
 
     private String author;
     private String email;
@@ -80,5 +86,19 @@ public class Comment {
      */
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    /**
+     * @return the id
+     */
+    public Integer getId() {
+        return id;
+    }
+
+    /**
+     * @param id the id to set
+     */
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

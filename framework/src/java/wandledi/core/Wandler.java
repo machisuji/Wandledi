@@ -35,6 +35,9 @@ public class Wandler implements ContentHandler, Spell {
 
     static {
         preserveMap.put("script", true);
+        preserveMap.put("textarea", true);
+        preserveMap.put("td", true);
+        preserveMap.put("th", true);
     }
 
     public Wandler() {

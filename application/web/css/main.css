@@ -47,9 +47,10 @@ div {
 .entry {
     float: left;
     background-color: white; padding: 2em;
-    margin-bottom: 15px;
+    margin-bottom: 15px; margin-right: 15px;
     border-radius: 10em 10em 10em 0em;
     border-style: ridge;
+    clear: left;
 }
 
 #last {
