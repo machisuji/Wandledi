@@ -7,6 +7,7 @@ import wandledi.java.Switchboard;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.MessageFormat;
+import wandledi.java.Controller;
 
 /**An HTML page.
  *

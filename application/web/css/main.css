@@ -17,6 +17,9 @@ div {
     padding: 3px;
 }
 
+a.homeLink:link { color: black; }
+a.homeLink:visited { color: black; }
+
 #top {
     margin-bottom: 20px; width: 81%; font-size: xx-large; font-weight: bolder;
     border-radius: 1em 1em 3em 3em; padding-left: 1em;
@@ -46,19 +49,44 @@ div {
 
 .entry {
     float: left;
-    background-color: white; padding: 2em;
+    background-color: white; padding: 2em; padding-bottom: 1em;
     margin-bottom: 15px; margin-right: 15px;
     border-radius: 10em 10em 10em 0em;
     border-style: ridge;
     clear: left;
 }
 
+.comment {
+    background-color: gainsboro;
+}
+
+.form {
+    padding-top: 2.5em;
+}
+
 #last {
     margin-bottom: 0px;
 }
 
-span.heading {
+.heading {
     font-weight: bold;
+}
+
+.subheading {
+    font-size: smaller;
+    color: #887788;
+}
+
+.footer {
+    font-size: smaller;
+    color: #5566AA;
+}
+
+.footer a:link { color: #5566AA; }
+.footer a:visited { color: #5566AA; }
+
+.user {
+    color: #443344;
 }
 
 .item {

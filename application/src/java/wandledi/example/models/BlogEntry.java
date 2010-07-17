@@ -2,6 +2,7 @@ package wandledi.example.models;
 
 import java.util.Collection;
 import java.util.Date;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -19,7 +20,7 @@ public class BlogEntry {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private String author;
     private String title;
@@ -29,7 +30,7 @@ public class BlogEntry {
     @Temporal(TemporalType.TIMESTAMP)
     private Date date;
 
-    @OneToMany
+    @OneToMany(cascade={CascadeType.PERSIST, CascadeType.REMOVE})
     private Collection<Comment> comments;
 
     public BlogEntry() {
@@ -47,7 +48,12 @@ public class BlogEntry {
 
     public boolean validate() {
 
-        return author != null && title != null && content != null;
+        return ok(author) && ok(title) && ok(content);
+    }
+
+    private boolean ok(String field) {
+
+        return field != null && !field.isEmpty();
     }
 
     /**
@@ -123,14 +129,14 @@ public class BlogEntry {
     /**
      * @return the id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

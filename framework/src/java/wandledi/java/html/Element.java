@@ -38,6 +38,16 @@ public interface Element {
     public void cast(Spell spell);
     public void setAttribute(String name, String value);
     public void setAttribute(String name, StringTransformation transformation);
+
+    /**The same as #setAttribute except that you can reference the attribute's old
+     * value in the new value using the string $val.
+     * 
+     * Example: changeAttribute("class", "newClass $val"); // adds a new class to a possibly existing one
+     * 
+     * @param name
+     * @param value
+     */
+    public void changeAttribute(String name, String value);
     public void clone(int times);
     public void includeFile(String name);
     public void includeFile(String name, Scroll scroll);

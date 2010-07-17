@@ -111,4 +111,8 @@ public class SelectableElement implements Selectable, Element {
     public void hide() {
         element.hide();
     }
+
+    public void changeAttribute(String name, String value) {
+        element.changeAttribute(name, value);
+    }
 }

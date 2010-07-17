@@ -17,7 +17,7 @@ public class Comment {
 
     @Id
     @GeneratedValue
-    private Integer id;
+    private Long id;
 
     private String author;
     private String email;
@@ -30,6 +30,24 @@ public class Comment {
     public Comment() {
 
         date = new Date();
+    }
+
+    public Comment(String author, String email, String content) {
+
+        this();
+        this.author = author;
+        this.email = email;
+        this.content = content;
+    }
+
+    public boolean validate() {
+
+        return ok(author) && ok(content); // email optional
+    }
+
+    private boolean ok(String field) {
+
+        return field != null && !field.isEmpty();
     }
 
     /**
@@ -91,14 +109,14 @@ public class Comment {
     /**
      * @return the id
      */
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
     /**
      * @param id the id to set
      */
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 }

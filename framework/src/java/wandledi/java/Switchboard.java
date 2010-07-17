@@ -364,7 +364,9 @@ public class Switchboard {
         Callable call = new Callable() {
 
             public Object call() throws Exception {
+                controller.beforeAction();
                 method.invoke(controller);
+                controller.afterAction();
                 return null;
             }
         };

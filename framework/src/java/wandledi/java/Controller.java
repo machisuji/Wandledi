@@ -82,6 +82,20 @@ public class Controller implements Serializable {
 
     }
 
+    /**Called before each action.
+     * Override to do stuff before each action.
+     */
+    protected void beforeAction() {
+
+    }
+
+    /**Called after each action.
+     * Override to do stuff after each action.
+     */
+    protected void afterAction() {
+
+    }
+
     /**Returns this controller's name under which it is called in the URL.
      *
      * @return
