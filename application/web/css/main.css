@@ -17,8 +17,8 @@ div {
     padding: 3px;
 }
 
-a.homeLink:link { color: black; }
-a.homeLink:visited { color: black; }
+a.homelink:link { color: black; }
+a.homelink:visited { color: black; }
 
 #top {
     margin-bottom: 20px; width: 81%; font-size: xx-large; font-weight: bolder;

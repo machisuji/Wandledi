@@ -13,7 +13,7 @@ import org.xml.sax.SAXException;
 import wandledi.core.*;
 import wandledi.java.html.Element;
 import wandledi.java.html.ElementImpl;
-import wandledi.java.html.Pages;
+import wandledi.java.html.PageImpl;
 import wandledi.java.html.Plan;
 import wandledi.spells.*;
 
@@ -29,14 +29,14 @@ public class SpellExperiment {
 
     public static String DIR = "src/test/wandledi/test/";
 
-    Pages pages = new Pages();
+    PageImpl pages = new PageImpl();
     Wandler wandler = new Wandler();
     Random random = new Random();
 
     @BeforeMethod
     public void setUp() {
         
-        pages = new Pages();
+        pages = new PageImpl();
     }
 
     public static void main(String[] args) {
@@ -419,7 +419,7 @@ public class SpellExperiment {
     @Test
     public void testSelectionAfterAttributes() {
 
-        pages.select("meta", "http-equiv", "Content-Type").setAttribute("content", "text/xml");
+        pages.get("meta", "http-equiv", "Content-Type").setAttribute("content", "text/xml");
 
         String result = wandle("test.xhtml");
         Document doc = parseXML(result);

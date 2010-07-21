@@ -9,7 +9,7 @@ import wandledi.java.html.Element;
 import wandledi.java.html.Selectable;
 import wandledi.java.html.SelectableImpl;
 
-/**A Scroll contains a number of spells which can be apply using the scroll.
+/**A Scroll contains a number of spells which can be applied using the scroll.
  *
  * @author Markus Kahl
  */
@@ -150,20 +150,32 @@ public class Scroll implements Selectable {
         return selectable.get(selector);
     }
 
-    public Element select(String label, String attrName, String attrValue) {
-        return selectable.select(label, attrName, attrValue);
+    public Element get(String label, String attrName, String attrValue) {
+        return selectable.get(label, attrName, attrValue);
     }
 
-    public Element select(String label, Attribute... attributes) {
-        return selectable.select(label, attributes);
+    public Element get(String attrName, String attrValue) {
+        return selectable.get(attrName, attrValue);
     }
 
-    public Element select(Attribute... attributes) {
-        return selectable.select(attributes);
+    public Element get(String label, Attribute... attributes) {
+        return selectable.get(label, attributes);
+    }
+
+    public Element get(Attribute... attributes) {
+        return selectable.get(attributes);
     }
 
     public Element get(Selector selector) {
         return selectable.get(selector);
+    }
+
+    public Selectable at(Selector selector) {
+        return selectable.at(selector);
+    }
+
+    public Selectable at(String selector) {
+        return selectable.at(selector);
     }
 
     class ScrollEntry {

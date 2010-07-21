@@ -1,7 +1,7 @@
 package wandledi.config;
 
 import javax.servlet.ServletContext;
-import wandledi.example.controllers.HomeJsp;
+import wandledi.example.controllers.Jsp;
 import wandledi.example.controllers.Home;
 import wandledi.java.WandlediBootstrap;
 
@@ -14,7 +14,7 @@ public class Bootstrap extends WandlediBootstrap {
     public void init(ServletContext servletContext) {
 
         setPersistenceUnit("MyPU");
-        addControllers(HomeJsp.class, Home.class);
+        addControllers(Jsp.class, Home.class);
     }
 
     public void destroy() {

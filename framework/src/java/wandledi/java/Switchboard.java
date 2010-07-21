@@ -36,6 +36,23 @@ public class Switchboard {
     private String viewDirectory = "/WEB-INF/view/";
     private boolean skipBootstrap = false;
 
+    public static String linkToUri(String uri) {
+
+        return Switchboard.getInstance().getServletContext().getContextPath() + uri;
+    }
+
+    public static String linkTo(String controller, String action) {
+
+        return Switchboard.getInstance().getServletContext().getContextPath() +
+                DefaultRoute.getURI(controller, action);
+    }
+
+    public static String linkToId(String controller, String action, Long id) {
+
+        return Switchboard.getInstance().getServletContext().getContextPath() +
+                DefaultRoute.getURI(controller, action, id);
+    }
+
     public static Switchboard getInstance() {
 
         return singleton;
@@ -138,10 +155,9 @@ public class Switchboard {
             if (controller != null) {
                 setImplicitObjects(wRequest);
                 if (controller.isSpellController()) {
-                    PageController pc = (PageController) controller;
-                    pc.getPages().setRequest(request);
                     if (i18n()) {
-                        pc.getPages().setMessages(getMessages(request));
+                        PageController pc = (PageController) controller;
+                        pc.getPage().setMessages(getMessages(request));
                     }
                 }
                 if (performAction(controller, action.getController(), action.getName(),
@@ -175,10 +191,10 @@ public class Switchboard {
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         PageController pc = (PageController) controller;
-        Scroll scroll = pc.getPages().getScroll();
+        Scroll scroll = pc.getPage().getScroll();
         Wandler wandler = new Wandler();
-        if (pc.getPages().getFile() != null) {
-            template = viewDirectory + pc.getPages().getFile();
+        if (pc.getPage().getFile() != null) {
+            template = viewDirectory + pc.getPage().getFile();
         }
         template = template.substring(viewDirectory.length());
         if (!template.startsWith("/")) {
@@ -465,7 +481,7 @@ public class Switchboard {
 
     /**Sets the directory in which the JSP files for the controllers' views
      * are searched for. The default value is "/WEB-INF/view/".
-     * Wandledi expects to find an action's JSP file at the following
+     * Wandledi expects to find an action's JSP file get the following
      * location: /WEB-INF/view/controller/action.jsp
      *
      * @param viewDirectory

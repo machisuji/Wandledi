@@ -6,34 +6,37 @@ import wandledi.core.Attribute;
 import wandledi.core.Scroll;
 import wandledi.example.models.BlogEntry;
 import wandledi.example.models.Comment;
-import wandledi.java.html.Pages;
+import wandledi.java.html.PageImpl;
 import wandledi.java.html.Plan;
 import wandledi.java.html.Selectable;
 import wandledi.java.html.SelectableElement;
+
+import static wandledi.java.Switchboard.linkToUri;
+import static wandledi.java.Switchboard.linkToId;
 
 /**
  *
  * @author Markus Kahl
  */
-public class HomePages extends Pages {
+public class HomePage extends PageImpl {
 
     private boolean login = false;
 
     public void beforeAction(String msg, String homeLink) {
 
-        select(new Attribute("rel", "stylesheet")).setAttribute("href",
+        get(new Attribute("rel", "stylesheet")).setAttribute("href",
                 linkToUri("/css/main.css"));
         get(".homelink").setAttribute("href", homeLink);
         if (msg != null) {
             get("#right").insert(msg);
         }
         if (login) {
-            select("a", "href", "login").setAttribute("href", "post");
+            get("a", "href", "login").setAttribute("href", "post");
             get("button").replace(true, "Post Entry");
         }
     }
 
-    public void index(String msg, Collection<BlogEntry> entries) {
+    public void index(Collection<BlogEntry> entries) {
 
         if (entries.isEmpty()) {
             get(".entry").setAttribute("id", "last");
@@ -52,42 +55,6 @@ public class HomePages extends Pages {
         }
     }
 
-    private void produceEntry(SelectableElement element, BlogEntry entry) {
-
-        element.get(".heading").replace(true, entry.getTitle());
-        element.get(".user").replace(true, entry.getAuthor());
-        element.get(".date").replace(true, entry.getDate().toString());
-        element.get(".text").replace(true, entry.getContent());
-        element.get(".footer").insert(entry.getComments().size() + " ");
-        element.select(new Attribute("href", "comments")).setAttribute("href",
-                linkToId("home", "comments", entry.getId()));
-    }
-
-    private void includeDeleteButton(SelectableElement element, Comment comment, long bid) {
-
-        Scroll scroll = new Scroll();
-
-        scroll.get("a").setAttribute("href",
-                linkToId("home", "deleteComment", comment.getId()) + "?bid=" + bid);
-        element.get("br").includeFile("/home/delete.xhtml", scroll);
-    }
-
-    private void includeInEntry(String file, Scroll scroll, Selectable selectable) {
-
-        if (scroll == null) {
-            selectable.get("p").includeFile(file);
-        } else {
-            selectable.get("p").includeFile(file, scroll);
-        }
-        selectable.get("span").hide();
-        selectable.get("br").hide();
-    }
-
-    private void includeInEntry(String file, Selectable selectable) {
-
-        includeInEntry(file, null, selectable);
-    }
-
     public void login() {
 
         setFile("/home/index.xhtml");
@@ -103,13 +70,13 @@ public class HomePages extends Pages {
 
         Scroll scroll = new Scroll("Post");
         if (author != null) {
-            scroll.select(new Attribute("name", "author")).setAttribute("value", author);
+            scroll.get(new Attribute("name", "author")).setAttribute("value", author);
         }
         if (title != null) {
-            scroll.select(new Attribute("name", "title")).setAttribute("value", title);
+            scroll.get(new Attribute("name", "title")).setAttribute("value", title);
         }
         if (content != null) {
-            scroll.select(new Attribute("name", "content")).replace(true, content);
+            scroll.get(new Attribute("name", "content")).replace(true, content);
         }
         setFile("/home/index.xhtml");
         includeInEntry("/home/post.xhtml", scroll, this);
@@ -133,7 +100,7 @@ public class HomePages extends Pages {
                         element.setAttribute("id", "last");
                         element.changeAttribute("class", "form $val");
                         includeInEntry("/home/comment.xhtml", element);
-                    } else {
+                    } else { // comment
                         produceComment(element, comment);
                         if (login) {
                             includeDeleteButton(element, comment, entry.getId());
@@ -162,13 +129,13 @@ public class HomePages extends Pages {
 
         Scroll scroll = new Scroll("Post");
         if (author != null) {
-            scroll.select(new Attribute("name", "author")).setAttribute("value", author);
+            scroll.get(new Attribute("name", "author")).setAttribute("value", author);
         }
         if (email != null) {
-            scroll.select(new Attribute("name", "email")).setAttribute("value", email);
+            scroll.get(new Attribute("name", "email")).setAttribute("value", email);
         }
         if (content != null) {
-            scroll.select(new Attribute("name", "content")).replace(true, content);
+            scroll.get(new Attribute("name", "content")).replace(true, content);
         }
         setFile("/home/index.xhtml");
         includeInEntry("/home/comment.xhtml", scroll, this);
@@ -178,16 +145,46 @@ public class HomePages extends Pages {
         }
     }
 
-    /**
-     * @return the login
-     */
+    private void produceEntry(SelectableElement element, BlogEntry entry) {
+
+        element.get(".heading").replace(true, entry.getTitle());
+        element.get(".user").replace(true, entry.getAuthor());
+        element.get(".date").replace(true, entry.getDate().toString());
+        element.get(".text").replace(true, entry.getContent());
+        element.get(".footer").insert(entry.getComments().size() + " ");
+        element.get(new Attribute("href", "comments")).setAttribute("href",
+                linkToId("home", "comments", entry.getId()));
+    }
+
+    private void includeDeleteButton(SelectableElement element, Comment comment, long bid) {
+
+        Scroll scroll = new Scroll();
+
+        scroll.get("a").setAttribute("href",
+                linkToId("home", "deleteComment", comment.getId()) + "?bid=" + bid);
+        element.get("br").includeFile("/home/delete.xhtml", scroll);
+    }
+
+    private void includeInEntry(String file, Scroll scroll, Selectable selectable) {
+
+        if (scroll == null) {
+            selectable.get("p").includeFile(file);
+        } else {
+            selectable.get("p").includeFile(file, scroll);
+        }
+        selectable.get("span").hide();
+        selectable.get("br").hide();
+    }
+
+    private void includeInEntry(String file, Selectable selectable) {
+
+        includeInEntry(file, null, selectable);
+    }
+
     public boolean isLogin() {
         return login;
     }
 
-    /**
-     * @param login the login to set
-     */
     public void setLogin(boolean login) {
         this.login = login;
     }

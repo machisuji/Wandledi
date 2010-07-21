@@ -350,7 +350,12 @@ public class Controller implements Serializable {
 
         return Switchboard.getInstance().getServletContext();
     }
-    
+
+    /**Returns a Database instance to use for this request.
+     * It will be closed implicitly at the end of the request.
+     *
+     * @return
+     */
     protected Database getDatabase() {
 
         if (database == null) {

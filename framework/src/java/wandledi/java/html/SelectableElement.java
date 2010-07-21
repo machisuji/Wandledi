@@ -2,6 +2,7 @@ package wandledi.java.html;
 
 import java.util.Collection;
 import wandledi.core.Attribute;
+import wandledi.core.CssSelector;
 import wandledi.core.Scroll;
 import wandledi.core.Selector;
 import wandledi.core.Spell;
@@ -28,20 +29,32 @@ public class SelectableElement implements Selectable, Element {
         return selectable.get(selector);
     }
 
-    public Element select(String label, String attrName, String attrValue) {
-        return selectable.select(label, attrName, attrValue);
+    public Element get(String label, String attrName, String attrValue) {
+        return selectable.get(label, attrName, attrValue);
     }
 
-    public Element select(String label, Attribute... attributes) {
-        return selectable.select(label, attributes);
+    public Element get(String attrName, String attrValue) {
+        return selectable.get(attrName, attrValue);
     }
 
-    public Element select(Attribute... attributes) {
-        return selectable.select(attributes);
+    public Element get(String label, Attribute... attributes) {
+        return selectable.get(label, attributes);
+    }
+
+    public Element get(Attribute... attributes) {
+        return selectable.get(attributes);
     }
 
     public Element get(Selector selector) {
         return selectable.get(selector);
+    }
+
+    public Selectable at(Selector selector) {
+        return selectable.at(selector);
+    }
+
+    public Selectable at(String selector) {
+        return at(CssSelector.valueOf(selector));
     }
 
     public ChargedElement max(int charges) {

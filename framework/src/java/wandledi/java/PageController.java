@@ -1,6 +1,6 @@
 package wandledi.java;
 
-import wandledi.java.html.Pages;
+import wandledi.java.html.Page;
 
 /**
  *
@@ -14,5 +14,10 @@ public abstract class PageController extends Controller {
         return true;
     }
 
-    public abstract Pages getPages();
+    /**Returns this controller's page object responsible for transforming
+     * each page.
+     *
+     * @return
+     */
+    public abstract Page getPage();
 }

@@ -6,11 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import wandledi.example.models.BlogEntry;
 import wandledi.example.models.Comment;
-import wandledi.example.pages.HomePages;
+import wandledi.example.pages.HomePage;
 import wandledi.java.Database;
 import wandledi.java.DefaultRoute;
 import wandledi.java.PageController;
-import wandledi.java.html.Pages;
+import wandledi.java.html.Page;
 
 /**
  *
@@ -18,32 +18,30 @@ import wandledi.java.html.Pages;
  */
 public class Home extends PageController {
 
-    private HomePages pages = new HomePages();
+    protected HomePage page = new HomePage();
 
     @Override
     protected void beforeAction() {
 
-        pages.setLogin(getLogin());
-        pages.beforeAction((String) flash.get("msg"), DefaultRoute.getURI("home", "index"));
+        page.setLogin(getLogin());
+        page.beforeAction((String) flash.get("msg"), DefaultRoute.getURI("home", "index"));
     }
 
     protected void setMessage(String msg) {
 
-        pages.get("#right").insert(msg);
+        page.get("#right").insert(msg);
     }
 
     public void index() {
 
-        String msg = (String) flash.get("msg");
         Collection<BlogEntry> entries = getEntries(param("test") != null);
-
-        pages.index(msg, entries);
+        page.index(entries);
     }
 
     public void login() {
 
         if (isGetRequest()) {
-            pages.login();
+            page.login();
         } else {
             String user = param("user");
             String password = param("password");
@@ -58,21 +56,10 @@ public class Home extends PageController {
         }
     }
 
-    protected void setLogin(boolean login) {
-
-        session.put("login", login);
-    }
-
-    protected boolean getLogin() {
-
-        Boolean login = (Boolean) session.get("login");
-        return login != null ? login : false;
-    }
-
     public void post() {
 
         if (isGetRequest()) {
-            pages.post();
+            page.post();
         } else {
             BlogEntry entry = new BlogEntry(param("author"), param("title"), param("content"));
             if (entry.validate()) {
@@ -80,7 +67,7 @@ public class Home extends PageController {
                 flash.put("msg", "Entry saved");
                 redirectTo("home");
             } else {
-                pages.post("Missing field", entry.getAuthor(), entry.getTitle(), entry.getContent());
+                page.post("Missing field", entry.getAuthor(), entry.getTitle(), entry.getContent());
             }
         }
     }
@@ -88,23 +75,16 @@ public class Home extends PageController {
     public void comments() {
 
         BlogEntry entry = getDatabase().find(BlogEntry.class, Long.valueOf(param("id")));
-        if (entry == null) {
-            error(400, "no such entry");
-        } else {
-            pages.comments(entry);
-        }
+        page.comments(entry);
     }
 
     public void comment() {
 
         Database db = getDatabase().withTransaction();
         BlogEntry entry = db.find(BlogEntry.class, Long.valueOf(param("id")));
-        if (entry == null) {
-            error(400, "no such entry");
-            return;
-        }
+        
         if (isGetRequest()) {
-            pages.comment(entry);
+            page.comment(entry);
         } else {
             Comment comment = new Comment(param("author"), param("email"), param("content"));
             if (comment.validate()) {
@@ -114,9 +94,9 @@ public class Home extends PageController {
                 } else {
                     setMessage("Could not save comment");
                 }
-                pages.comments(entry);
+                page.comments(entry);
             } else {
-                pages.comment("Missing field", entry, comment.getAuthor(),
+                page.comment("Missing field", entry, comment.getAuthor(),
                         comment.getEmail(), comment.getContent());
             }
         }
@@ -138,17 +118,28 @@ public class Home extends PageController {
     }
 
     @Override
-    public Pages getPages() {
+    public Page getPage() {
 
-        return pages;
+        return page;
     }
 
-    private boolean isGetRequest() {
+    protected void setLogin(boolean login) {
+
+        session.put("login", login);
+    }
+
+    protected boolean getLogin() {
+
+        Boolean login = (Boolean) session.get("login");
+        return login != null ? login : false;
+    }
+
+    protected boolean isGetRequest() {
 
         return request.getMethod().equalsIgnoreCase("get");
     }
 
-    private Collection<BlogEntry> getEntries(boolean testData) {
+    protected Collection<BlogEntry> getEntries(boolean testData) {
 
         List<BlogEntry> entries;
         if (testData) {
@@ -162,7 +153,7 @@ public class Home extends PageController {
         return entries;
     }
 
-    private void addTestEntries(Collection<BlogEntry> entries) {
+    protected void addTestEntries(Collection<BlogEntry> entries) {
 
         BlogEntry entry1 = new BlogEntry();
         entry1.setTitle("Is young Gouda really better?");
