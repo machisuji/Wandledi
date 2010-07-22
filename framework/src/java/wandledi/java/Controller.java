@@ -356,7 +356,7 @@ public class Controller implements Serializable {
      *
      * @return
      */
-    protected Database getDatabase() {
+    public Database getDatabase() {
 
         if (database == null) {
             database = (Database)request.getAttribute("database");
