@@ -1,6 +1,2 @@
-target/**
-nbproject/**
-build/**
-project/boot/**
 build.xml
 manifest.mf

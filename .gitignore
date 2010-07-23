@@ -2,3 +2,9 @@
 **/dist/**
 **/filestoreDB/**
 **/project/build/target/**
+project/build/target/**
+**/project/boot/**
+project/boot/**
+**/target/**
+target/**
+**/nbproject/**
