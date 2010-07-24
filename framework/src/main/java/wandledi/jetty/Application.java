@@ -13,8 +13,8 @@ import wandledi.java.WandlediFilter;
 public class Application {
 
     private int port = 8080;
-    private static String descriptor = "src/conf/web.xml";
-    private static String webDirectory = "web";
+    private static String descriptor = "src/main/webapp/WEB-INF/web.xml";
+    private static String webDirectory = "src/main/webapp";
 
     public Application() {
 
@@ -63,6 +63,7 @@ public class Application {
         server.setConnectors(new Connector[] { connector });
         try {
             server.start();
+            context.setResourceBase(getWebDirectory());
             server.join();
         } catch (Exception e) {
             e.printStackTrace();
