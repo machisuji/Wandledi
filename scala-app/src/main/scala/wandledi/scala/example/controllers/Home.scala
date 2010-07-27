@@ -11,6 +11,6 @@ class Home extends PageController {
 
   def index() {
 
-    page.index(new java.util.Date().toString())
+    page.index("It's " + new java.util.Date().toString())
   }  
 }

@@ -2,9 +2,6 @@ import sbt._
 
 class Wandledi(info: ProjectInfo) extends ParentProject(info) {
 
-  lazy val jettyHome = property[String]
-
-  def jetty7 = Path.fromFile(jettyHome.value + "/lib") * "*.jar"
   def servletApi = "framework" / "lib" / "servlet-api-2.5.jar"
   def testng = "framework" / "lib" / "testng-5.12.1.jar"
 
@@ -14,13 +11,15 @@ class Wandledi(info: ProjectInfo) extends ParentProject(info) {
   lazy val scalaApp = project("scala-app", "Scala Application",
     new App(_), scalaLib)
 
-  class CoreProject(info: ProjectInfo) extends DefaultProject(info) {
-    override def unmanagedClasspath = super.unmanagedClasspath +++ jetty7
-  }
+  class CoreProject(info: ProjectInfo) extends DefaultProject(info)
 
   class App(info: ProjectInfo) extends DefaultWebProject(info) {
-    override def publicClasspath = super.publicClasspath --- jetty7 ---
+    override def publicClasspath = super.publicClasspath ---
       servletApi --- testng
-    override def mainClass = Some("wandledi.jetty.Application")
+
+    val jetty7 = "org.eclipse.jetty" % "jetty-webapp" % "7.0.2.RC0" % "test"
+
+    override def testClasspath = super.testClasspath +++
+      (path("src") / "main" / "webapp" / "WEB-INF" / "classes")
   }
 }

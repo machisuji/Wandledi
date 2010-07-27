@@ -9,8 +9,6 @@ class Bootstrap extends WandlediBootstrap {
 
   def init(servletContext: ServletContext) {
 
-    wandledi.jetty.Application.setWebDirectory("src/main/webapp")
-
     setPersistenceUnit("MyPU")
     addControllers(classOf[Home])
   }

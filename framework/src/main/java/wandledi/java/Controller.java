@@ -1,7 +1,5 @@
 package wandledi.java;
 
-import wandledi.jetty.Application;
-
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Serializable;
@@ -61,17 +59,6 @@ public class Controller implements Serializable {
         this.flash = parent.flash;
         this.wandlediRequest = parent.wandlediRequest;
         this.database = parent.database;
-    }
-
-    /**Starts this controller as the whole application.
-     *
-     * @param nio Use NIO
-     */
-    public void runStandAlone(boolean nio) {
-
-        Switchboard.getInstance().addController(getClass());
-        Switchboard.getInstance().setSkipBootstrap(true);
-        new Application().start(nio);
     }
     
     /**Called when a Controller is added to the Switchboard,
