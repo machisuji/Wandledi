@@ -9,7 +9,9 @@ Repository structure
 --------------------
 
 * **framework** - The actual Wandledi project
-* **application** - An example web application using Wandledi
+* **application** - An example Java web application using Wandledi
+* **scala-lib** - Wandledi Wrapper for Scala
+* **scala-app** - An example Scala web application using Wandledi
 
 How it used to be
 -----------------
@@ -72,7 +74,7 @@ every HTML page.
 
 So this leaves us with the three parts: Controller, Pages, XHTML file.
 
-\**XHTML to be more precise since currently I'm simply using \*SAX\* to parse
+\**XHTML to be more precise since currently I'm simply using SAX to parse
 the pages.*
 
 **Controller**:
@@ -81,26 +83,26 @@ the pages.*
 
     public class HomeController extends PageController {
     
-        HomePages pages = new HomePages();
+        HomePage page = new HomePage();
         
         public void index() {
             boolean wb = session.get("user") != null;
             String msg = "Hello World!";
             
-            pages.index(wb, msg);
+            page.index(wb, msg);
         }
         
         @Override
-        public Pages getPages() {
-            return pages;
+        public Page getPage() {
+            return page;
         }
     }
     
-**Pages**:
+**Page**:
 
-    import wandledi.java.Pages;
+    import wandledi.java.html.PageImpl;
     
-    public class HomePages extends Pages {
+    public class HomePage extends PageImpl {
     
         public void index(boolean wb, String msg) {
             if (wb) {
@@ -129,6 +131,11 @@ Well, I haven't found out yet, if and how great this is.
 But as I continue this project I will try to build a medium sized
 application with this approach and eventually I will see how it works out.
 
+I think that having another layer between view and controller that is responsible
+for how exactly everything is going to be displayed may hold several advantages
+by being able to apply all patterns and OOP techniques to it since it is
+normal Java code now and no auxiliary between HTML and Java.
+
 How is it coming along?
 -----------------------
 
@@ -138,15 +145,10 @@ as to how to name everything.
 Transformation, Spell, Wossname.
 PageController, Grimoire, Wizard. Everything's possible.
 
-So far the following Spells/Transformations are working:
+As for the functionality: Everything should work now so that one can
+build anything with Wandledi.
 
-* Invisibility - hides an element
-* Clone - clones an element
-* Insertion - inserts something\* into an element
-* Replacement - replaces an element with something\* else
-* Inclusion - inserts another XHTML file in place of an element
-* AttributeTransformation - changes the attributes of an element
+Building Wandledi
+-----------------
 
-\**Something is either a String or more XHTML, which is generated with the
-arch spell, which outputs valid XHTML.*
-
+Everything is done via sbt (Simple Build Tool).
