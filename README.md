@@ -31,7 +31,8 @@ This looks as follows.
     public class HomeController extends Controller {
         public void index() {
             model.put("wb", session.get("user") != null);
-            model.put("msg", "Hello World!");
+            model.put("msg", "Paragraph No.");
+            model.put("items", java.util.Arrays.asList("One", "Two", "Three"));
         }
     }
 
@@ -42,9 +43,11 @@ This looks as follows.
     <html>
       <body>
         <c:if test="${wb}">
-          Welcome back and ...
+          Welcome back!
         </c:if>
-        <p>${msg}</p>
+        <c:foreach items="${items}" var="no">
+          <p>${msg} ${no}</p>
+        </c:foreach>        
       </body>
     </html>
 
@@ -67,12 +70,12 @@ Magic. That is Spells. Spell is just a funny word for transformation
 I came up with because transformation had to many syllables for my taste
 and overall I have the unhealthy habit of using overly figurative names.
 
-At the moment the class that uses these spells is called Pages.
+At the moment the class that uses these spells is called Page.
 Not very enchanting, but the namespace is pure chaos right now anyway.
-The Pages class provides methods to the actual controller to transform
+The Page class provides methods to the actual controller to transform
 every HTML page.
 
-So this leaves us with the three parts: Controller, Pages, XHTML file.
+So this leaves us with the three parts: Controller, Page, XHTML file.
 
 \**XHTML to be more precise since currently I'm simply using SAX to parse
 the pages.*
@@ -87,9 +90,10 @@ the pages.*
         
         public void index() {
             boolean wb = session.get("user") != null;
-            String msg = "Hello World!";
+            String msg = "Paragraph No.";
+            Collection<String> items = java.util.Arrays.asList("One", "Two", "Three");
             
-            page.index(wb, msg);
+            page.index(wb, msg, items);
         }
         
         @Override
@@ -104,11 +108,16 @@ the pages.*
     
     public class HomePage extends PageImpl {
     
-        public void index(boolean wb, String msg) {
+        public void index(boolean wb, String msg, Collection<String> items) {
             if (wb) {
-                get("body").insert("Welcome back and ...");
+                get("body").insert("Welcome back!");
             }
-            get("#msg").insert(msg);
+            get("p").foreachIn(items).apply(new Plan<String>() {
+                public void execute(SelectableElement element, String item) {
+                    element.insertFirst(msg);
+                    element.insertLast(item);
+                }
+            });
         }
     }
     
@@ -116,13 +125,26 @@ the pages.*
 
     <html>
       <body>
-        <p id="msg">Message!</p>
+        <p>Message!</p>
       </body>
     </html>
     
 Now this is a little more code. After all you have a whole class more.
 But hey, at least the HTML file got a little shorter.
 Moreover it now contains only plain HTML, which can actually be displayed by a browser.
+
+The result in both cases (with a logged in user) will be the following HTML file.
+
+**Resulting HTML**:
+
+    <html>
+      <body>
+        Welcome back!
+        <p>Paragraph No. One</p>
+        <p>Paragraph No. Two</p>
+        <p>Paragraph No. Three</p>
+      </body>
+    </html>
 
 Great, isn't it?
 ----------------
@@ -133,7 +155,7 @@ application with this approach and eventually I will see how it works out.
 
 I think that having another layer between view and controller that is responsible
 for how exactly everything is going to be displayed may hold several advantages
-by being able to apply all patterns and OOP techniques to it since it is
+since you are able to apply all patterns and OOP techniques to it since it is
 normal Java code now and no auxiliary between HTML and Java.
 
 How is it coming along?
@@ -146,7 +168,7 @@ Transformation, Spell, Wossname.
 PageController, Grimoire, Wizard. Everything's possible.
 
 As for the functionality: Everything should work now so that one can
-build anything with Wandledi.
+build anything with Wandledi. It merely has to be documented how at some point.
 
 Building Wandledi
 -----------------
