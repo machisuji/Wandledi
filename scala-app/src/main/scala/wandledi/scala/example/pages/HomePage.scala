@@ -26,6 +26,8 @@ class HomePage extends Page {
     }
   }
 
+  def node = <any name="author"/>
+
   def index(entries: Seq[BlogEntry]) {
     if (entries.isEmpty) {
       get(".entry").setAttribute("id", "last")
