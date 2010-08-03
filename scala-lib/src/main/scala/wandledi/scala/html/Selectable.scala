@@ -7,7 +7,7 @@ import wandledi.core.Selector
 import wandledi.core.UniversalSelector
 import wandledi.java.html.LocalSpells
 
-class Selectable(scroll: Scroll) extends wandledi.java.html.SelectableImpl(scroll) {
+class Selectable(scroll: Scroll) extends wandledi.java.html.SelectableImpl(scroll) with ScalaSelectable {
 
   override def get(selector: Selector) = new Element(selector, scroll)
 

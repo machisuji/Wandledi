@@ -13,7 +13,7 @@ public class Bootstrap extends WandlediBootstrap {
 
     public void init(ServletContext servletContext) {
 
-        setPersistenceUnit("MyPU");
+        setPersistenceUnit("JavaPU");
         addControllers(Jsp.class, Home.class);
     }
 

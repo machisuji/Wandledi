@@ -9,7 +9,7 @@ class Bootstrap extends WandlediBootstrap {
 
   def init(servletContext: ServletContext) {
 
-    setPersistenceUnit("MyPU")
+    setPersistenceUnit("ScalaPU")
     addControllers(classOf[Home])
   }
 

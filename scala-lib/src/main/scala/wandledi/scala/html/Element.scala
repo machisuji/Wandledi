@@ -1,6 +1,5 @@
 package wandledi.scala.html
 
-import wandledi.java.html.SelectableElement
 import org.xml.sax.Attributes
 import wandledi.core.Scroll
 import wandledi.core.Selector
@@ -13,40 +12,45 @@ import wandledi.spells.InsertionIntent
 import wandledi.spells.ReplacementIntent
 import wandledi.spells.StringTransformation
 
-class Element(selector: Selector, scroll: Scroll) extends wandledi.java.html.ElementImpl(selector, scroll) {
+class Element(
+  selector: Selector,
+  scroll: Scroll)
+extends wandledi.java.html.ElementImpl(selector, scroll) with ScalaElement {
 
-  private implicit def toJavaList[T: ClassManifest](l: Seq[T]) =
+  private implicit def toJavaList[T: ClassManifest](l: Iterable[T]) =
     java.util.Arrays.asList(l.toArray: _*)
 
-  def foreachIn[T: ClassManifest](items: Seq[T])(fun: (SelectableElement, T) => Unit) {
+  override def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
     val plan = new Plan[T] {
-      def execute(e: SelectableElement, item: T): Unit = fun(e, item)
+      def execute(e: wandledi.java.html.SelectableElement, item: T): Unit =
+        fun(e.asInstanceOf[SelectableElement], item)
     }
     val foreach = new ElementForeachImpl(this, items)
     foreach.apply(plan)
   }
 
-  def foreachWithIndexIn[T: ClassManifest](items: Seq[T])(fun: (SelectableElement, T, Int) => Unit) {
+  override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit) {
     val plan = new Plan[T] {
-      def execute(e: SelectableElement, item: T): Unit = fun(e, item, index)
+      def execute(e: wandledi.java.html.SelectableElement, item: T): Unit =
+        fun(e.asInstanceOf[SelectableElement], item, index)
     }
     val foreach = new ElementForeachImpl(this, items)
     foreach.apply(plan)
   }
 
-  def changeAttribute(name: String)(change: (String) => String) {
+  override def changeAttribute(name: String)(change: (String) => String) {
     setAttribute(name, new StringTransformation {
       def transform(value: String) = change(value)
     })
   }
 
-  def includeFile(file: String)(magic: (Scroll) => Unit) {
+  override def includeFile(file: String)(magic: (Selectable) => Unit) {
     val scroll = new Scroll
-    magic(scroll)
+    magic(new Selectable(scroll))
     includeFile(file, scroll)
   }
 
-  def insert(atEnd: Boolean)(insertion: (Spell) => Unit) {
+  override def insert(atEnd: Boolean)(insertion: (Spell) => Unit) {
     val intent = new InsertionIntent {
       def insert(parent: Spell) {
         insertion(parent)
@@ -57,7 +61,7 @@ class Element(selector: Selector, scroll: Scroll) extends wandledi.java.html.Ele
 
   // @TODO #insert which simply takes a function returning an XML node to be written
 
-  def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) {
+  override def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) {
     val intent = new ReplacementIntent {
       def replace(label: String, attributes: Attributes, parent: Spell) {
         replacement(label, attributes, parent)
