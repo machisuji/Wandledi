@@ -35,6 +35,7 @@ public interface Element {
      * @return
      */
     public Selector getSelector();
+    public Scroll getScroll();
     public void cast(Spell spell);
     public void setAttribute(String name, String value);
     public void setAttribute(String name, StringTransformation transformation);

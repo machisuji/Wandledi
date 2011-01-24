@@ -18,7 +18,17 @@ import java.util.Set;
  */
 public class Flash implements Map<String, Object> {
 
-    protected HashMap<String, FlashEntry> map = new HashMap<String, FlashEntry>();
+    protected Map<String, FlashEntry> map;
+
+    public Flash() {
+
+        this.map = new HashMap<String, FlashEntry>();
+    }
+
+    protected Flash(Flash flash) {
+
+        this.map = flash.map;
+    }
 
     /**Puts the given values into the flash context under the specified key.
      *

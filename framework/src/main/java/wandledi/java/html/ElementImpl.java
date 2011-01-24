@@ -25,6 +25,10 @@ public class ElementImpl implements Element {
 
         return selector;
     }
+
+    public Scroll getScroll() {
+        return scroll;
+    }
     
     public ChargedElement max(int charges) {
 

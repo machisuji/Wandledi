@@ -75,7 +75,7 @@ public abstract class WandlediBootstrap {
      *
      * @param controllers The controller's classes
      */
-    public void addControllers(Class<? extends Controller>... controllers) {
+    public void addControllers(Class<? extends WandlediController>... controllers) {
 
         Switchboard.getInstance().addControllers(controllers);
     }

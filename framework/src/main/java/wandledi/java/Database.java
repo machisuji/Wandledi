@@ -413,6 +413,13 @@ public class Database {
         return entityManagerFactory;
     }
 
+    public static void resetEntityManagerFactory() {
+        if (entityManagerFactory != null) {
+            entityManagerFactory.close();
+            entityManagerFactory = null;
+        }
+    }
+
     /**Returns the name of the persistence unit which is used by all Database instances.
      *
      * @return Name of the persistence unit

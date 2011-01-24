@@ -23,7 +23,7 @@ extends wandledi.java.html.ElementImpl(selector, scroll) with ScalaElement {
   override def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
     val plan = new Plan[T] {
       def execute(e: wandledi.java.html.SelectableElement, item: T): Unit =
-        fun(e.asInstanceOf[SelectableElement], item)
+        fun(new SelectableElement(e.getSelector, e.getScroll), item)
     }
     val foreach = new ElementForeachImpl(this, items)
     foreach.apply(plan)
@@ -32,7 +32,7 @@ extends wandledi.java.html.ElementImpl(selector, scroll) with ScalaElement {
   override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit) {
     val plan = new Plan[T] {
       def execute(e: wandledi.java.html.SelectableElement, item: T): Unit =
-        fun(e.asInstanceOf[SelectableElement], item, index)
+        fun(new SelectableElement(e.getSelector, e.getScroll), item, index)
     }
     val foreach = new ElementForeachImpl(this, items)
     foreach.apply(plan)

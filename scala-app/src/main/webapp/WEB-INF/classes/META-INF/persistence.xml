@@ -2,11 +2,11 @@
 <persistence version="2.0" xmlns="http://java.sun.com/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/persistence http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
   <persistence-unit name="ScalaPU" transaction-type="RESOURCE_LOCAL">
     <provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
-    <class>wandledi.example.models.BlogEntry</class>
-    <class>wandledi.example.models.Comment</class>
+    <class>wandledi.scala.example.models.BlogEntry</class>
+    <class>wandledi.scala.example.models.Comment</class>
     <exclude-unlisted-classes>true</exclude-unlisted-classes>
     <properties>
-      <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:filestoreDB/myDb"/>
+      <property name="javax.persistence.jdbc.url" value="jdbc:hsqldb:file:filestoreDB/scala-app"/>
       <property name="javax.persistence.jdbc.password" value=""/>
       <property name="javax.persistence.jdbc.driver" value="org.hsqldb.jdbcDriver"/>
       <property name="javax.persistence.jdbc.user" value="sa"/>

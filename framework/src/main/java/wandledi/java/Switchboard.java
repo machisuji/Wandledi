@@ -27,7 +27,7 @@ import wandledi.core.Wandler;
  */
 public class Switchboard {
 
-    private static Switchboard singleton = new Switchboard();
+    private static Switchboard instance = new Switchboard();
     private Controllers controllers = new Controllers();
     private Routes routes = new Routes();
     private ServletContext servletContext;
@@ -53,14 +53,23 @@ public class Switchboard {
                 DefaultRoute.getURI(controller, action, id);
     }
 
+    /**Returns the active Switchboard instance.
+     *
+     * @return
+     */
     public static Switchboard getInstance() {
 
-        return singleton;
+        return instance;
     }
 
+    /**Sets the Switchboard instance to use.
+     * Use this to introduce a custom Switchboard.
+     *
+     * @param switchboard
+     */
     public static void setInstance(Switchboard switchboard) {
 
-        singleton = switchboard;
+        instance = switchboard;
     }
 
     /**Set by stand-alone controllers for instance.
@@ -69,12 +78,12 @@ public class Switchboard {
      *
      * @param skipBootstrap
      */
-    protected void setSkipBootstrap(boolean skipBootstrap) {
+    public void setSkipBootstrap(boolean skipBootstrap) {
 
         this.skipBootstrap = skipBootstrap;
     }
 
-    protected boolean getSkipBootstrap() {
+    public boolean getSkipBootstrap() {
 
         return skipBootstrap;
     }
@@ -94,9 +103,9 @@ public class Switchboard {
      *
      * @param controllers
      */
-    public void addControllers(Class<? extends Controller>... controllers) {
+    public void addControllers(Class<? extends WandlediController>... controllers) {
 
-        for (Class<? extends Controller> controller : controllers) {
+        for (Class<? extends WandlediController> controller : controllers) {
             addController(controller);
         }
     }
@@ -105,10 +114,10 @@ public class Switchboard {
      *
      * @param controller
      */
-    public void addController(Class<? extends Controller> controller) {
+    public void addController(Class<? extends WandlediController> controller) {
 
         try {
-            Controller instance = controller.newInstance();
+            WandlediController instance = controller.newInstance();
             addController(instance.getName(), controller);
             instance.controllerRegistered();
         } catch (InstantiationException ex) {
@@ -124,7 +133,7 @@ public class Switchboard {
      * @param name A custom name for the controller.
      * @param controller
      */
-    public void addController(String name, Class<? extends Controller> controller) {
+    public void addController(String name, Class<? extends WandlediController> controller) {
 
         controllers.put(name, controller, isStateful(controller));
     }
@@ -151,12 +160,12 @@ public class Switchboard {
         boolean dispatched = false;
         try {
             HttpServletRequest wRequest = new RequestWrapper(request, action.getParameters());
-            Controller controller = controller(action.getController(), wRequest, response);
+            WandlediController controller = controller(action.getController(), wRequest, response);
             if (controller != null) {
                 setImplicitObjects(wRequest);
                 if (controller.isSpellController()) {
                     if (i18n()) {
-                        PageController pc = (PageController) controller;
+                        SpellController pc = (SpellController) controller;
                         pc.getPage().setMessages(getMessages(request));
                     }
                 }
@@ -172,9 +181,8 @@ public class Switchboard {
                                     : template(controller.getWandlediRequest().getView());
                             request.getRequestDispatcher(template).include(wRequest, response);
                         } else {
-                            wandle(controller, action, 
-                                    template(action.getController(),
-                                    action.getName()), request, response);
+                            wandle(controller, template(action.getController(),
+                                    action.getName()), response);
                         }
                     }
                     dispatched = true;
@@ -187,10 +195,10 @@ public class Switchboard {
         return dispatched;
     }
 
-    private void wandle(Controller controller, Action action, String template,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void wandle(WandlediController controller, String template, HttpServletResponse response)
+            throws IOException {
 
-        PageController pc = (PageController) controller;
+        SpellController pc = (SpellController) controller;
         Scroll scroll = pc.getPage().getScroll();
         Wandler wandler = new Wandler();
         if (pc.getPage().getFile() != null) {
@@ -213,7 +221,7 @@ public class Switchboard {
         }
     }
 
-    protected Messages getMessages(HttpServletRequest request) {
+    public Messages getMessages(HttpServletRequest request) {
 
         String lang = (String) request.getSession().getAttribute("lang");
         if (lang == null) {
@@ -264,7 +272,7 @@ public class Switchboard {
      * @param response
      * @return
      */
-    private Controller controller(String name, HttpServletRequest request,
+    private WandlediController controller(String name, HttpServletRequest request,
             HttpServletResponse response) {
 
         if (name != null) {
@@ -278,7 +286,7 @@ public class Switchboard {
     }
 
     private void intercept(InterceptWith interceptWith, HttpServletRequest request,
-            HttpServletResponse response, Callable call, Method action, Controller controller) {
+            HttpServletResponse response, Callable call, Method action, WandlediController controller) {
         try {
             Interceptor interceptor = interceptWith.value().newInstance();
             interceptor.init(request, response);
@@ -299,11 +307,11 @@ public class Switchboard {
      * @param response
      * @return
      */
-    private Controller newController(String name, HttpServletRequest request,
+    private WandlediController newController(String name, HttpServletRequest request,
             HttpServletResponse response) {
 
         try {
-            Controller controller = (Controller) controllers.get(name).newInstance();
+            WandlediController controller = (WandlediController) controllers.get(name).newInstance();
             controller.init(request, response);
 
             return controller;
@@ -319,7 +327,7 @@ public class Switchboard {
         return null;
     }
 
-    private void execute(Controller controller, Method action, Callable call,
+    private void execute(WandlediController controller, Method action, Callable call,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         if (action.isAnnotationPresent(InterceptWith.class)) {
@@ -349,9 +357,9 @@ public class Switchboard {
      * @param response
      * @return
      */
-    private Controller savedController(String name, HttpServletRequest request,
+    private WandlediController savedController(String name, HttpServletRequest request,
             HttpServletResponse response) {
-        Controller ec = (Controller) request.getSession().getAttribute(name);
+        WandlediController ec = (WandlediController) request.getSession().getAttribute(name);
         if (ec == null) {
             ec = newController(name, request, response);
         } else {
@@ -365,7 +373,7 @@ public class Switchboard {
      * @param controller The controller whose action is to be performed.
      * @param action The name of the action (method) to be called.
      */
-    private boolean performAction(final Controller controller, String controllerName, String action,
+    private boolean performAction(final WandlediController controller, String controllerName, String action,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
 
         Method m = controllers.get(controllerName, action);
@@ -390,7 +398,7 @@ public class Switchboard {
         return true;
     }
 
-    protected Method lookupMethod(Controller controller, String action) {
+    protected Method lookupMethod(WandlediController controller, String action) {
 
         Method[] methods = controller.getClass().getMethods();
         for (Method method : methods) {

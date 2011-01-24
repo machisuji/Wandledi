@@ -1,3 +1,8 @@
 package wandledi.scala
 
-abstract class PageController extends wandledi.java.PageController with Persistence
+import wandledi.scala.html.Page
+
+abstract class PageController extends Controller with wandledi.java.SpellController {
+  override def isSpellController = true
+  def getPage: Page
+}

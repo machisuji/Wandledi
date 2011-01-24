@@ -69,6 +69,10 @@ public class SelectableElement implements Selectable, Element {
         return element.getSelector();
     }
 
+    public Scroll getScroll() {
+        return element.getScroll();
+    }
+
     public void cast(Spell spell) {
         element.cast(spell);
     }

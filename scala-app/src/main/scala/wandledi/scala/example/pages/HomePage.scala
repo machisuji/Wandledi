@@ -2,7 +2,6 @@ package wandledi.scala.example.pages
 
 import wandledi.scala.example.models.BlogEntry
 import wandledi.scala.example.models.Comment
-import wandledi.scala.example.models.JavaBlogEntry
 import wandledi.scala.html.SelectableElement
 import wandledi.scala.html._
 import wandledi.java.Switchboard.linkToUri
@@ -16,17 +15,15 @@ class HomePage extends Page {
 
   var loggedIn: Boolean = false
 
-  def beforeAction(msg: Option[String], homeLink: String) {
+  def beforeAction(msg: Option[String], homeLink: String) {	  
     get("rel" -> "stylesheet").setAttribute("href", linkToUri("/css/main.css"))
-    get(".homeLink").setAttribute("href", homeLink)
+    get(".homelink").setAttribute("href", homeLink)
     get("#right").insert(msg.get) unless msg.isEmpty
     if (loggedIn) {
       get("href" -> "login").setAttribute("href", "post")
       get("button").replace(true, "Post Entry")
     }
   }
-
-  def node = <any name="author"/>
 
   def index(entries: Seq[BlogEntry]) {
     if (entries.isEmpty) {
@@ -54,7 +51,7 @@ class HomePage extends Page {
       page.get("name" -> "title").setAttribute("value", title.get) unless title.isEmpty
       page.get("name" -> "content").replace(true, content.get) unless content.isEmpty
     }
-    get(".entry").changeAttribute("class", "form $val")
+    get(".entry").changeAttribute("class")("form " + _)
   }
 
   def post() {
@@ -67,14 +64,16 @@ class HomePage extends Page {
     get(".entry").foreachWithIndexIn(comments) { (e, comment, index) =>
       if (index == 0) { // blog entry
         produceEntry(e, entry)
+        e.get(".footer").hide()
       } else {
         if (index == comments.size - 1) { // comment form
           e.setAttribute("id", "last")
-          e.changeAttribute("class", "form $val")
+          e.changeAttribute("class")("form " + _)
+          includeInEntry("/home/comment.xhtml", e) { page => /* include unchanged */ }
         } else { // comment
           produceComment(e, comment)
           includeDeleteButton(e, comment, entry.getId.longValue) provided loggedIn
-          e.changeAttribute("class", "comment $val")
+          e.changeAttribute("class")("comment " + _)
         }
       }
     }
@@ -88,7 +87,7 @@ class HomePage extends Page {
       page.get("name" -> "email").setAttribute("value", email.get) unless email.isEmpty
       page.get("name" -> "content").replace(true, content.get) unless content.isEmpty
     }
-    get(".entry").changeAttribute("class", "form $val")
+    get(".entry").changeAttribute("class")("form " + _)
     get("#right").insert(msg.get) unless msg.isEmpty
   }
 
@@ -96,31 +95,41 @@ class HomePage extends Page {
     comment(None, entry, None, None, None)
   }
 
+  def message_=(msg: String): Unit = get("#right").insert(msg)
+
+  /**Always returns null.
+   */
+  def message: String = null
+
   private def includeDeleteButton(e: SelectableElement, comment: Comment, bid: Long) {
     e.get("br").includeFile("/home/delete.xhtml") { page =>
-      page.get("a").setAttribute("href", linkToId("home", "deleteComment", comment.getId()) + "?bid=" + bid)
+      page.get("a").setAttribute("href", linkToId("home", "deleteComment", comment.id) + "?bid=" + bid)
     }
   }
 
-  private def includeInEntry(file: String, selectable: Selectable)(magic: (Selectable) => Unit) {
+  private def includeInEntry(file: String, selectable: ScalaSelectable)(magic: (ScalaSelectable) => Unit) {
     selectable.get("p").includeFile(file)(magic)
     selectable.get("span").hide()
     selectable.get("br").hide()
   }
 
   private def produceEntry(e: SelectableElement, entry: BlogEntry) {
-    e.get(".heading").replace(true, entry.getTitle)
-    e.get(".user").replace(true, entry.getAuthor)
-    e.get(".date").replace(true, entry.getDate.toString)
-    e.get(".text").replace(true, entry.getContent)
-    e.get(".footer").insert(entry.getComments.size + " ")
-    e.get("href" -> "comments").setAttribute("href", linkToId("home", "comments", entry.getId))
+    e.get(".heading").replace(true, entry.title)
+    e.get(".user").replace(true, entry.author)
+    e.get(".date").replace(true, if (entry.date != null) entry.date.toString else "???")
+    e.get(".text").replace(true, entry.content)
+    e.get("href" -> "comments").setAttribute("href", linkToId("home", "comments", entry.id))
+    if (entry.comments.size > 0) {
+      e.get(".footer").insert(entry.comments.size + " ")
+    } else {
+      e.get("href" -> "comments").replace(true, "add comment")
+    }
   }
 
   private def produceComment(e: SelectableElement, comment: Comment) {
-    e.get(".heading").replace(true, "Comment from " + comment.getAuthor)
-    e.get(".subheading").replace(true, comment.getDate.toString)
-    e.get(".text").replace(true, comment.getContent)
+    e.get(".heading").replace(true, "Comment from " + comment.author)
+    e.get(".subheading").replace(true, comment.date.toString)
+    e.get(".text").replace(true, comment.content)
     e.get(".footer").hide()
   }
 }

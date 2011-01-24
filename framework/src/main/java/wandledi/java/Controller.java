@@ -28,7 +28,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Markus Kahl
  */
-public class Controller implements Serializable {
+public class Controller implements Serializable, WandlediController {
 
     protected static final long serialVersionUID = 20234289L;
 
@@ -65,22 +65,37 @@ public class Controller implements Serializable {
      * which usually happens only once.
      *
      */
-    protected void controllerRegistered() {
+    public void controllerRegistered() {
 
     }
 
     /**Called before each action.
      * Override to do stuff before each action.
      */
-    protected void beforeAction() {
+    public void beforeAction() {
 
     }
 
     /**Called after each action.
      * Override to do stuff after each action.
      */
-    protected void afterAction() {
+    public void afterAction() {
 
+    }
+
+    /**Returns this controller's name under which it is called in the URL.
+     *
+     * @return
+     */
+    public String getName(Class<?> controller) {
+
+        String simpleName = controller.getSimpleName();
+        String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
+        String pattern = "Controller";
+        if (name.length() > pattern.length() && name.endsWith(pattern)) {
+            name = name.substring(0, name.length() - pattern.length());
+        }
+        return name;
     }
 
     /**Returns this controller's name under which it is called in the URL.
@@ -89,13 +104,7 @@ public class Controller implements Serializable {
      */
     public String getName() {
 
-        String simpleName = getClass().getSimpleName();
-        String name = simpleName.substring(0, 1).toLowerCase() + simpleName.substring(1);
-        String pattern = "Controller";
-        if (name.length() > pattern.length() && name.endsWith(pattern)) {
-            name = name.substring(0, name.length() - pattern.length());
-        }
-        return name;
+        return getName(getClass());
     }
 
     /**Marks the current request as viewless.
@@ -122,12 +131,19 @@ public class Controller implements Serializable {
         this.flash = Switchboard.getFlash(request);
     }
 
-    protected WandlediRequest getWandlediRequest() {
+    public WandlediRequest getWandlediRequest() {
 
         return wandlediRequest;
     }
 
-    protected void setParam(String name, String value) {
+    /**Sets the request parameter with the given name and value to the current request.
+     * This is the same as if the request was made with &name=value at the end of the URL
+     * (in case of a GET requets that is).
+     *
+     * @param name Name of the parameter to set.
+     * @param value Value of the parameter.
+     */
+    public void setParam(String name, String value) {
 
         ((RequestWrapper)request).setParameter(name, value);
     }
@@ -137,7 +153,7 @@ public class Controller implements Serializable {
      * @param name
      * @return
      */
-    protected String param(String name) {
+    public String param(String name) {
 
         return request.getParameter(name);
     }
@@ -147,7 +163,7 @@ public class Controller implements Serializable {
      * @param name
      * @return
      */
-    protected String[] params(String name) {
+    public String[] params(String name) {
 
         return request.getParameterValues(name);
     }
@@ -164,7 +180,7 @@ public class Controller implements Serializable {
      * the respective template for the action.
      *
      */
-    protected void doOutput() {
+    public void doOutput() {
 
         setViewless();
     }
@@ -174,7 +190,7 @@ public class Controller implements Serializable {
      *
      * @throws IOException
      */
-    protected PrintWriter getWriter() {
+    public PrintWriter getWriter() {
 
         doOutput();
         try {
@@ -191,12 +207,12 @@ public class Controller implements Serializable {
      *
      * @param file
      */
-    protected void renderFile(String file) {
+    public void renderFile(String file) {
 
         wandlediRequest.setView(file);
     }
 
-    protected void renderAction(String action) {
+    public void renderAction(String action) {
 
         wandlediRequest.setView(getName() + "/" + action + ".jsp");
     }
@@ -206,7 +222,7 @@ public class Controller implements Serializable {
      *
      * @param controller
      */
-    protected void redirectTo(String controller) {
+    public void redirectTo(String controller) {
 
         redirectTo(controller, "");
     }
@@ -218,7 +234,7 @@ public class Controller implements Serializable {
      * @param action Target controller's action to be called.
      * @param parameters Parameters to be appended.
      */
-    protected void redirectTo(String controller, String action, Parameter... parameters) {
+    public void redirectTo(String controller, String action, Parameter... parameters) {
 
         redirectToUri(DefaultRoute.getURI(controller, action), parameters);
     }
@@ -229,7 +245,7 @@ public class Controller implements Serializable {
      *
      * @param action The Action to be redirected to.
      */
-    protected void redirectTo(Action action) {
+    public void redirectTo(Action action) {
 
         redirectTo(action.getController(), action.getName(),
                 action.getParameters().toArray(new Parameter[action.getParameters().size()]));
@@ -239,7 +255,7 @@ public class Controller implements Serializable {
      *
      * @param url
      */
-    protected void redirectToUrl(String url) {
+    public void redirectToUrl(String url) {
 
         try {
             setViewless();
@@ -254,7 +270,7 @@ public class Controller implements Serializable {
      * @param uri URI to be redirected to.
      * @param parameters GET parameters.
      */
-    protected void redirectToUri(String uri, Parameter... parameters) {
+    public void redirectToUri(String uri, Parameter... parameters) {
 
         try {
             setViewless();
@@ -282,7 +298,7 @@ public class Controller implements Serializable {
      * @param action
      * @param id
      */
-    protected void redirectTo(String controller, String action, long id) {
+    public void redirectTo(String controller, String action, long id) {
 
         try {
             setViewless();
@@ -298,7 +314,7 @@ public class Controller implements Serializable {
      * @param code
      * @param message
      */
-    protected void error(int code, String message) {
+    public void error(int code, String message) {
         
         try {
             setViewless();
@@ -333,13 +349,15 @@ public class Controller implements Serializable {
         return null;
     }
 
-    protected ServletContext getServletContext() {
+    public ServletContext getServletContext() {
 
         return Switchboard.getInstance().getServletContext();
     }
 
     /**Returns a Database instance to use for this request.
      * It will be closed implicitly at the end of the request.
+     *
+     * @TODO this is, as of yet, not exactly thread safe
      *
      * @return
      */
@@ -355,7 +373,7 @@ public class Controller implements Serializable {
         return database;
     }
 
-    protected Messages getMessages() {
+    public Messages getMessages() {
 
         return Switchboard.getInstance().getMessages(request);
     }

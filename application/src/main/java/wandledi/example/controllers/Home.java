@@ -21,7 +21,7 @@ public class Home extends PageController {
     protected HomePage page = new HomePage();
 
     @Override
-    protected void beforeAction() {
+    public void beforeAction() {
 
         page.setLogin(getLogin());
         page.beforeAction((String) flash.get("msg"), DefaultRoute.getURI("home", "index"));

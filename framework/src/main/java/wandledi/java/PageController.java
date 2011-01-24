@@ -6,7 +6,7 @@ import wandledi.java.html.Page;
  *
  * @author Markus Kahl
  */
-public abstract class PageController extends Controller {
+public abstract class PageController extends Controller implements SpellController {
 
     @Override
     public boolean isSpellController() {

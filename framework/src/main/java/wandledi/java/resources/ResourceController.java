@@ -476,7 +476,7 @@ public class ResourceController extends Controller {
     }
 
     @Override
-    protected void controllerRegistered() {
+    public void controllerRegistered() {
 
         for (Class<?> model : models.values()) {
             LinkedList<String> wNames = new LinkedList<String>();

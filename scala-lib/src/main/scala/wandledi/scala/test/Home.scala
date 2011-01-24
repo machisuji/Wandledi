@@ -7,6 +7,6 @@ class Home extends Controller {
   def index() {
     val user = User.findAll.head
     user.name = "Heinz 2"
-    user.save
+    user.save()
   }
 }

@@ -6,20 +6,20 @@ import java.util.Map;
 
 /**
  *
- * @author markus
+ * @author Markus Kahl
  */
 public class Controllers {
 
     private Map<String, ControllerEntry> map = new HashMap<String, ControllerEntry>();
 
-    public Class<? extends Controller> put(String name, Class<? extends Controller> klass,
+    public Class<? extends WandlediController> put(String name, Class<? extends WandlediController> klass,
             boolean stateful) {
 
         ControllerEntry entry = map.put(name, new ControllerEntry(klass, stateful));
         return entry != null ? entry.controller : null;
     }
 
-    public Class<? extends Controller> put(String name, Class<? extends Controller> klass) {
+    public Class<? extends WandlediController> put(String name, Class<? extends WandlediController> klass) {
 
         return put(name, klass, false);
     }
@@ -59,7 +59,7 @@ public class Controllers {
         return entry != null ? entry.actions.get(action) : null;
     }
 
-    public Class<? extends Controller> get(String controller) {
+    public Class<? extends WandlediController> get(String controller) {
 
         ControllerEntry entry = map.get(controller);
         return entry != null ? entry.controller : null;
@@ -67,17 +67,17 @@ public class Controllers {
 
     private static class ControllerEntry {
 
-        private Class<? extends Controller> controller;
+        private Class<? extends WandlediController> controller;
         private boolean stateful;
         private Map<String, Method> actions = new HashMap<String, Method>();
 
-        public ControllerEntry(Class<? extends Controller> controller, boolean stateful) {
+        public ControllerEntry(Class<? extends WandlediController> controller, boolean stateful) {
 
             this.controller = controller;
             this.stateful = stateful;
         }
 
-        public ControllerEntry(Class<? extends Controller> controller) {
+        public ControllerEntry(Class<? extends WandlediController> controller) {
 
             this(controller, false);
         }

@@ -11,6 +11,14 @@ class Wandledi(info: ProjectInfo) extends ParentProject(info) {
   lazy val scalaApp = project("scala-app", "Scala Application",
     new App(_), scalaLib)
 
+  lazy val runScalaApp = task {
+    scalaApp.jetty.run
+  } dependsOn(scalaApp.compile) describedAs("Runs the Scala Application.")
+
+  lazy val runJavaApp = task {
+    app.jetty.run
+  } dependsOn(app.compile) describedAs("Runs the (Java) Application.")
+
   class CoreProject(info: ProjectInfo) extends DefaultProject(info)
 
   class App(info: ProjectInfo) extends DefaultWebProject(info) {
