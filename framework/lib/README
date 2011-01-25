@@ -1,9 +1,0 @@
-This are only compile-time libraries.
-To actually use OpenID with Wandledi there are number of
-other JARs required. Refer to the example project to see which.
-
-The Servlet API on the other hand will probably not be required (within your lib dir) to run
-a Wandledi application, since the servlet container on which it is deployed
-should provide the necessary API.
-
-Exchange the JPA provider with the one you like for deployment.
