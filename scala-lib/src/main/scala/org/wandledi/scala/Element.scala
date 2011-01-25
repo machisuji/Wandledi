@@ -1,28 +1,28 @@
-package wandledi.scala.html
+package org.wandledi.scala
 
 import org.xml.sax.Attributes
-import wandledi.core.Scroll
-import wandledi.core.Selector
-import wandledi.core.SimpleAttributes
-import wandledi.core.Spell
-import wandledi.java.html.ElementForeachImpl
-import wandledi.java.html.ElementImpl
-import wandledi.java.html.Plan
-import wandledi.spells.InsertionIntent
-import wandledi.spells.ReplacementIntent
-import wandledi.spells.StringTransformation
+import org.wandledi.Scroll
+import org.wandledi.Selector
+import org.wandledi.SimpleAttributes
+import org.wandledi.Spell
+import org.wandledi.ElementForeachImpl
+import org.wandledi.ElementImpl
+import org.wandledi.Plan
+import org.wandledi.spells.InsertionIntent
+import org.wandledi.spells.ReplacementIntent
+import org.wandledi.spells.StringTransformation
 
 class Element(
   selector: Selector,
   scroll: Scroll)
-extends wandledi.java.html.ElementImpl(selector, scroll) with ScalaElement {
+extends org.wandledi.ElementImpl(selector, scroll) with ScalaElement {
 
   private implicit def toJavaList[T: ClassManifest](l: Iterable[T]) =
     java.util.Arrays.asList(l.toArray: _*)
 
   override def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
     val plan = new Plan[T] {
-      def execute(e: wandledi.java.html.SelectableElement, item: T): Unit =
+      def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElement(e.getSelector, e.getScroll), item)
     }
     val foreach = new ElementForeachImpl(this, items)
@@ -31,7 +31,7 @@ extends wandledi.java.html.ElementImpl(selector, scroll) with ScalaElement {
 
   override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit) {
     val plan = new Plan[T] {
-      def execute(e: wandledi.java.html.SelectableElement, item: T): Unit =
+      def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElement(e.getSelector, e.getScroll), item, index)
     }
     val foreach = new ElementForeachImpl(this, items)

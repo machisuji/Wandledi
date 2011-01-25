@@ -1,14 +1,14 @@
-package wandledi.scala.html
+package org.wandledi.scala
 
 import org.xml.sax.Attributes
-import wandledi.core.Scroll
-import wandledi.core.Selector
-import wandledi.core.Spell
+import org.wandledi.Scroll
+import org.wandledi.Selector
+import org.wandledi.Spell
 
 class SelectableElement(
   selector: Selector, 
   scroll: Scroll)
-extends wandledi.java.html.SelectableElement(selector, scroll) with ScalaSelectable with ScalaElement {
+extends org.wandledi.SelectableElement(selector, scroll) with ScalaSelectable with ScalaElement {
 
   private val selectable = new Selectable(scroll)
 

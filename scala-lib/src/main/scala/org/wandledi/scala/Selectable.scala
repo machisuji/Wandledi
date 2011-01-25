@@ -1,13 +1,13 @@
-package wandledi.scala.html
+package org.wandledi.scala
 
-import wandledi.core.Attribute
-import wandledi.core.CssSelector
-import wandledi.core.Scroll
-import wandledi.core.Selector
-import wandledi.core.UniversalSelector
-import wandledi.java.html.LocalSpells
+import org.wandledi.Attribute
+import org.wandledi.CssSelector
+import org.wandledi.Scroll
+import org.wandledi.Selector
+import org.wandledi.UniversalSelector
+import org.wandledi.LocalSpells
 
-class Selectable(scroll: Scroll) extends wandledi.java.html.SelectableImpl(scroll) with ScalaSelectable {
+class Selectable(scroll: Scroll) extends org.wandledi.SelectableImpl(scroll) with ScalaSelectable {
 
   override def get(selector: Selector) = new Element(selector, scroll)
 

@@ -1,7 +1,7 @@
-package wandledi.scala.html
+package org.wandledi.scala
 
 import org.xml.sax.Attributes
-import wandledi.core.Spell
+import org.wandledi.Spell
 
 trait ScalaElement {
 

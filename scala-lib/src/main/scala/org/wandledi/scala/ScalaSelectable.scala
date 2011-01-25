@@ -1,6 +1,6 @@
-package wandledi.scala.html
+package org.wandledi.scala
 
-import wandledi.core.Selector
+import org.wandledi.Selector
 
 trait ScalaSelectable {
 
