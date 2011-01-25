@@ -1,39 +1,42 @@
 Wandledi
 ========
 
-Wandledi is a little *Java* web framework still based on the Java Servlet 2.5 specification. It follows an alternative approach to the whole template business.
+Wandledi is an HTML transformation library which is supposed to provide
+an alternative to all that template business.
 See below for more details.
+
+Wandledi used to be a web framework too.
+But I have split it up.
+Now Wandledi is only the library responsible for transforming HTML.
+The little web framework is still there, though as a separate project: WandlediWeb
 
 
 Repository structure
 --------------------
 
-* **framework** - The actual Wandledi project
-* **application** - An example Java web application using Wandledi
+* **core** - The actual Wandledi project
 * **scala-lib** - Wandledi Wrapper for Scala
-* **scala-app** - An example Scala web application using Wandledi
 
 How it used to be
 -----------------
 
 There is this widely used approach where you have a controller,
 which does the logic and fetches necessary data to hand it
-over to a template file (jsp, erb, etc.).
+over to a template file (jsp, erb, you name it).
 So you always have two parts. The controller and the template.
 
-Wandledi can do that, too.
-This looks as follows.
+In WandlediWeb for Scala this would look as follows.
 
 **Controller**:
 
-    import wandledi.java.Controller;
+    import org.wandlediweb.scala.Controller
 
-    public class HomeController extends Controller {
-        public void index() {
-            model.put("wb", session.get("user") != null);
-            model.put("msg", "Paragraph No.");
-            model.put("items", java.util.Arrays.asList("One", "Two", "Three"));
-        }
+    class HomeController extends Controller {
+      def index() {
+        model += "wb" -> session.get("user").isDefined)
+        model += "msg" -> "Paragraph No."
+        model += "items" -> List("One", "Two", "Three")
+      }
     }
 
 **Template** (index.jsp):
@@ -56,13 +59,13 @@ I don't like "programming" with a cumbersome replacement (read EL and/or JSTL)
 for the actual programming language I'm working with.
 These ugly if-tags and other directives not only clutter what's really important
 (the HTML), but also they mess it up with "programmer's stuff" which not only
-confused HTML editing software like Dreamweaver but also your web designer.
+confuses HTML editing software like Dreamweaver but also your web designer.
 
 The Wandledi approach
 ---------------------
 
 So I'd rather like to keep the HTML clean and express stuff like if and loops
-in a real programming language. Now let's see how this is done in Wandledi.
+in a real programming language. Now let's see how this is done using Wandledi.
 First Wandledi introduces a third member to the party after throwing out
 the template and replacing it with plain HTML*.
 
@@ -75,50 +78,41 @@ Not very enchanting, but the namespace is pure chaos right now anyway.
 The Page class provides methods to the actual controller to transform
 every HTML page.
 
-So this leaves us with the three parts: Controller, Page, XHTML file.
+So this leaves us with the three parts: Controller, Page, HTML file.
 
 \**XHTML to be more precise since currently I'm simply using SAX to parse
 the pages.*
 
 **Controller**:
 
-    import wandledi.java.PageController;
+    import org.wandlediweb.scala.PageController
 
-    public class HomeController extends PageController {
-    
-        HomePage page = new HomePage();
+    class HomeController extends PageController {
+      val page = new HomePage
+      override def getPage = page
         
-        public void index() {
-            boolean wb = session.get("user") != null;
-            String msg = "Paragraph No.";
-            Collection<String> items = java.util.Arrays.asList("One", "Two", "Three");
+      def index() {
+        val wb = session.get("user").isDefined
+        val msg = "Paragraph No."
+        val items = List("One", "Two", "Three")
             
-            page.index(wb, msg, items);
-        }
-        
-        @Override
-        public Page getPage() {
-            return page;
-        }
+        page.index(wb, msg, items)
+      }
     }
     
 **Page**:
 
-    import wandledi.java.html.PageImpl;
+    import org.wandlediweb.scala.Page
+    import org.wandlediweb.scala.Implicits.trailingConditionals
     
-    public class HomePage extends PageImpl {
-    
-        public void index(boolean wb, String msg, Collection<String> items) {
-            if (wb) {
-                get("body").insert("Welcome back!");
-            }
-            get("p").foreachIn(items).apply(new Plan<String>() {
-                public void execute(SelectableElement element, String item) {
-                    element.insertFirst(msg);
-                    element.insertLast(item);
-                }
-            });
+    class HomePage extends Page {
+      def index(wb: Boolean, msg: String, items: Iterable[String]) {
+        $("body").insert("Welcome back!") provided wb
+        $("p").foreachIn(items) { e, item =>
+          e.insertFirst(msg)
+          e.insertLast(item)
         }
+      }
     }
     
 **XHTML file**:
@@ -156,7 +150,7 @@ application with this approach and eventually I will see how it works out.
 I think that having another layer between view and controller that is responsible
 for how exactly everything is going to be displayed may hold several advantages
 since you are able to apply all patterns and OOP techniques to it since it is
-normal Java code now and no auxiliary between HTML and Java.
+normal code now and no auxiliary between HTML and a programming language.
 
 How is it coming along?
 -----------------------
