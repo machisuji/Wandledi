@@ -1,6 +1,4 @@
-package wandledi.java.html;
-
-import wandledi.core.*;
+package org.wandledi;
 
 public class SelectableImpl implements Selectable {
 

@@ -1,9 +1,6 @@
-package wandledi.java.html;
+package org.wandledi;
 
 import org.xml.sax.Attributes;
-import wandledi.core.AbstractSpell;
-import wandledi.core.Scroll;
-import wandledi.core.Spell;
 
 /**
  *

@@ -1,7 +1,7 @@
-package wandledi.core;
+package org.wandledi;
 
 import org.xml.sax.Attributes;
-import static wandledi.util.Methods.select;
+import static org.wandledi.util.Methods.select;
 
 /**A UniversalSelector can match an element against arbitrary attributes.
  *

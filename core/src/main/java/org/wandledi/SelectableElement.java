@@ -1,14 +1,9 @@
-package wandledi.java.html;
+package org.wandledi;
 
 import java.util.Collection;
-import wandledi.core.Attribute;
-import wandledi.core.CssSelector;
-import wandledi.core.Scroll;
-import wandledi.core.Selector;
-import wandledi.core.Spell;
-import wandledi.spells.InsertionIntent;
-import wandledi.spells.ReplacementIntent;
-import wandledi.spells.StringTransformation;
+import org.wandledi.spells.InsertionIntent;
+import org.wandledi.spells.ReplacementIntent;
+import org.wandledi.spells.StringTransformation;
 
 /**
  *

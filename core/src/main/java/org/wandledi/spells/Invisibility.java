@@ -1,8 +1,8 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
 import org.xml.sax.Attributes;
-import wandledi.core.AbstractSpell;
-import wandledi.core.Spell;
+import org.wandledi.AbstractSpell;
+import org.wandledi.Spell;
 
 /**Hides the target element.
  *

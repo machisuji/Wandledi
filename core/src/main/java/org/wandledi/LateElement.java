@@ -1,8 +1,4 @@
-package wandledi.java.html;
-
-import wandledi.core.Scroll;
-import wandledi.core.Selector;
-import wandledi.core.Spell;
+package org.wandledi;
 
 public class LateElement extends ElementImpl {
 

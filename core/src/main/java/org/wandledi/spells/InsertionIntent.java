@@ -1,6 +1,6 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
-import wandledi.core.Spell;
+import org.wandledi.Spell;
 
 /**
  *

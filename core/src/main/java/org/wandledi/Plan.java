@@ -1,4 +1,4 @@
-package wandledi.java.html;
+package org.wandledi;
 
 /**
  *

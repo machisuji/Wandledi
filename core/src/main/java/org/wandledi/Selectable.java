@@ -1,7 +1,4 @@
-package wandledi.java.html;
-
-import wandledi.core.Attribute;
-import wandledi.core.Selector;
+package org.wandledi;
 
 public interface Selectable {
 

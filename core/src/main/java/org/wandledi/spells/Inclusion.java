@@ -1,4 +1,4 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
 import java.io.FileReader;
 import java.io.IOException;
@@ -11,10 +11,9 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import wandledi.core.Scroll;
-import wandledi.core.Spell;
-import wandledi.core.VoidResolver;
-import wandledi.java.Switchboard;
+import org.wandledi.Scroll;
+import org.wandledi.Spell;
+import org.wandledi.VoidResolver;
 
 /**With this spell you can include other html files into the current one.
  * Note that the element this spell is apply upon will cease existing.
@@ -72,9 +71,9 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     }
 
     public String getPath(String file) {
-
-        Switchboard board = Switchboard.getInstance();
-        return board.getServletContext().getRealPath(/*board.getViewDirectory() + */file);
+        /*Switchboard board = Switchboard.getInstance();
+        return board.getServletContext().getRealPath(file);*/
+        return file;
     }
 
     public void startTransformedElement(String name, Attributes attributes) {

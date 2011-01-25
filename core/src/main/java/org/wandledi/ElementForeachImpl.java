@@ -1,10 +1,8 @@
-package wandledi.java.html;
+package org.wandledi;
 
-import wandledi.core.Scroll;
-import wandledi.core.Spell;
-import wandledi.spells.Changeling;
-import wandledi.spells.Duplication;
-import wandledi.spells.ArchSpell;
+import org.wandledi.spells.Changeling;
+import org.wandledi.spells.Duplication;
+import org.wandledi.spells.ArchSpell;
 
 import java.util.Collection;
 import java.util.LinkedList;

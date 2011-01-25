@@ -1,4 +1,4 @@
-package wandledi.core;
+package org.wandledi;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -15,7 +15,7 @@ import org.xml.sax.Locator;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-import wandledi.spells.ArchSpell;
+import org.wandledi.spells.ArchSpell;
 
 /**
  *
@@ -47,15 +47,6 @@ public class Wandler implements ContentHandler, Spell {
             parser = XMLReaderFactory.createXMLReader();
             parser.setContentHandler(this);
             parser.setEntityResolver(new VoidResolver());
-            /*try {
-                parser.setFeature("http://xml.org/sax/features/validation", false);
-                parser.setFeature("http://apache.org/xml/features/nonvalidating/load-dtd-grammar", false);
-                parser.setFeature("http://apache.org/xml/features/nonvalidating/load-external-dtd", false);
-                parser.setFeature("http://xml.org/sax/features/external-general-entities", false);
-                parser.setFeature("http://xml.org/sax/features/external-parameter-entities", false);
-            } catch (SAXException e) {
-                System.err.println("Cannot activate validation.");
-            }*/
         } catch (SAXException ex) {
             throw new RuntimeException("Could not create Wandler", ex);
         }

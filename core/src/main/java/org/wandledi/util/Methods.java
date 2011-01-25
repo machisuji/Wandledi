@@ -1,6 +1,6 @@
-package wandledi.util;
+package org.wandledi.util;
 
-import wandledi.core.Attribute;
+import org.wandledi.Attribute;
 
 public class Methods {
 

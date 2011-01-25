@@ -1,7 +1,25 @@
 package wandledi.test;
 
-import wandledi.java.html.SelectableElement;
-import wandledi.java.html.Selectable;
+import org.wandledi.Attribute;
+import org.wandledi.ElementImpl;
+import org.wandledi.Plan;
+import org.wandledi.Scroll;
+import org.wandledi.Selectable;
+import org.wandledi.SelectableElement;
+import org.wandledi.SelectableImpl;
+import org.wandledi.SimpleAttributes;
+import org.wandledi.Spell;
+import org.wandledi.Wandler;
+import org.wandledi.spells.ArchSpell;
+import org.wandledi.spells.AttributeTransformation;
+import org.wandledi.spells.Changeling;
+import org.wandledi.spells.ComplexSpell;
+import org.wandledi.spells.Duplication;
+import org.wandledi.spells.Inclusion;
+import org.wandledi.spells.Insertion;
+import org.wandledi.spells.InsertionIntent;
+import org.wandledi.spells.ReplacementIntent;
+import org.wandledi.spells.StringTransformation;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
@@ -10,12 +28,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
-import wandledi.core.*;
-import wandledi.java.html.Element;
-import wandledi.java.html.ElementImpl;
-import wandledi.java.html.PageImpl;
-import wandledi.java.html.Plan;
-import wandledi.spells.*;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -27,22 +39,15 @@ import static org.testng.Assert.*;
 
 public class SpellExperiment {
 
-    public static String DIR = "src/test/wandledi/test/";
+    public static String DIR = "core/src/test/java/wandledi/test/";
 
-    PageImpl pages = new PageImpl();
-    Wandler wandler = new Wandler();
-    Random random = new Random();
+    private SelectableImpl pages;
+    private Wandler wandler = new Wandler();
+    private Random random = new Random();
 
     @BeforeMethod
     public void setUp() {
-        
-        pages = new PageImpl();
-    }
-
-    public static void main(String[] args) {
-
-        DIR = "/home/markus/Entwicklung/java/Wandledi/framework/" + DIR;
-        new SpellExperiment().testCombinedSpells();
+        pages = new SelectableImpl(new Scroll());
     }
 
     /**This test fails for some reason.
@@ -149,7 +154,8 @@ public class SpellExperiment {
         assertEquals(p.getChildNodes().getLength(), 3);
         assertEquals(p.getTextContent(), "Just follow the day!");
         assertEquals(p.getChildNodes().item(1).getNodeName(), "span");
-        assertEquals(p.getChildNodes().item(1).getAttributes().getNamedItem("style").getTextContent(), style);
+        assertEquals(p.getChildNodes().item(1).getAttributes().getNamedItem("style").
+                getTextContent(), style);
     }
 
     @Test(enabled=true)
@@ -315,10 +321,12 @@ public class SpellExperiment {
         for (int i = 0; i < titles.size(); ++i) {
             assertEquals(headings.item(i).getTextContent(), titles.get(i));
             if (i % 2 == 1) {
-                assertTrue(headings.item(i).getAttributes().getNamedItem("style").getTextContent().contains("red"),
+                assertTrue(headings.item(i).getAttributes().getNamedItem("style").
+                        getTextContent().contains("red"),
                         "red background");
             } else {
-                assertTrue(headings.item(i).getAttributes().getNamedItem("style").getTextContent().contains("blue"),
+                assertTrue(headings.item(i).getAttributes().getNamedItem("style").
+                        getTextContent().contains("blue"),
                         "blue background");
             }
         }
@@ -412,7 +420,8 @@ public class SpellExperiment {
         }
         NodeList spans = doc.getElementsByTagName("span");
         assertEquals(spans.getLength(), 1);
-        assertEquals(spans.item(0).getAttributes().getNamedItem("style").getTextContent(), "color: red;");
+        assertEquals(spans.item(0).getAttributes().getNamedItem("style").getTextContent(),
+                "color: red;");
         assertEquals(spans.item(0).getTextContent(), time);
     }
 

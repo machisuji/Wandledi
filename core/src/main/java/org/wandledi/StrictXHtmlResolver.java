@@ -1,4 +1,4 @@
-package wandledi.core;
+package org.wandledi;
 
 import java.io.IOException;
 import java.net.URL;

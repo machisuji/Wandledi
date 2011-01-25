@@ -1,4 +1,4 @@
-package wandledi.java.html;
+package org.wandledi;
 
 import java.util.Collection;
 import java.util.Iterator;

@@ -1,6 +1,6 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
-import wandledi.core.Scroll;
+import org.wandledi.Scroll;
 
 /**
  *

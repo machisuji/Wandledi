@@ -1,4 +1,4 @@
-package wandledi.core;
+package org.wandledi;
 
 import java.util.Arrays;
 import java.util.Collection;

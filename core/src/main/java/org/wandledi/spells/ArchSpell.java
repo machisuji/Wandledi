@@ -1,10 +1,10 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
 import org.xml.sax.Attributes;
-import wandledi.core.AbstractSpell;
-import wandledi.core.Scroll;
-import wandledi.core.Spell;
-import wandledi.core.SpellLevel;
+import org.wandledi.AbstractSpell;
+import org.wandledi.Scroll;
+import org.wandledi.Spell;
+import org.wandledi.SpellLevel;
 
 import java.util.Iterator;
 import java.util.LinkedList;

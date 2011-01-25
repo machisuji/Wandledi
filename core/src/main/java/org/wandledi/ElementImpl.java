@@ -1,10 +1,19 @@
-package wandledi.java.html;
+package org.wandledi;
 
 import java.util.Collection;
+import org.wandledi.spells.AttributeTransformation;
+import org.wandledi.spells.Duplication;
+import org.wandledi.spells.Inclusion;
+import org.wandledi.spells.Insertion;
+import org.wandledi.spells.InsertionIntent;
+import org.wandledi.spells.Invisibility;
+import org.wandledi.spells.Replacement;
+import org.wandledi.spells.ReplacementIntent;
+import org.wandledi.spells.StringTransformation;
+import org.wandledi.spells.TransformedAttribute;
 
 import org.xml.sax.Attributes;
-import wandledi.core.*;
-import wandledi.spells.*;
+
 
 /**
  *

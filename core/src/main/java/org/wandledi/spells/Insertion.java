@@ -1,7 +1,7 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
 import org.xml.sax.Attributes;
-import wandledi.core.AbstractSpell;
+import org.wandledi.AbstractSpell;
 
 /**
  *

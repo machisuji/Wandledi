@@ -1,11 +1,11 @@
 package wandledi.test;
 
+import org.wandledi.Attribute;
+import org.wandledi.CssSelector;
+import org.wandledi.Selector;
+import org.wandledi.UniversalSelector;
 import org.testng.annotations.Test;
 import org.xml.sax.helpers.AttributesImpl;
-import wandledi.core.Attribute;
-import wandledi.core.CssSelector;
-import wandledi.core.Selector;
-import wandledi.core.UniversalSelector;
 
 import static org.testng.Assert.*;
 
@@ -13,7 +13,6 @@ public class SelectorExperiment {
 
     @Test
     public void testBasicSelectors() {
-    
         CssSelector label = CssSelector.valueOf("div");
         CssSelector klass = CssSelector.valueOf(".info");
         CssSelector labelAndClass = CssSelector.valueOf("div.info");
@@ -31,7 +30,6 @@ public class SelectorExperiment {
 
     @Test
     public void testUniversalSelectorsHashContract() {
-
         UniversalSelector u1 = new UniversalSelector("meta",
                 new Attribute("foo", "bar"),
                 new Attribute("http-equiv", "content-language"),
@@ -55,7 +53,6 @@ public class SelectorExperiment {
 
     @Test
     public void testUniversalMatches() {
-
         Selector selector = new UniversalSelector();
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute(null, "style", "style", null, "color: black;");

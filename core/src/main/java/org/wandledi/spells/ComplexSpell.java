@@ -1,7 +1,7 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
-import wandledi.core.AbstractSpell;
-import wandledi.core.Spell;
+import org.wandledi.AbstractSpell;
+import org.wandledi.Spell;
 
 /**A complex spell combines the effects of several other spells.
  *

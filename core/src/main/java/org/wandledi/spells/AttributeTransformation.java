@@ -1,11 +1,11 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.helpers.AttributesImpl;
-import wandledi.core.AbstractSpell;
-import wandledi.core.Attribute;
-import wandledi.core.SimpleAttributes;
-import wandledi.core.Spell;
+import org.wandledi.AbstractSpell;
+import org.wandledi.Attribute;
+import org.wandledi.SimpleAttributes;
+import org.wandledi.Spell;
 
 /**
  *

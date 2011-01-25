@@ -1,13 +1,10 @@
-package wandledi.core;
+package org.wandledi;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.xml.sax.Attributes;
-import wandledi.java.html.Element;
-import wandledi.java.html.Selectable;
-import wandledi.java.html.SelectableImpl;
 
 /**A Scroll contains a number of spells which can be applied using the scroll.
  *

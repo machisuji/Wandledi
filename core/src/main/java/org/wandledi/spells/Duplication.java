@@ -1,8 +1,15 @@
-package wandledi.spells;
+package org.wandledi.spells;
 
 import java.util.Iterator;
 import org.xml.sax.Attributes;
-import wandledi.core.*;
+import org.wandledi.AbstractSpell;
+import org.wandledi.Spell;
+import org.wandledi.ElementStart;
+import org.wandledi.ElementEnd;
+import org.wandledi.TransformedElementStart;
+import org.wandledi.SimpleAttributes;
+import org.wandledi.SpellLine;
+import org.wandledi.Characters;
 
 /**This transformations needs to store the whole element tree of the targeted
  * element in memory in order to be able to duplicate it.

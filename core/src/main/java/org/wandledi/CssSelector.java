@@ -1,7 +1,7 @@
-package wandledi.core;
+package org.wandledi;
 
 import org.xml.sax.Attributes;
-import static wandledi.util.Methods.select;
+import static org.wandledi.util.Methods.select;
 
 
 /**Note: This class has a natural ordering that is inconsistent with equals.
