@@ -16,8 +16,8 @@ extends org.wandledi.SelectableElement(selector, scroll) with ScalaSelectable wi
   override def get(atts: Tuple2[String, String]*): Element = selectable.get(atts: _*)
   override def get(label: String, atts: Tuple2[String, String]*): Element = selectable.get(label, atts: _*)
   override def get(selector: String): Element = selectable.get(selector)
-  override def at(selector: Selector): Selectable = selectable.at(selector)
-  override def at(selector: String): Selectable = selectable.at(selector)
+  override def at(selector: Selector) = selectable.at(selector)
+  override def at(selector: String) = selectable.at(selector)
 
   private val element = new Element(selector, scroll)
 

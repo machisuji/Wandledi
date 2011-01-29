@@ -71,27 +71,4 @@ extends org.wandledi.ElementImpl(selector, scroll) with ScalaElement {
   }
 
   // @TODO #replace which simply takes a function returning an XML node to be written
-
-  def test {
-
-    changeAttribute("class") {
-      ".entry " + _
-    }
-    changeAttribute("class")(".entry " + _)
-    setAttribute("style", "color: red;")
-    foreachWithIndexIn(List(1, 2, 3)) { (e, item, index) =>
-      e.replace(true, item.toString + " in row " + (index + 1))
-    }
-    includeFile("/home/post.xhtml") { (page) =>
-      page.get("#right").insert("message")
-    }
-    insert(true) { (spell) =>
-      spell.writeString("Hallo Welt")
-    }
-    replace(true) { (label, attributes, spell) =>
-      spell.startElement("p", new SimpleAttributes)
-      spell.writeString("Paragraph")
-      spell.endElement("p")
-    }
-  }
 }

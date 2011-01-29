@@ -23,12 +23,12 @@ class Selectable(scroll: Scroll) extends org.wandledi.SelectableImpl(scroll) wit
 
   override def get(selector: String): Element = get(CssSelector.valueOf(selector))
 
-  override def at(selector: Selector): Selectable = {
+  override def at(selector: Selector) = {
     val nestedScroll = new Scroll
     val localSpell = new LocalSpells(scroll, nestedScroll)
     scroll.addSpell(selector, localSpell)
-    new Selectable(nestedScroll)
+    new SelectableElement(selector, nestedScroll)
   }
 
-  override def at(selector: String): Selectable = at(CssSelector.valueOf(selector))
+  override def at(selector: String) = at(CssSelector.valueOf(selector))
 }

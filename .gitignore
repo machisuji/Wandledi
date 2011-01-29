@@ -9,3 +9,4 @@ project/boot/**
 target/**
 **/lib_managed/**
 nbproject/**
+test-output/**
