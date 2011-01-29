@@ -6,9 +6,10 @@ an alternative to all that template business.
 See below for more details.
 
 Wandledi used to be a web framework too.
-But I have split it up.
+But I have scrapped that.
 Now Wandledi is only the library responsible for transforming HTML.
-The little web framework is still there, though as a separate project: WandlediWeb
+Instead of a whole web framework I created a tiny lib which integrates
+Wandledi with arbitrary applications that base upon the Java Servlet API: Wandlet.
 
 
 Repository structure
@@ -16,6 +17,8 @@ Repository structure
 
 * **core** - The actual Wandledi project
 * **scala-lib** - Wandledi Wrapper for Scala
+* **wandlet** - Wandledi for the Servlet API
+* **wandlet-scala** - Wandlet for Scala
 
 How it used to be
 -----------------
@@ -25,7 +28,7 @@ which does the logic and fetches necessary data to hand it
 over to a template file (jsp, erb, you name it).
 So you always have two parts. The controller and the template.
 
-In WandlediWeb for Scala this would look as follows.
+In WandlediWeb for Scala this looked as follows.
 
 **Controller**:
 
@@ -168,3 +171,67 @@ Building Wandledi
 -----------------
 
 Everything is done via sbt (Simple Build Tool).
+
+Using Wandledi with Scalatra
+----------------------------
+
+So instead of wasting my time tinkering my own little web framework,
+why not use a proper one that's already there?
+Lift is a little too much for me at the moment (besides it's got a somewhat
+similar approach to the view).
+
+I wanted something more lightweight and I've found it: Scalatra.
+Here is an example for using Wandledi inside your Scalatra application.
+It's based on the Scalatra prototype app.
+
+    package com.example
+
+    import org.scalatra._
+    import java.net.URL
+    import scalate.ScalateSupport
+    import org.wandledi.wandlet.scala.{Wandlet, Page}
+
+    class MyScalatraFilter extends Wandlet with ScalatraFilter with ScalateSupport {
+
+      def getHttpServletResponse = response // required by Wandlet
+  
+      get("/originalIndex") {
+        <html>
+          <body>
+            <h1>Hello, world!</h1>
+            Say <a href="hello-scalate">hello to Scalate</a>.
+          </body>
+        </html>
+      }
+      
+      get("/") {
+        render(new Index) // render is a method provided by Wandlet
+      }
+
+      notFound {
+        // If no route matches, then try to render a Scaml template
+        val templateBase = requestPath match {
+          case s if s.endsWith("/") => s + "index"
+          case s => s
+        }
+        val templatePath = "/WEB-INF/scalate/templates/" + templateBase + ".scaml"
+        servletContext.getResource(templatePath) match {
+          case url: URL => 
+            contentType = "text/html"
+            templateEngine.layout(templatePath)
+          case _ => 
+            filterChain.doFilter(request, response)
+          } 
+      }
+    }
+    
+    class Index extends Page("index.xhtml") {
+      // write all the Wandledi stuff right here
+      // what follows is just nonsense actually
+      $("#someId").foreachIn(List("Friede", "Freude", "Eierkuchen")) { (e, item) =>
+        e.get(".someClass").replace(true, item)
+      }
+      $("someElement").insertLast(new java.util.Date())
+    }
+
+That's it.
