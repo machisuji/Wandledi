@@ -2,10 +2,10 @@ import sbt._
 
 class Wandledi(info: ProjectInfo) extends ParentProject(info) {
 
-  lazy val core = project("core", "java core", new Core(_))
-  lazy val scalaLib = project("scala-lib", "scala wrapper", new ScalaLib(_), core)
+  lazy val core = project("core", "wandledi", new Core(_))
+  lazy val scalaLib = project("scala-lib", "wandledi-scala", new ScalaLib(_), core)
   lazy val wandlet = project("wandlet", "wandlet", new Wandlet(_), core)
-  lazy val wandletScala = project("wandlet-scala", "wandlet scala", new WandletScala(_),
+  lazy val wandletScala = project("wandlet-scala", "wandlet-scala", new WandletScala(_),
         scalaLib, wandlet)
   
   class Core(info: ProjectInfo) extends DefaultProject(info) {

@@ -191,37 +191,11 @@ It's based on the Scalatra prototype app.
     import scalate.ScalateSupport
     import org.wandledi.wandlet.scala.{Wandlet, Page}
 
-    class MyScalatraFilter extends Wandlet with ScalatraFilter with ScalateSupport {
-
+    class MyScalatraFilter extends ScalatraFilter with Wandlet {
       def getHttpServletResponse = response // required by Wandlet
-  
-      get("/originalIndex") {
-        <html>
-          <body>
-            <h1>Hello, world!</h1>
-            Say <a href="hello-scalate">hello to Scalate</a>.
-          </body>
-        </html>
-      }
       
       get("/") {
         render(new Index) // render is a method provided by Wandlet
-      }
-
-      notFound {
-        // If no route matches, then try to render a Scaml template
-        val templateBase = requestPath match {
-          case s if s.endsWith("/") => s + "index"
-          case s => s
-        }
-        val templatePath = "/WEB-INF/scalate/templates/" + templateBase + ".scaml"
-        servletContext.getResource(templatePath) match {
-          case url: URL => 
-            contentType = "text/html"
-            templateEngine.layout(templatePath)
-          case _ => 
-            filterChain.doFilter(request, response)
-          } 
       }
     }
     
@@ -234,4 +208,19 @@ It's based on the Scalatra prototype app.
       $("someElement").insertLast(new java.util.Date())
     }
 
-That's it.
+That's it. As said before you can of course use Wandlet everywhere where the
+Servlet API is used. You just need to subclass Wandlet and provide an implementation
+for Wandlet#getHttpServletResponse.
+Wandlet#render() will write the given page using the HttpServletRequests' Writer.
+In a Servlet this could look something like this (a Java example this time):
+
+    import org.wandledi.wandlet.Wandlet;
+
+    public class MyServlet extends HttpServlet {
+        private Wandlet wandlet = new Wandlet();
+        
+        public void doGet(HttpServletRequest request, HttpServletResponse response)
+                throws ServletException, IOException {
+            wandlet.render(new Page("index.xhtml"), response);
+        }
+    }
