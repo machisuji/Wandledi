@@ -175,14 +175,7 @@ Everything is done via sbt (Simple Build Tool).
 Using Wandledi with Scalatra
 ----------------------------
 
-So instead of wasting my time tinkering my own little web framework,
-why not use a proper one that's already there?
-Lift is a little too much for me at the moment (besides it's got a somewhat
-similar approach to the view).
-
-I wanted something more lightweight and I've found it: Scalatra.
 Here is an example for using Wandledi inside your Scalatra application.
-It's based on the Scalatra prototype app.
 
     package com.example
 
@@ -209,8 +202,7 @@ It's based on the Scalatra prototype app.
     }
 
 That's it. As said before you can of course use Wandlet everywhere where the
-Servlet API is used. You just need to subclass Wandlet and provide an implementation
-for Wandlet#getHttpServletResponse.
+Servlet API is used.
 Wandlet#render() will write the given page using the HttpServletRequests' Writer.
 In a Servlet this could look something like this (a Java example this time):
 
