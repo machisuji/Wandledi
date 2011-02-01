@@ -3,8 +3,10 @@ package org.wandledi.wandlet;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import javax.servlet.ServletContext;
 
 import org.wandledi.Wandler;
 
@@ -30,6 +32,16 @@ import org.wandledi.Wandler;
  * }</pre>
  */
 public class Wandlet {
+
+    private ServletContext servletContext;
+
+    protected Wandlet() {
+
+    }
+
+    public Wandlet(ServletContext servletContext) {
+        this.servletContext = servletContext;
+    }
     
     /**Used to read an XHTML file from the hard drive.
      * Override this if the used XHTML files reside somewhere else
@@ -38,7 +50,7 @@ public class Wandlet {
      * "user/index.xhtml" or something along those lines.
      */
     protected Reader open(String file) throws IOException {
-        return new FileReader(file);
+        return new InputStreamReader(servletContext.getResourceAsStream(file));
     }
     
     /**Used to write to the HttpServletResponse.
@@ -73,5 +85,9 @@ public class Wandlet {
                 try { input.close(); } catch (IOException dontCare) { }
             }       
         }
+    }
+
+    public ServletContext getServletContext() {
+        return servletContext;
     }
 }
