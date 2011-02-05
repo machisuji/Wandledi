@@ -1,34 +1,70 @@
 package org.wandledi.scala
 
-import org.wandledi.Attribute
-import org.wandledi.CssSelector
-import org.wandledi.Scroll
-import org.wandledi.Selector
-import org.wandledi.UniversalSelector
-import org.wandledi.LocalSpells
+import org.wandledi.{Selector, CssSelector, UniversalSelector, Attribute, Scroll}
+import scala.util.DynamicVariable
 
-class Selectable(aScroll: Scroll) extends org.wandledi.SelectableImpl(aScroll) with ScalaSelectable {
+trait Selectable extends org.wandledi.Selectable {
 
-  override def get(selector: Selector) = new Element(selector, scroll)
+  protected type SelectContext = DynamicVariable[Selectable]
+  private val selectContext = new SelectContext(this)
 
-  def get(atts: Tuple2[String, String]*): Element = {
-    val jatts = for (attr <- atts) yield new Attribute(attr._1, attr._2)
-    get(new UniversalSelector(jatts: _*))
+  def get(selector: Selector): Element
+  def get(atts: Tuple2[String, String]*): Element
+  def get(label: String, atts: Tuple2[String, String]*): Element
+  def get(selector: String): Element
+  def at(selector: Selector): SelectableElement
+  def at(selector: String): SelectableElement
+
+  /**Gets an element from the current context,
+   * which is - per default - this ScalaSelectable.
+   * Context changes upon usage of $$.
+   */
+  def $(selector: Selector) = selectContext.value.get(selector)
+  def $(atts: Tuple2[String, String]*) = selectContext.value.get(atts: _*)
+  def $(label: String, atts: Tuple2[String, String]*) = selectContext.value.get(label, atts: _*)
+  def $(selector: String) = selectContext.value.get(selector)
+
+  /**This refers to the current SelectableElement,
+   * which is only defined inside a $$ block.
+   *
+   * If this is called outside such a block a RuntimeException will be thrown.
+   */
+  def $: SelectableElement = selectContext.value match {
+    case e: SelectableElement => e
+    case _ => throw new RuntimeException(
+        "Current context is no SelectableElement. " +
+        "Do not use $ outside $$ blocks."
+      )
   }
 
-  def get(label: String, atts: Tuple2[String, String]*): Element = {
-    val jatts = for (attr <- atts) yield new Attribute(attr._1, attr._2)
-    get(new UniversalSelector(label, jatts: _*))
+  /**Selects an Element and evaluates the given block with that element
+   * as its context. Example:
+   *
+   * <pre>val body = $("body")
+   *
+   */
+  def $$(selector: Selector)(block: => Unit) {
+    val selectable = selectContext.value
+    val selected = selectable.at(selector)
+    selectContext.withValue(selected)(block)
   }
 
-  override def get(selector: String): Element = get(CssSelector.valueOf(selector))
-
-  override def at(selector: Selector) = {
-    val nestedScroll = new Scroll
-    val localSpell = new LocalSpells(scroll, nestedScroll)
-    scroll.addSpell(selector, localSpell)
-    new SelectableElement(selector, nestedScroll)
+  def $$(label: String, attributes: (String, String)*)(block: => Unit) {
+    val attr = attributes.map(attr => new Attribute(attr._1, attr._2))
+    $$(new UniversalSelector(label, attr: _*))(block)
   }
 
-  override def at(selector: String) = at(CssSelector.valueOf(selector))
+  def $$(attributes: (String, String)*)(block: => Unit) {
+    val attr = attributes.map(attr => new Attribute(attr._1, attr._2))
+    $$(new UniversalSelector(null.asInstanceOf[String], attr: _*))(block)
+  }
+}
+
+object Selectable {
+  def apply(scroll: Scroll) = new SelectableImpl(scroll)
+
+  /**Enables strings as selectors by implicitly converting them
+   * using CssSelector.
+   */
+  implicit def cssSelector(selector: String): Selector = CssSelector.valueOf(selector)
 }

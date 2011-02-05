@@ -4,67 +4,28 @@ import org.xml.sax.Attributes
 import org.wandledi.Scroll
 import org.wandledi.Selector
 import org.wandledi.Spell
-import org.wandledi.ElementForeachImpl
-import org.wandledi.ElementImpl
-import org.wandledi.Plan
-import org.wandledi.spells.InsertionIntent
-import org.wandledi.spells.ReplacementIntent
-import org.wandledi.spells.StringTransformation
 
-class Element(
-  aSelector: Selector,
-  aScroll: Scroll)
-extends org.wandledi.ElementImpl(aSelector, aScroll) with ScalaElement {
+trait Element extends org.wandledi.Element {
 
-  private implicit def toJavaList[T: ClassManifest](l: Iterable[T]) =
-    java.util.Arrays.asList(l.toArray: _*)
+  def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit): Unit
+  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit): Unit
+  def changeAttribute(name: String)(change: (String) => String): Unit
+  def includeFile(file: String)(magic: (Selectable) => Unit): Unit
+  // @TODO #insert which simply takes a function returning an XML node to be written
+  def insert(atEnd: Boolean)(insertion: (Spell) => Unit): Unit
+  // @TODO #replace which simply takes a function returning an XML node to be written
+  def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit): Unit
 
-  override def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
-    val plan = new Plan[T] {
-      def execute(e: org.wandledi.SelectableElement, item: T): Unit =
-        fun(new SelectableElement(e.getSelector, e.getScroll), item)
-    }
-    val foreach = new ElementForeachImpl(this, items)
-    foreach.apply(plan)
-  }
+  /* def text_=(value: String): Unit = ... // directly change whole contained text
+   * def text: TransformableString = ...
+   *
+   * text.insert(user.name, user.age, user.height)
+   * text.insert('name -> user.name, 'age -> user.age, 'height -> user.height)
+   * text.insert(1 -> user.age, 0 -> user.name, 2 -> user.height)
+   * text.replaceAll("\\(Markus\\)", user.name)
+   */
+}
 
-  override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
-      (fun: (SelectableElement, T, Int) => Unit) {
-    val plan = new Plan[T] {
-      def execute(e: org.wandledi.SelectableElement, item: T): Unit =
-        fun(new SelectableElement(e.getSelector, e.getScroll), item, index)
-    }
-    val foreach = new ElementForeachImpl(this, items)
-    foreach.apply(plan)
-  }
-
-  override def changeAttribute(name: String)(change: (String) => String) {
-    setAttribute(name, new StringTransformation {
-      def transform(value: String) = change(value)
-    })
-  }
-
-  override def includeFile(file: String)(magic: (Selectable) => Unit) {
-    val scroll = new Scroll
-    magic(new Selectable(scroll))
-    includeFile(file, scroll)
-  }
-
-  override def insert(atEnd: Boolean)(insertion: (Spell) => Unit) {
-    val intent = new InsertionIntent {
-      def insert(parent: Spell) {
-        insertion(parent)
-      }
-    }
-    insert(atEnd, intent)
-  }
-
-  override def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) {
-    val intent = new ReplacementIntent {
-      def replace(label: String, attributes: Attributes, parent: Spell) {
-        replacement(label, attributes, parent)
-      }
-    }
-    replace(contentsOnly, intent)
-  }
+object Element {
+  def apply(selector: Selector, scroll: Scroll) = new ElementImpl(selector, scroll)
 }

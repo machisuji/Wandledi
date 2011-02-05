@@ -2,7 +2,6 @@ package org.wandledi.wandlet;
 
 import java.io.FileNotFoundException;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;

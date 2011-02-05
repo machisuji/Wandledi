@@ -1,5 +1,6 @@
 package wandledi.test;
 
+import org.wandledi.Element;
 import org.wandledi.Resources;
 import org.wandledi.Attribute;
 import org.wandledi.ElementImpl;
@@ -239,7 +240,7 @@ public class SpellExperiment {
     @Test
     public void testChargedSpell() {
 
-        ElementImpl e = (ElementImpl) pages.get("div");
+        Element e = pages.get("div");
         int charges = 2;
         e.max(charges).cast(new AttributeTransformation(new Attribute("foo", "bar")));
 
@@ -252,6 +253,38 @@ public class SpellExperiment {
         assertEquals("bar", divs.item(0).getAttributes().getNamedItem("foo").getTextContent());
         assertEquals("bar", divs.item(1).getAttributes().getNamedItem("foo").getTextContent());
         assertNull(divs.item(2).getAttributes().getNamedItem("foo"));
+    }
+
+    @Test
+    public void testLateSpellPerGet() {
+        Element e = pages.get("div");
+        int offset = 1;
+        e.at(offset).setAttribute("foo", "bar");
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList divs = doc.getElementsByTagName("div");
+
+        assertEquals(divs.getLength(), 3);
+        assertNull(divs.item(0).getAttributes().getNamedItem("foo"));
+        assertEquals("bar", divs.item(1).getAttributes().getNamedItem("foo").getTextContent());
+        assertNull(divs.item(2).getAttributes().getNamedItem("foo"));
+    }
+
+    @Test
+    public void testLateSpellPerAt() {
+        Element e = pages.at("div");
+        int offset = 2;
+        e.at(offset).setAttribute("foo", "bar");
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList divs = doc.getElementsByTagName("div");
+
+        assertEquals(divs.getLength(), 3);
+        assertNull(divs.item(0).getAttributes().getNamedItem("foo"));
+        assertNull(divs.item(1).getAttributes().getNamedItem("foo"));
+        assertEquals("bar", divs.item(2).getAttributes().getNamedItem("foo").getTextContent());
     }
 
     @Test

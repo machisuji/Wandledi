@@ -56,7 +56,7 @@ public class SelectableImpl implements Selectable {
      * @param selector CSS selector
      * @return A new Selectable
      */
-    public Selectable at(String selector) {
+    public SelectableElement at(String selector) {
 
         return at(CssSelector.valueOf(selector));
     }
@@ -68,12 +68,12 @@ public class SelectableImpl implements Selectable {
      * @param selector a selector
      * @return A new Selectable
      */
-    public Selectable at(Selector selector) {
+    public SelectableElement at(Selector selector) {
 
         Scroll nestedScroll = new Scroll();
         LocalSpells localSpell = new LocalSpells(scroll, nestedScroll);
         scroll.addSpell(selector, localSpell);
 
-        return new SelectableImpl(nestedScroll);
+        return new SelectableElementImpl(selector, scroll, nestedScroll);
     }
 }

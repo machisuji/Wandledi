@@ -22,4 +22,6 @@ public interface Selectable {
     Selectable at(Selector selector);
 
     Selectable at(String selector);
+
+    Scroll getScroll();
 }

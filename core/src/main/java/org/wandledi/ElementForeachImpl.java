@@ -26,12 +26,12 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
         plan.setLast(false);
         for (T item: collection) {
             Scroll scroll = new Scroll();
-            SelectableElement element = new SelectableElement(this.element.getSelector(), scroll);
+            SelectableElement e = new SelectableElementImpl(element.getSelector(), scroll, scroll);
             plan.setIndex(index++);
             if (index == size) {
                 plan.setLast(true);
             }
-            plan.execute(element, item);
+            plan.execute(e, item);
             scrolls.add(scroll);
         }
         Spell[] modifications = new Spell[scrolls.size()];
@@ -41,6 +41,6 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
         }
         Spell duplication = new Duplication(size, new Changeling(modifications));
 
-        this.element.cast(duplication);
+        element.cast(duplication);
     }
 }

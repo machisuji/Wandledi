@@ -175,6 +175,10 @@ public class Scroll implements Selectable {
         return selectable.at(selector);
     }
 
+    public Scroll getScroll() {
+        return this;
+    }
+
     class ScrollEntry {
 
         Selector selector;
