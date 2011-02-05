@@ -66,4 +66,10 @@ public interface Spell {
      * @return
      */
     public boolean hierarchyContains(Spell spell);
+
+    /**Simply implement as parent.getResources().
+     *
+     * @return The parent's Resources.
+     */
+    public Resources getResources();
 }

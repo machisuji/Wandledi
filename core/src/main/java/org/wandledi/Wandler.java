@@ -1,11 +1,14 @@
 package org.wandledi;
 
 import java.io.BufferedWriter;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.io.Writer;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.xml.sax.Attributes;
@@ -25,20 +28,21 @@ public class Wandler implements ContentHandler, Spell {
 
     private XMLReader parser;
     private BufferedWriter out;
-    private Locator locator;
     private boolean preserve;
     private boolean startUnderConstruction = false;
     private long calls = 0;
     private long lastStart = -1;
-    private final static Map<String, Boolean> preserveMap = new HashMap<String, Boolean>(1);
+    private final static Set<String> emptyElements = new HashSet<String>(
+        java.util.Arrays.asList(
+            "area", "base", "basefont", "br", "col", "hr", "img", "input",
+            "isindex", "link", "meta", "param"
+    ));
     private ArchSpell rootSpell = new ArchSpell(new Scroll());
-
-    static {
-        preserveMap.put("script", true);
-        preserveMap.put("textarea", true);
-        preserveMap.put("td", true);
-        preserveMap.put("th", true);
-    }
+    private Resources resources = new Resources() {
+        public Reader open(String file) throws IOException {
+            return new FileReader(file);
+        }
+    };
 
     public Wandler() {
 
@@ -67,6 +71,26 @@ public class Wandler implements ContentHandler, Spell {
         throw new UnsupportedOperationException("Sorry, but this won't work.");
     }
 
+    /**Sets the resources of this Wandler.
+     * Resources may be accessed by Spells, such as
+     * the Inclusion to be able to include files.
+     *
+     * @param resources Resources for this Wandler.
+     */
+    public void setResources(Resources resources) {
+        this.resources = resources;
+    }
+
+    /**Gets the resources of this Wandler.
+     * Resources may be accessed by Spells, such as
+     * the Inclusion to be able to include files.
+     *
+     * @return This Wandler's resources.
+     */
+    public Resources getResources() {
+        return resources;
+    }
+
     public boolean hierarchyContains(Spell spell) {
 
         return spell == this; // Wandler is the end of the hierarchy
@@ -74,7 +98,7 @@ public class Wandler implements ContentHandler, Spell {
 
     protected boolean preserveSpace(String localName) {
 
-        return preserveMap.containsKey(localName);
+        return !emptyElements.contains(localName);
     }
 
     public void wandle(Reader in, Writer out) {
@@ -199,7 +223,7 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void setDocumentLocator(Locator locator) {
-        this.locator = locator;
+        // this.locator = locator;
     }
 
     public final void startPrefixMapping(String prefix, String uri) throws SAXException {

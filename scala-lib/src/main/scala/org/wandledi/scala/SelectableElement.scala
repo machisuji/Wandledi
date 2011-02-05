@@ -6,7 +6,7 @@ import org.wandledi.Selector
 import org.wandledi.Spell
 
 class SelectableElement(
-  selector: Selector, 
+  selector: Selector,
   scroll: Scroll)
 extends org.wandledi.SelectableElement(selector, scroll) with ScalaSelectable with ScalaElement {
 

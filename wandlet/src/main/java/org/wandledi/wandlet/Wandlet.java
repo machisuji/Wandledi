@@ -1,12 +1,15 @@
 package org.wandledi.wandlet;
 
+import java.io.FileNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
 import javax.servlet.ServletContext;
+import org.wandledi.Resources;
 
 import org.wandledi.Wandler;
 
@@ -31,7 +34,7 @@ import org.wandledi.Wandler;
  *     }
  * }</pre>
  */
-public class Wandlet {
+public class Wandlet implements Resources {
 
     private ServletContext servletContext;
 
@@ -42,20 +45,33 @@ public class Wandlet {
     public Wandlet(ServletContext servletContext) {
         this.servletContext = servletContext;
     }
+
+    public String getContentType() {
+        return "text/html;charset=UTF-8";
+    }
     
     /**Used to read an XHTML file from the hard drive.
      * Override this if the used XHTML files reside somewhere else
      * than the paths they are referred to with.
      * Such as when you want to refer to "WEB-INF/templates/user/index.xhtml" as
      * "user/index.xhtml" or something along those lines.
+     *
+     * The default implementation should look in the webapp directory (i.e. WEB-INF/..).
      */
-    protected Reader open(String file) throws IOException {
-        return new InputStreamReader(servletContext.getResourceAsStream(file));
+    public Reader open(String file) throws IOException {
+        InputStream in = getServletContext().getResourceAsStream(file);
+        if (in != null) {
+            return new InputStreamReader(in);
+        } else {
+            throw new FileNotFoundException("Could find not resource '" + file + "'");
+        }
     }
     
     /**Used to write to the HttpServletResponse.
+     * Sets the content type before opening the response for writing.
      */
     protected Writer open(HttpServletResponse response) throws IOException {
+        response.setContentType(getContentType());
         return response.getWriter();
     }
     
@@ -64,7 +80,9 @@ public class Wandlet {
      * must not be used by more than one Thread at the same time.
      */
     protected Wandler getWandler() {
-        return new Wandler();
+        Wandler wandler = new Wandler();
+        wandler.setResources(this);
+        return wandler;
     }
 
     /**Writes the transformed input page to the HttpServletResponse.

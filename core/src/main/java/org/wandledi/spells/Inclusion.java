@@ -70,17 +70,11 @@ public class Inclusion extends ArchSpell implements ContentHandler {
         return new Inclusion(intent);
     }
 
-    public String getPath(String file) {
-        /*Switchboard board = Switchboard.getInstance();
-        return board.getServletContext().getRealPath(file);*/
-        return file;
-    }
-
     public void startTransformedElement(String name, Attributes attributes) {
 
         if (ignoreBounds()) return;
         try {
-            parser.parse(new InputSource(new FileReader(getPath(intent.getFile()))));
+            parser.parse(new InputSource(getResources().open(intent.getFile())));
         } catch (IOException ex) {
             Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, null, ex);
         } catch (SAXException ex) {

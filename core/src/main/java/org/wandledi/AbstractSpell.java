@@ -22,6 +22,10 @@ public abstract class AbstractSpell implements Spell {
         return this == spell || parent.hierarchyContains(spell);
     }
 
+    public Resources getResources() {
+        return parent.getResources();
+    }
+
     protected void reset() {
 
         clearLines();

@@ -10,10 +10,12 @@ trait Wandlet {
   /**To be provided by classes which want to mix in scala.Wandlet.
    * The output is rendered using this HttpServletResponse.
    */
-  def httpServletResponse: HttpServletResponse
-  def servletContext: ServletContext
+  protected def httpServletResponse: HttpServletResponse
+  protected def servletContext: ServletContext
 
-  protected val javaWandlet = new org.wandledi.wandlet.Wandlet(servletContext)
+  protected val javaWandlet = new org.wandledi.wandlet.Wandlet {
+    override def getServletContext = servletContext
+  }
 
   /**Renders the given response.
    *

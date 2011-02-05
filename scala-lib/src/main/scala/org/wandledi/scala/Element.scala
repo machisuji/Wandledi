@@ -3,7 +3,6 @@ package org.wandledi.scala
 import org.xml.sax.Attributes
 import org.wandledi.Scroll
 import org.wandledi.Selector
-import org.wandledi.SimpleAttributes
 import org.wandledi.Spell
 import org.wandledi.ElementForeachImpl
 import org.wandledi.ElementImpl
@@ -13,9 +12,9 @@ import org.wandledi.spells.ReplacementIntent
 import org.wandledi.spells.StringTransformation
 
 class Element(
-  selector: Selector,
-  scroll: Scroll)
-extends org.wandledi.ElementImpl(selector, scroll) with ScalaElement {
+  aSelector: Selector,
+  aScroll: Scroll)
+extends org.wandledi.ElementImpl(aSelector, aScroll) with ScalaElement {
 
   private implicit def toJavaList[T: ClassManifest](l: Iterable[T]) =
     java.util.Arrays.asList(l.toArray: _*)
@@ -29,7 +28,8 @@ extends org.wandledi.ElementImpl(selector, scroll) with ScalaElement {
     foreach.apply(plan)
   }
 
-  override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit) {
+  override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
+      (fun: (SelectableElement, T, Int) => Unit) {
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElement(e.getSelector, e.getScroll), item, index)
@@ -59,8 +59,6 @@ extends org.wandledi.ElementImpl(selector, scroll) with ScalaElement {
     insert(atEnd, intent)
   }
 
-  // @TODO #insert which simply takes a function returning an XML node to be written
-
   override def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) {
     val intent = new ReplacementIntent {
       def replace(label: String, attributes: Attributes, parent: Spell) {
@@ -69,6 +67,4 @@ extends org.wandledi.ElementImpl(selector, scroll) with ScalaElement {
     }
     replace(contentsOnly, intent)
   }
-
-  // @TODO #replace which simply takes a function returning an XML node to be written
 }

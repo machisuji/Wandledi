@@ -1,5 +1,6 @@
 package wandledi.test;
 
+import org.wandledi.Resources;
 import org.wandledi.Attribute;
 import org.wandledi.ElementImpl;
 import org.wandledi.Plan;
@@ -44,6 +45,14 @@ public class SpellExperiment {
     private SelectableImpl pages;
     private Wandler wandler = new Wandler();
     private Random random = new Random();
+
+    public SpellExperiment() {
+        wandler.setResources(new Resources() {
+            public Reader open(String resource) throws IOException {
+                return new FileReader(DIR + resource);
+            }
+        });
+    }
 
     @BeforeMethod
     public void setUp() {
@@ -161,11 +170,7 @@ public class SpellExperiment {
     @Test(enabled=true)
     public void testInclusion() {
 
-        pages.get(".info").cast(new Inclusion("inclusion.xhtml") {
-            public String getPath(String file) {
-                return DIR + file;
-            }
-        });
+        pages.get(".info").cast(new Inclusion("inclusion.xhtml"));
         String result = wandle("test.xhtml");
         Document doc = parseXML(result);
         assertEquals(doc.getElementsByTagName("div").getLength(), 1);
@@ -180,11 +185,7 @@ public class SpellExperiment {
         String style = "color: red;";
         Scroll scroll = new Scroll();
         scroll.addSpell("p", new AttributeTransformation(new Attribute("style", style)));
-        pages.get(".info").cast(new Inclusion("inclusion.xhtml", scroll) {
-            public String getPath(String file) {
-                return DIR + file;
-            }
-        });
+        pages.get(".info").cast(new Inclusion("inclusion.xhtml", scroll));
         String result = wandle("test.xhtml");
         Document doc = parseXML(result);
         NodeList divs = doc.getElementsByTagName("div");
