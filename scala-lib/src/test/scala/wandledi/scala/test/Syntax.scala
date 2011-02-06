@@ -7,7 +7,7 @@ import org.wandledi.{CssSelector, Scroll, SimpleAttributes}
  * It merely has to compile.
  */
 class SyntaxTest {
-  val e = new Element(new CssSelector("foo"), new Scroll)
+  val e = Element(new CssSelector("foo"), new Scroll)
 
   e.changeAttribute("class") {
     ".entry " + _
@@ -30,7 +30,7 @@ class SyntaxTest {
   }
 }
 
-class Page extends Selectable(new Scroll)
+class Page extends SelectableImpl(new Scroll)
 
 class HomePage extends Page {
   def index() {

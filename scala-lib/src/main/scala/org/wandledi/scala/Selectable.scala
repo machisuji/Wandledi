@@ -49,8 +49,9 @@ trait Selectable extends org.wandledi.Selectable {
     selectContext.withValue(selected)(block)
   }
 
-  def $$(label: String, attributes: (String, String)*)(block: => Unit) {
-    val attr = attributes.map(attr => new Attribute(attr._1, attr._2))
+  def $$(label: String, attributesHead: (String, String),
+         attributesRest: (String, String)*)(block: => Unit) {
+    val attr = (attributesHead +: attributesRest).map(attr => new Attribute(attr._1, attr._2))
     $$(new UniversalSelector(label, attr: _*))(block)
   }
 
@@ -58,13 +59,13 @@ trait Selectable extends org.wandledi.Selectable {
     val attr = attributes.map(attr => new Attribute(attr._1, attr._2))
     $$(new UniversalSelector(null.asInstanceOf[String], attr: _*))(block)
   }
-}
-
-object Selectable {
-  def apply(scroll: Scroll) = new SelectableImpl(scroll)
 
   /**Enables strings as selectors by implicitly converting them
    * using CssSelector.
    */
   implicit def cssSelector(selector: String): Selector = CssSelector.valueOf(selector)
+}
+
+object Selectable {
+  def apply(scroll: Scroll) = new SelectableImpl(scroll)
 }

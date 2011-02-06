@@ -12,31 +12,58 @@ import org.w3c.dom.Document
 import org.wandledi.Scroll
 import org.wandledi.Wandler
 import org.wandledi.scala.Selectable
-import org.wandledi.CssSelector
 import org.xml.sax.InputSource
 import scala.xml.NodeSeq
 import scala.xml.XML
 
 class Semantics extends Spec with ShouldMatchers {
   val testFileDirectory = "core/src/test/java/wandledi/test/"
-  def transform(file: String, debug: Boolean)(magic: (Selectable) => Unit): NodeSeq = {
-    val page = new Selectable(new Scroll)
+  def transform(file: String, debug: Boolean = false)(magic: (Selectable) => Unit): NodeSeq = {
+    val page = Selectable(new Scroll)
     magic(page)
     val result = wandle(file, page.getScroll)
     result should be ('defined)
     if (debug) println(result.get)
     XML.loadString(result.get)
   }
-  def transform(file: String)(magic: (Selectable) => Unit): NodeSeq = transform(file, false)(magic)
 
-  describe("ScalaSelectable") {
+  describe("scala.Selectable") {
+    it("should provide a functioning Element per #get") {
+      val doc = transform("test.xhtml") { page => import page._
+        val e = get("div")
+        val offset = 1
+        e.at(offset).setAttribute("foo", "bar")
+      }
+      val divs = doc \\ "div"
+      divs should have size (3)
+      divs(0).attribute("foo") should not be ('defined)
+      divs(2).attribute("foo") should not be ('defined)
+      divs(1).attribute("foo") should be ('defined)
+      divs(1).attribute("foo").get(0).text should equal ("bar")
+    }
+
+    it("should provide a functioning SelectableElement per #at") {
+      val doc = transform("test.xhtml") { page => import page._
+        val e = at("div")
+        val offset = 2
+        e.at(offset).setAttribute("foo", "bar")
+      }
+      val divs = doc \\ "div"
+      divs should have size (3)
+      divs(0).attribute("foo") should not be ('defined)
+      divs(1).attribute("foo") should not be ('defined)
+      divs(2).attribute("foo") should be ('defined)
+      divs(2).attribute("foo").get(0).text should equal ("bar")
+    }
+
     it("should support context sensetive selection ($)") {
       val doc = transform("test.xhtml", debug=true) { page => import page._
         $("div").setAttribute("foo", "bar")
         $$(".info") {
-          println(page.toString + " vs " + $.toString)
           $("div").setAttribute("color", "red") // should only apply to the nested div
         }
+        // the previous statement should have the same effect as the following:
+        // at(".info").get("div").setAttribute("color", "red")
       }
       val divs = doc \\ "div"
       divs.foreach(_.attribute("foo").get.head.text should equal ("bar"))
