@@ -6,7 +6,7 @@ import scala.util.DynamicVariable
 trait Selectable extends org.wandledi.Selectable {
 
   protected type SelectContext = DynamicVariable[Selectable]
-  private val selectContext = new SelectContext(this)
+  protected val selectContext = new SelectContext(this)
 
   def get(selector: Selector): Element
   def get(atts: Tuple2[String, String]*): Element
@@ -58,6 +58,13 @@ trait Selectable extends org.wandledi.Selectable {
   def $$(attributes: (String, String)*)(block: => Unit) {
     val attr = attributes.map(attr => new Attribute(attr._1, attr._2))
     $$(new UniversalSelector(null.asInstanceOf[String], attr: _*))(block)
+  }
+
+  /**Switches context to the given Selectable so that
+   * following usages of $() will refer to that Selectable.
+   */
+  def using(e: Selectable)(block: => Unit) {
+    selectContext.withValue(e)(block)
   }
 
   /**Enables strings as selectors by implicitly converting them

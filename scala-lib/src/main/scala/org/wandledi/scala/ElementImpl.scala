@@ -18,6 +18,11 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
   private implicit def toJavaList[T: ClassManifest](l: Iterable[T]) =
     java.util.Arrays.asList(l.toArray: _*)
 
+  def text_=(value: String) {
+    replace(true, value)
+  }
+  def text: TextContent = new TextContentImpl(this)
+
   override def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =

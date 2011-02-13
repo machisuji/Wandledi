@@ -17,8 +17,8 @@ class SyntaxTest {
   e.foreachWithIndexIn(List(1, 2, 3)) { (e, item, index) =>
     e.replace(true, item.toString + " in row " + (index + 1))
   }
-  e.includeFile("/home/post.xhtml") { (page) =>
-    page.get("#right").insert("message")
+  e.includeFile("/home/post.xhtml") { page => import page._
+    $("#right").insert("message")
   }
   e.insert(true) { (spell) =>
     spell.writeString("Hallo Welt")
