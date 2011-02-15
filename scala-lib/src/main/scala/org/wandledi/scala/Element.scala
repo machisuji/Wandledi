@@ -16,14 +16,8 @@ trait Element extends org.wandledi.Element {
   // @TODO #replace which simply takes a function returning an XML node to be written
   def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit): Unit
 
-  /* def text_=(value: String): Unit = ... // directly change whole contained text
-   * def text: TransformableString = ...
-   *
-   * text.insert(user.name, user.age, user.height)
-   * text.insert('name -> user.name, 'age -> user.age, 'height -> user.height)
-   * text.insert(1 -> user.age, 0 -> user.name, 2 -> user.height)
-   * text.replaceAll("\\(Markus\\)", user.name)
-   */
+  def text_=(value: String): Unit
+  def text: TextContent
 }
 
 object Element {

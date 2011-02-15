@@ -43,11 +43,16 @@ public class ArchSpell extends AbstractSpell {
         }
     }
 
+    /**Sadly I have no idea what the heck this is good for.
+     * But I know that there was a very good reason!
+     * Just not what it was ...
+     *
+     * @param ignore
+     */
     private void setIgnoreTransformationBounds(boolean ignore) {
-
         if (spellLevels.size() > 1) {
             SpellLevel wall = spellLevels.get(spellLevels.size() - 2);
-            AbstractSpell spell = (AbstractSpell) wall.spell;
+            Spell spell = wall.spell;
             spell.ignoreBounds(ignore);
         }
     }
@@ -60,7 +65,6 @@ public class ArchSpell extends AbstractSpell {
      * @return
      */
     private Spell copyIfNested(Spell spell) {
-
         if (spellLevels.size() > 0 && spellLevels.getLast().spell.hierarchyContains(spell)) {
             return spell.clone();
         }
@@ -68,17 +72,14 @@ public class ArchSpell extends AbstractSpell {
     }
 
     public void startTransformedElement(String name, Attributes atts) {
-
         startElement(name, atts);
     }
 
     public void endTransformedElement(String name) {
-
         endElement(name);
     }
 
     public void startElement(String name, Attributes atts) {
-
         checkSpell(name, atts);
         setIgnoreTransformationBounds(true);
         if (spellLevels.size() == 0) {
@@ -95,7 +96,6 @@ public class ArchSpell extends AbstractSpell {
     }
 
     public void endElement(String name) {
-
         if (spellLevels.size() == 0) {
             parent.endElement(name);
         } else {
@@ -112,7 +112,6 @@ public class ArchSpell extends AbstractSpell {
     }
 
     public void writeCharacters(char[] characters, int offset, int length) {
-
         if (spellLevels.size() == 0) {
             parent.writeCharacters(characters, offset, length);
         } else {
@@ -123,7 +122,6 @@ public class ArchSpell extends AbstractSpell {
 
     @Override
     public Spell clone() {
-
         return new ArchSpell(scroll);
     }
 

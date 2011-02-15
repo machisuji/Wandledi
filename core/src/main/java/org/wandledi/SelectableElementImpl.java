@@ -67,6 +67,10 @@ public class SelectableElementImpl implements SelectableElement {
         return element.getScroll();
     }
 
+    public TextContent getText() {
+        return element.getText();
+    }
+
     public void cast(Spell spell) {
         element.cast(spell);
     }

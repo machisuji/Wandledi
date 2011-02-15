@@ -99,7 +99,7 @@ public class SpellExperiment {
     @Test
     public void testDuplication() {
 
-        int number = 1 + random.nextInt(10);
+        int number = 2 + random.nextInt(10);
         pages.get("#time").clone(number);
 
         String result = wandle("test.xhtml");

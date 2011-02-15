@@ -2,7 +2,7 @@ package org.wandledi;
 
 import org.xml.sax.Attributes;
 
-/**
+/**Used to record a call of ContentHandler#startElement(...).
  *
  * @author Markus Kahl
  */
@@ -25,37 +25,5 @@ public class ElementStart implements SpellLine {
     public void perform(Spell parent) {
 
         parent.startElement(name, attributes);
-    }
-
-    public final boolean isStart() {
-        return true;
-    }
-
-    public final boolean isEnd() {
-        return false;
-    }
-
-    public final boolean isCharacters() {
-        return false;
-    }
-
-    public final Attributes getAttributes() {
-        return attributes;
-    }
-
-    public final String getElement() {
-        return name;
-    }
-
-    public final char[] getCharacters() {
-        return null;
-    }
-
-    public final int getOffset() {
-        return -1;
-    }
-
-    public final int getLength() {
-        return -1;
     }
 }

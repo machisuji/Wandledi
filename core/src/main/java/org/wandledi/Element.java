@@ -57,4 +57,5 @@ public interface Element {
     public void replace(boolean contentsOnly, String content);
     public <T> ElementForeach<T> foreachIn(Collection<T> collection);
     public void hide();
+    public TextContent getText();
 }

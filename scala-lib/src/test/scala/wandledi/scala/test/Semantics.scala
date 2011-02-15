@@ -31,8 +31,11 @@ class Semantics extends Spec with ShouldMatchers {
     XML.loadString(result.get)
   }
   implicit def pimped(node: xml.Node) = new {
-    def check(attr: (String, String)) =
-      node.attribute(attr._1).exists(_.exists(_.text == attr._2))
+    def check(attr: (String, String)) = node.attribute(attr._1).exists(_.exists(_.text == attr._2))
+  }
+  implicit def pimped(nodeSeq: xml.NodeSeq) = new {
+    def \(attr: (String, String)) =
+      nodeSeq.filter(_.attribute(attr._1).exists(_.exists(_.text == attr._2)))
   }
 
   describe("scala.Selectable") {
@@ -122,7 +125,7 @@ class Semantics extends Spec with ShouldMatchers {
     it("should support index-based 'spot' insertion") {
       val insertions = Array("Hans", "FunFilms", "Airplane!")
       val doc = transform("strings.xhtml") { page => import page._
-        val ttf = new TextTransformation(insertions: _*)
+        val ttf = new TextTransformation(insertions)
         page.at("#parenthesis").get(".text").cast(ttf)
       }
       val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
@@ -178,7 +181,7 @@ class Semantics extends Spec with ShouldMatchers {
         val ttf = new TextTransformation("[a-zA-Z0-9!_,\\.]", "_")
         page.at("#upuntilnow").get(".text").cast(ttf)
       }
-      val div = (doc \\ "div").filter(_.check("id" -> "upuntilnow"))
+      val div = doc \\ "div" \ ("id" -> "upuntilnow")
       div should have size (1)
       val text = (div \ "p")(0).text
       text.replace("_", "").trim should startWith ("Markus")
@@ -188,6 +191,42 @@ class Semantics extends Spec with ShouldMatchers {
       val flavour = spans.find(_.check("id" -> "flavour")).getOrElse(fail())
       user.text should equal ("Markus")
       flavour.text should equal ("Spam4Free")
+    }
+  }
+
+  describe("scala.TextContent") {
+    val values = List("Hans", "FunFilms", "\"Airplane!\"")
+    it("should correctly wrap all available TextTransformations") {
+      val doc = transform("strings.xhtml") { page => import page._
+        val runs = List('indexSpot, 'nameSpot, 'regexSpot, 'transformWholly,
+            'transformRegex, 'replaceWholly)
+        at("#parenthesis").get(".text").foreachIn(runs) { (p, run) =>
+          run match {
+            case 'indexSpot => p.text.insert(values: _*)
+            case 'nameSpot =>
+              p.text.insert("Markus" -> values(0), "*Free" -> values(1), "The*" -> values(2))
+            case 'regexSpot =>
+              p.text.insertR("Mar.u." -> values(0), ".+4.+" -> values(1), ".*" -> values(2))
+            case 'transformWholly => p.text.transform(_.toUpperCase)
+            case 'transformRegex => p.text.transform("We.+me")("Un" + _.toLowerCase)
+            case 'replaceWholly => p.text = "Foobar"
+            case _ =>
+          }
+        }
+      }
+      val ps = doc \\ "div" \ ("id" -> "parenthesis") \ "p" \ ("class" -> "text")
+      ps should have size (6)
+
+      for (i <- 0 to 2) {
+        ps(i).text should not include ("(Markus)")
+        values.foreach(ps(i).text should include (_))
+      }
+      ps(0) should equal (ps(1))
+      ps(1) should equal (ps(2))
+
+      ps(3).text.trim should startWith ("WELCOME")
+      ps(4).text.trim should startWith ("Unwelcome")
+      ps(5).text should equal ("Foobar")
     }
   }
   

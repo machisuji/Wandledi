@@ -6,8 +6,8 @@ import org.wandledi.AbstractSpell;
 import org.wandledi.Spell;
 import org.xml.sax.Attributes;
 
-/**<p>A TextTransformation is used to transform the text part of any Element's body.
- * This will not affect any nested tags' text per default.</p>
+/**<p>A TextTransformation is used to transform the text part of any element's body.
+ * This will not affect any nested elements' text.</p>
  * Example:
  *
  * <pre>&lt;p id="welcome"&gt;
@@ -82,15 +82,36 @@ public class TextTransformation extends AbstractSpell {
         this.transformation = transformation;
     }
 
+    /**Creates a new TextTransformation that will transform each chunk of text
+     * using a given StringTransformation. An element that only contains text has
+     * one chunk of text. A single nested element possibly splits that text into two chunks.
+     *
+     * @param transformation The StringTransformation transforming each chunk.
+     */
+    public TextTransformation(StringTransformation transformation) {
+        this.transformation = transformation;
+    }
+
+    /**Creates a new TextTransformation that discards each chunk of text
+     * and replaces it with the given replacement.
+     *
+     * @param replacement The String the text is to be replaced with.
+     */
+    public TextTransformation(String replacement) {
+        this.transformation = new Replacement(replacement);
+    }
+
     /**Creates a new TextTransformation that will replace
      * any one occurence of a given regex with a given text.
+     * The replacement may refer to groups of the regex
+     * just as if using String#replaceAll().
      *
      * @param regex The regex used to match the parts of the text to be replaced.
      * @param value The value to be inserted instead of the matches.
      */
     public TextTransformation(String regex, String value) {
         this.regex = regex;
-        this.transformation = new ArrayWriter(value);
+        this.transformation = new Replacement(value);
     }
 
     /**Creates an index-based 'spot' TextTransformation.
@@ -101,7 +122,7 @@ public class TextTransformation extends AbstractSpell {
      *               second spot etc.. If there are more spots than values the last
      *               element will be inserted for every additional spot.
      */
-    public TextTransformation(String... values) {
+    public TextTransformation(String[] values) {
         this.regex = "\\(.+?\\)";
         this.transformation = new ArrayWriter(values);
     }
@@ -165,7 +186,17 @@ public class TextTransformation extends AbstractSpell {
         };
     }
 
+    public static TextTransformation inserting(String... values) {
+        return new TextTransformation(values);
+    }
+
     protected String transform(CharSequence text) {
+        if (regex == null) {
+            return transformation.transform(text.toString());
+        }
+        if (transformation instanceof Replacement) {
+            return text.toString().replaceAll(regex, transformation.transform(null));
+        }
         StringBuilder result = new StringBuilder(text);
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(text);
@@ -232,5 +263,17 @@ public class TextTransformation extends AbstractSpell {
     @Override
     public Spell clone() {
         return new TextTransformation(regex, transformation);
+    }
+
+    private static class Replacement implements StringTransformation {
+        private String value;
+
+        public Replacement(String value) {
+            this.value = value;
+        }
+        
+        public String transform(String input) {
+            return value;
+        }
     }
 }

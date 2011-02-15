@@ -22,18 +22,21 @@ class SelectableElementImpl(
 
   private val element = new ElementImpl(selector, parentScroll)
 
-  override def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) =
+  def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) =
     element.foreachIn(items)(fun)
-  override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
+  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
       (fun: (SelectableElement, T, Int) => Unit) = element.foreachWithIndexIn(items)(fun)
-  override def changeAttribute(name: String)(change: (String) => String) =
+  def changeAttribute(name: String)(change: (String) => String) =
     element.changeAttribute(name)(change)
-  override def includeFile(file: String)(magic: (Selectable) => Unit) =
+  def includeFile(file: String)(magic: (Selectable) => Unit) =
     element.includeFile(file)(magic)
   // @TODO #insert which simply takes a function returning an XML node to be written
-  override def insert(atEnd: Boolean)(insertion: (Spell) => Unit) =
+  def insert(atEnd: Boolean)(insertion: (Spell) => Unit) =
     element.insert(atEnd)(insertion)
   // @TODO #replace which simply takes a function returning an XML node to be written
-  override def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) =
+  def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) =
     element.replace(contentsOnly)(replacement)
+
+  def text_=(value: String) = element.text_=(value)
+  def text: TextContent = element.text
 }

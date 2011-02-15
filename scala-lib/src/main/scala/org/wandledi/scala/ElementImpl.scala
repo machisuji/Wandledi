@@ -19,7 +19,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     java.util.Arrays.asList(l.toArray: _*)
 
   def text_=(value: String) {
-    replace(true, value)
+    text.setContent(value)
   }
   def text: TextContent = new TextContentImpl(this)
 

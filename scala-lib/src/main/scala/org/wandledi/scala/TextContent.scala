@@ -1,24 +1,23 @@
 package org.wandledi.scala
 
-trait TextContent {
-  /**Inserts values at marked spots within this text.
-   * A spot is any part of the text that is enclosed in parenthesis.
-   * Example:
-   *
-   * <pre>    &lt;p id="welcome"&gt;Welcome, dear (Bobo)!&lt;/p&gt;</pre>
-   *
-   * Which would be transformed like this:
-   *
-   * <pre>    $("#welcome").text.insert(user.name)</pre>
-   *
-   * This might become a problem if there is a regular part enclosed with
-   * parenthesis that is not supposed to be replaced with dynamic content.
-   * In this case either use the index-mapped version of #insert or pass
-   * null at the respective index.
-   *
-   * @param values The Strings to be inserted.
-   */
-  def insert(valuesHead: String, valuesTail: String*): Unit
+import org.wandledi.spells.SpotMapping
+import org.wandledi.spells.StringTransformation
+
+trait TextContent extends org.wandledi.TextContent {
+
+  def transform(stringTransformation: String => String) {
+    val st = new StringTransformation {
+      def transform(input: String) = stringTransformation(input)
+    }
+    transform(st)
+  }
+
+  def transform(regex: String)(stringTransformation: String => String) {
+    val st = new StringTransformation {
+      def transform(input: String) = stringTransformation(input)
+    }
+    transform(regex, st)
+  }
 
   /**Inserts values at the marked spots within this text.
    * A spot is any part of the text that is enclosed with parenthesis.
@@ -33,7 +32,13 @@ trait TextContent {
    *
    * @param values Strings to be inserted mapped by the target index.
    */
-  def insert(values: (Int, String)*): Unit
+  def insert(values: (Int, String)*) {
+    val orderedValues = Array.ofDim[String](values.size)
+    for ((index, value) <- values) {
+      orderedValues(index) = value
+    }
+    insert(orderedValues: _*)
+  }
 
   /**Inserts values at the marked spots within this text.
    * A spot is any part of the text that is enclosed with parenthesis.
@@ -49,5 +54,22 @@ trait TextContent {
    * Names can begin (or end) with wildcards, providing a 'endsWith' and 'startsWith' match
    * besides the full name match.
    */
-  def insert(valuesHead: (String, String), valuesTail: (String, String)*): Unit
+  def insert(valuesHead: (String, String), valuesTail: (String, String)*) {
+    insert(false, (valuesHead +: valuesTail): _*)
+  }
+
+  /**Same as insert((String, String)+) though regex are used to identify the spots
+   * instead of (slightly enhanced) names.
+   */
+  def insertR(values: (String, String)*) {
+    insert(true, values: _*)
+  }
+
+  /**Same as insert((String, String)+) though with the option
+   * to use regex to match the names.
+   */
+  def insert(regex: Boolean, values: (String, String)*) {
+    val mappings = values.map(m => new SpotMapping(m._1, regex, m._2))
+    insert(mappings: _*)
+  }
 }
