@@ -176,6 +176,17 @@ class Semantics extends Spec with ShouldMatchers {
       text should not include ("the Ugly")
       text should include ("(Gals, Gals and Gals)")
     }
+    it("should support regex-based insertion where the regex contains a single capturing group") {
+      val doc = transform("strings.xhtml") { page => import page._
+        val ttf = new TextTransformation("The Good, the (bad) and the Ugly", "Bad")
+        page.at("#parenthesis").get(".text").cast(ttf)
+      }
+      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+      div should have size (1)
+      val text = (div \ "p")(0).text
+      text should not include ("the bad")
+      text should include ("(Bad)")
+    }
     it("should only affect the target element's text and not those of nested elements.") {
       val doc = transform("strings.xhtml") { page => import page._
         val ttf = new TextTransformation("[a-zA-Z0-9!_,\\.]", "_")

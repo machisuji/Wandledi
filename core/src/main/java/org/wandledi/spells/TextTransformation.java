@@ -74,6 +74,10 @@ public class TextTransformation extends AbstractSpell {
     /**Creates a new TextTransformation that will transform
      * any one occurence of a given regex.
      *
+     * If the given regex contains a single capturing group
+     * the StringTransformation will be passed that group
+     * instead of the whole match.
+     *
      * @param regex The regex used to match the parts of the text to be transformed.
      * @param transformation The StringTransformation transforming each match.
      */
@@ -105,6 +109,9 @@ public class TextTransformation extends AbstractSpell {
      * any one occurence of a given regex with a given text.
      * The replacement may refer to groups of the regex
      * just as if using String#replaceAll().
+     *
+     * If the given regex contains a single capturing group
+     * only that group will be replaced instead of the whole match.
      *
      * @param regex The regex used to match the parts of the text to be replaced.
      * @param value The value to be inserted instead of the matches.
@@ -202,10 +209,11 @@ public class TextTransformation extends AbstractSpell {
         Matcher matcher = pattern.matcher(text);
         int lengthDelta = 0;
         while (matcher.find()) {
-            String match = matcher.group();
-            String insertion = transformation.transform(match);
+            String insertion = transformation.transform(matcher.group(
+                    matcher.groupCount() == 1 ? 1 : 0));
+            int matchLength = matcher.end() - matcher.start();
             result.replace(matcher.start() + lengthDelta, matcher.end() + lengthDelta, insertion);
-            lengthDelta += (insertion.length() - match.length());
+            lengthDelta += (insertion.length() - matchLength);
         }
         return result.toString();
     }
