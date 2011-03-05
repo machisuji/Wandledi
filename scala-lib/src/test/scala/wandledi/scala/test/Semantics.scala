@@ -119,6 +119,18 @@ class Semantics extends Spec with ShouldMatchers {
         h1.attribute("style").get(0).text should include (expected)
       }
     }
+    it("should accept xml.NodeSeqs as insertions and as replacements") {
+      val doc = transform("test.xhtml") { page => import page._
+        $("body").insert(false, <pre id="insertion">Quid Quo Pro</pre>)
+        $(".info").replace(true, <p>Quid Quo Pro</p>)
+      }
+      val pre = doc \\ "pre"
+      pre.size should be (1)
+      pre(0).text should equal ("Quid Quo Pro")
+      val p = doc \\ "p"
+      p.size should be (1)
+      p(0).text should equal ("Quid Quo Pro")
+    }
   }
 
   describe("org.wandledi.spells.TextTransformation") {
@@ -202,6 +214,25 @@ class Semantics extends Spec with ShouldMatchers {
       val flavour = spans.find(_.check("id" -> "flavour")).getOrElse(fail())
       user.text should equal ("Markus")
       flavour.text should equal ("Spam4Free")
+    }
+    it("should consider empty text if configured to do so") {
+      val doc = transform("noText.xhtml") { page => import page._
+        val tt = new TextTransformation(null, "foobar")
+        tt.setConsiderEmptyText(true)
+        page.get("#noText").cast(tt)
+      }
+      val p = doc \\ "p" \ ("id" -> "noText")
+      p should have size (1)
+      p(0).text should equal ("foobar")
+    }
+    it("and should ignore empty text per default") {
+      val doc = transform("noText.xhtml") { page => import page._
+        val tt = new TextTransformation(null, "foobar")
+        page.get("#noText").cast(tt)
+      }
+      val p = doc \\ "p" \ ("id" -> "noText")
+      p should have size (1)
+      p(0).text should be ('empty)
     }
   }
 

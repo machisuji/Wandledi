@@ -18,7 +18,6 @@ public abstract class AbstractSpell implements Spell {
     public abstract Spell clone();
 
     public boolean hierarchyContains(Spell spell) {
-
         return this == spell || parent.hierarchyContains(spell);
     }
 
@@ -27,27 +26,22 @@ public abstract class AbstractSpell implements Spell {
     }
 
     protected void reset() {
-
         clearLines();
     }
 
     protected void pushLine(SpellLine line) {
-
         lines.add(line);
     }
 
     protected SpellLine popLine() {
-
         return lines.removeLast();
     }
 
     protected SpellLine pullLine() {
-
         return lines.removeFirst();
     }
 
     protected void clearLines() {
-
         lines.clear();
     }
 
@@ -56,7 +50,6 @@ public abstract class AbstractSpell implements Spell {
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
-
         if (ignoreBounds()) {
             startElement(name, attributes);
         } else {
@@ -65,7 +58,6 @@ public abstract class AbstractSpell implements Spell {
     }
 
     public void endTransformedElement(String name) {
-
         if (ignoreBounds()) {
             endElement(name);
         } else {
@@ -86,18 +78,15 @@ public abstract class AbstractSpell implements Spell {
     }
 
     public void writeString(String string) {
-
         char[] characters = string.toCharArray();
         writeCharacters(characters, 0, characters.length);
     }
 
     public void ignoreBounds(boolean ignoreBounds) {
-
         this.ignoreBounds = ignoreBounds;
     }
 
     public boolean ignoreBounds() {
-
         return ignoreBounds;
     }
 }

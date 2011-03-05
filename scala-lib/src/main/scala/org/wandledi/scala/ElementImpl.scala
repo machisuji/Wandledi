@@ -23,7 +23,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
   }
   def text: TextContent = new TextContentImpl(this)
 
-  override def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
+  def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElementImpl(e.getSelector, e.getScroll, e.getScroll), item)
@@ -32,7 +32,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     foreach.apply(plan)
   }
 
-  override def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
+  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
       (fun: (SelectableElement, T, Int) => Unit) {
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
@@ -42,19 +42,19 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     foreach.apply(plan)
   }
 
-  override def changeAttribute(name: String)(change: (String) => String) {
+  def changeAttribute(name: String)(change: (String) => String) {
     setAttribute(name, new StringTransformation {
       def transform(value: String) = change(value)
     })
   }
 
-  override def includeFile(file: String)(magic: (Selectable) => Unit) {
+  def includeFile(file: String)(magic: (Selectable) => Unit) {
     val scroll = new Scroll
     magic(new SelectableImpl(scroll))
     includeFile(file, scroll)
   }
 
-  override def insert(atEnd: Boolean)(insertion: (Spell) => Unit) {
+  def insert(atEnd: Boolean)(insertion: (Spell) => Unit) {
     val intent = new InsertionIntent {
       def insert(parent: Spell) {
         insertion(parent)
@@ -63,12 +63,29 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     insert(atEnd, intent)
   }
 
-  override def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) {
+  def insert(atEnd: Boolean = false, insertion: xml.NodeSeq) {
+    insert(insertion.toString, atEnd)
+  }
+
+  def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) {
     val intent = new ReplacementIntent {
       def replace(label: String, attributes: Attributes, parent: Spell) {
         replacement(label, attributes, parent)
       }
     }
     replace(contentsOnly, intent)
+  }
+
+  def replace(contentsOnly: Boolean, replacement: (String, Attributes) => xml.NodeSeq) {
+    val intent = new ReplacementIntent {
+      def replace(label: String, attributes: Attributes, parent: Spell) {
+        parent.writeString(replacement(label, attributes).toString)
+      }
+    }
+    replace(contentsOnly, intent)
+  }
+
+  def replace(contentsOnly: Boolean = true, replacement: xml.NodeSeq) {
+    replace(contentsOnly, replacement.toString)
   }
 }

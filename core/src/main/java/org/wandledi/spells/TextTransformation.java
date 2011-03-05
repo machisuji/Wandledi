@@ -70,6 +70,7 @@ public class TextTransformation extends AbstractSpell {
     private StringTransformation transformation;
     private StringBuilder buffer = new StringBuilder();
     private int nestingLevel = -1;
+    private boolean considerEmptyText = false;
 
     /**Creates a new TextTransformation that will transform
      * any one occurence of a given regex.
@@ -219,7 +220,7 @@ public class TextTransformation extends AbstractSpell {
     }
 
     protected void flush() {
-        if (buffer.length() > 0) {
+        if (buffer.length() > 0 || considerEmptyText) {
             String result = transform(buffer);
             super.writeCharacters(result.toCharArray(), 0, result.length());
             buffer.setLength(0);
@@ -271,6 +272,31 @@ public class TextTransformation extends AbstractSpell {
     @Override
     public Spell clone() {
         return new TextTransformation(regex, transformation);
+    }
+
+    /**Indicates whether or not empty text is considered for transformation.
+     * Per default it is not. That is with the following element
+     * the transformation will have no effect:
+     *
+     *     <p></p>
+     *
+     * This is because there is no text.
+     * If there was even only a single space in between there would be text.
+     *
+     * If this flag is set to true empty text will be considered,
+     * meaning that #transform will be called with an empty string.
+     *
+     * @return the considerEmptyText
+     */
+    public boolean isConsiderEmptyText() {
+        return considerEmptyText;
+    }
+
+    /**
+     * @param considerEmptyText the considerEmptyText to set
+     */
+    public void setConsiderEmptyText(boolean considerEmptyText) {
+        this.considerEmptyText = considerEmptyText;
     }
 
     private static class Replacement implements StringTransformation {

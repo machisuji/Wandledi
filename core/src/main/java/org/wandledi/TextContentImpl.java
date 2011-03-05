@@ -33,7 +33,9 @@ public class TextContentImpl implements TextContent {
     }
 
     public void setContent(String content) {
-        element.cast(new TextTransformation(null, content));
+        TextTransformation tt = new TextTransformation(null, content);
+        tt.setConsiderEmptyText(true);
+        element.cast(tt);
     }
 
     public void insert(String... values) {

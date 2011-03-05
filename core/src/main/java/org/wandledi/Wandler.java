@@ -43,7 +43,6 @@ public class Wandler implements ContentHandler, Spell {
     };
 
     public Wandler() {
-
         rootSpell.setParent(this);
         try {
             parser = XMLReaderFactory.createXMLReader();
@@ -55,7 +54,6 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void reset() {
-
         preserve = false;
         startUnderConstruction = false;
         calls = 0;
@@ -65,7 +63,6 @@ public class Wandler implements ContentHandler, Spell {
 
     @Override
     public Spell clone() {
-
         throw new UnsupportedOperationException("Sorry, but this won't work.");
     }
 
@@ -90,17 +87,14 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public boolean hierarchyContains(Spell spell) {
-
         return spell == this; // Wandler is the end of the hierarchy
     }
 
     protected boolean preserveSpace(String localName) {
-
         return !emptyElements.contains(localName);
     }
 
     public void wandle(Reader in, Writer out) {
-
         try {
             reset();
             this.out = new BufferedWriter(out, 2048);
@@ -121,12 +115,10 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void startElement(String name, Attribute... attributes) {
-
         startElement(name, new SimpleAttributes(attributes));
     }
 
     public void startElement(String name, Attributes attributes) {
-
         ++calls;
         if (startUnderConstruction) {
             write(">");
@@ -137,7 +129,6 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void endElement(String name) {
-
         ++calls;
         if (startUnderConstruction && noNestedElement() && !preserve) {
             write("/>");
@@ -151,7 +142,6 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void writeCharacters(char[] characters, int offset, int length) {
-
         if (startUnderConstruction) {
             write(">");
             startUnderConstruction = false;
@@ -160,7 +150,6 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void writeString(String string) {
-
         char[] characters = string.toCharArray();
         writeCharacters(characters, 0, characters.length);
     }
@@ -169,7 +158,6 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void endDocument() throws SAXException {
-
         try {
             out.flush();
         } catch (IOException ex) {
@@ -179,18 +167,38 @@ public class Wandler implements ContentHandler, Spell {
 
     public void startElement(String uri, String localName, String qName, Attributes atts)
             throws SAXException {
+        try {
+            rootSpell.startElement(localName, atts);
+        } catch (Exception e) {
+            throw new SAXException("Could not start " + stringFor(localName, atts), e);
+        }
+    }
 
-        rootSpell.startElement(localName, atts);
+    protected String stringFor(String label, Attributes attr) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<"); sb.append(label);
+        for (int i = 0; i < attr.getLength(); ++i) {
+            sb.append(" "); sb.append(attr.getLocalName(i));
+            sb.append("=\""); sb.append(attr.getValue(i)); sb.append("\"");
+        }
+        sb.append(">");
+        return sb.toString();
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
-
-        rootSpell.endElement(localName);
+        try {
+            rootSpell.endElement(localName);
+        } catch (Exception e) {
+            throw new SAXException("Could not end " + stringFor(localName, new SimpleAttributes()));
+        }
     }
 
     public void characters(char[] ch, int start, int length) throws SAXException {
-
-        rootSpell.writeCharacters(ch, start, length);
+        try {
+            rootSpell.writeCharacters(ch, start, length);
+        } catch (Exception e) {
+            throw new SAXException("Could not write \"" + new String(ch, start, length) + "\"", e);
+        }
     }
 
     private boolean noNestedElement() {
@@ -198,7 +206,6 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     protected void openElement(String name, Attributes atts) {
-
         write("<");
         write(name);
         if (atts != null) {
@@ -214,7 +221,6 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void ignorableWhitespace(char[] ch, int start, int length) throws SAXException {
-
         if (!startUnderConstruction) {
             write(new String(ch, start, length));
         }
@@ -234,27 +240,24 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void skippedEntity(String name) throws SAXException {
-
         write("&");
         write(name);
         write(";");
     }
 
     protected final void write(String s) {
-
         try {
             out.write(s);
         } catch (IOException ex) {
-            Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException("Write failed", ex);
         }
     }
 
     protected final void write(char[] characters, int offset, int length) {
-
         try {
             out.write(characters, offset, length);
         } catch (IOException ex) {
-            Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, null, ex);
+            throw new RuntimeException("Write failed", ex);
         }
     }
 

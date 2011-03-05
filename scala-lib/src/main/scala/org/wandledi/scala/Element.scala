@@ -11,10 +11,13 @@ trait Element extends org.wandledi.Element {
   def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit): Unit
   def changeAttribute(name: String)(change: (String) => String): Unit
   def includeFile(file: String)(magic: (Selectable) => Unit): Unit
-  // @TODO #insert which simply takes a function returning an XML node to be written
+  
   def insert(atEnd: Boolean)(insertion: (Spell) => Unit): Unit
-  // @TODO #replace which simply takes a function returning an XML node to be written
+  def insert(atEnd: Boolean = false, insertion: xml.NodeSeq): Unit
+
   def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit): Unit
+  def replace(contentsOnly: Boolean, replacement: (String, Attributes) => xml.NodeSeq): Unit
+  def replace(contentsOnly: Boolean = true, replacement: xml.NodeSeq): Unit
 
   def text_=(value: String): Unit
   def text: TextContent
