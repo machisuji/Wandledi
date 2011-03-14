@@ -21,6 +21,16 @@ trait Element extends org.wandledi.Element {
 
   def text_=(value: String): Unit
   def text: TextContent
+
+  /**Through this you can pass a block to a SelectableElement
+   * within which it can be processed.
+   * For example:
+   *
+   * $(".msg") { msg =>
+   *   // transform msg
+   * }
+   */
+  def apply(block: (Element) => Unit) = block(this)
 }
 
 object Element {

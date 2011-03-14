@@ -1,5 +1,6 @@
 package org.wandledi.wandlet;
 
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -7,6 +8,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.Writer;
+import java.util.logging.Logger;
 import javax.servlet.ServletContext;
 import org.wandledi.Resources;
 
@@ -36,6 +38,8 @@ import org.wandledi.Wandler;
 public class Wandlet implements Resources {
 
     private ServletContext servletContext;
+    private boolean directFileAccess = false;
+    private boolean debug = false;
 
     protected Wandlet() {
 
@@ -58,11 +62,19 @@ public class Wandlet implements Resources {
      * The default implementation should look in the webapp directory (i.e. WEB-INF/..).
      */
     public Reader open(String file) throws IOException {
-        InputStream in = getServletContext().getResourceAsStream(file);
-        if (in != null) {
-            return new InputStreamReader(in);
+        return new InputStreamReader(inputStreamFor(file));
+    }
+
+    protected InputStream inputStreamFor(String file) throws IOException {
+        if (isDirectFileAccess()) {
+            return new FileInputStream(getServletContext().getRealPath(file));
         } else {
-            throw new FileNotFoundException("Could find not resource '" + file + "'");
+            InputStream in = getServletContext().getResourceAsStream(file);
+            if (in != null) {
+                return in;
+            } else {
+                throw new FileNotFoundException("Could find not resource '" + file + "'");
+            }
         }
     }
     
@@ -90,6 +102,7 @@ public class Wandlet implements Resources {
      * @param httpServletResponse Render it using this HttpServletResponse.
      */
     public void render(Response response, HttpServletResponse httpServletResponse) throws IOException {
+        long ms = System.currentTimeMillis();
         Wandler wandler = getWandler();
         Reader input = null;
         Writer output = open(httpServletResponse);
@@ -100,11 +113,37 @@ public class Wandlet implements Resources {
         } finally {
             if (input != null) {
                 try { input.close(); } catch (IOException dontCare) { }
-            }       
+            }
+            if (debug) {
+                ms = System.currentTimeMillis() - ms;
+                Logger.getLogger("org.wandledi").info("Rendered response within " + ms + " ms.");
+            }
         }
     }
 
     public ServletContext getServletContext() {
         return servletContext;
+    }
+
+    public void setDirectFileAccess(boolean directFileAccess) {
+        this.directFileAccess = directFileAccess;
+    }
+
+    /**Indicates whether files to load should be accessed directly
+     * by Wandlet using a FileInputStream or if it should
+     * be accessed through the ServletContext.
+     *
+     * @return True if direct file access is enabled.
+     */
+    public boolean isDirectFileAccess() {
+        return directFileAccess;
+    }
+
+    public void setDebug(boolean debug) {
+        this.debug = debug;
+    }
+
+    public boolean isDebug() {
+        return debug;
     }
 }
