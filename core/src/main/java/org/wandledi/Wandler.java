@@ -25,6 +25,7 @@ import org.wandledi.spells.ArchSpell;
 public class Wandler implements ContentHandler, Spell {
 
     private XMLReader parser;
+    private Locator locator;
     private BufferedWriter out;
     private boolean preserve;
     private boolean startUnderConstruction = false;
@@ -102,7 +103,7 @@ public class Wandler implements ContentHandler, Spell {
         } catch (IOException ex) {
             Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, "IOException", ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, "SAXException", ex);
+            Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, "SAXException at line " + locator.getLineNumber(), ex);
         } finally {
             if (this.out != null) {
                 try {
@@ -227,7 +228,7 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     public void setDocumentLocator(Locator locator) {
-        // this.locator = locator;
+        this.locator = locator;
     }
 
     public final void startPrefixMapping(String prefix, String uri) throws SAXException {
