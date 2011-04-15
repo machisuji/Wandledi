@@ -25,6 +25,7 @@ import org.wandledi.VoidResolver;
 public class Inclusion extends ArchSpell implements ContentHandler {
 
     private XMLReader parser;
+    private Locator locator;
     private InclusionIntent intent;
 
     public Inclusion(final String file) {
@@ -76,9 +77,13 @@ public class Inclusion extends ArchSpell implements ContentHandler {
         try {
             parser.parse(new InputSource(getResources().open(intent.getFile())));
         } catch (IOException ex) {
-            Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, null, ex);
+            String message = "Error reading " + intent.getFile();
+            Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, message, ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, null, ex);
+            int lineNumber = locator != null ? locator.getLineNumber() : -1;
+            String message = "Error parsing " + intent.getFile() +
+                (lineNumber != -1 ? " at line " + lineNumber : "");
+            Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, message, ex);
         }
     }
 
@@ -110,7 +115,9 @@ public class Inclusion extends ArchSpell implements ContentHandler {
         super.writeCharacters(ch, start, length);
     }
 
-    public void setDocumentLocator(Locator locator) { }
+    public void setDocumentLocator(Locator locator) {
+        this.locator = locator;
+    }
 
     public void startDocument() throws SAXException { }
 

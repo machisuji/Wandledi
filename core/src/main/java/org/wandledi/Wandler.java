@@ -103,7 +103,10 @@ public class Wandler implements ContentHandler, Spell {
         } catch (IOException ex) {
             Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, "IOException", ex);
         } catch (SAXException ex) {
-            Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, "SAXException at line " + locator.getLineNumber(), ex);
+            int lineNumber = locator != null ? locator.getLineNumber() : -1;
+            String message = "Error parsing input" +
+                (lineNumber != -1 ? " at line " + lineNumber : "");
+            Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, message, ex);
         } finally {
             if (this.out != null) {
                 try {
