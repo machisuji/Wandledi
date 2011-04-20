@@ -70,7 +70,7 @@ public class SpellExperiment {
         String result = wandle("entities.xhtml");
         System.out.println(result);
 
-        assertTrue(result.indexOf("&copy;") != -1, "copyright sign");
+        assertTrue(result.indexOf("&#169;") != -1, "copyright sign");
     }
 
     @Test
