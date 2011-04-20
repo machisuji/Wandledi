@@ -9,12 +9,8 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import org.xml.sax.Attributes;
-import org.xml.sax.ContentHandler;
-import org.xml.sax.InputSource;
-import org.xml.sax.Locator;
-import org.xml.sax.SAXException;
-import org.xml.sax.XMLReader;
+
+import org.xml.sax.*;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.wandledi.spells.ArchSpell;
 
@@ -122,7 +118,7 @@ public class Wandler implements ContentHandler, Spell {
         startElement(name, new SimpleAttributes(attributes));
     }
 
-    public void startElement(String name, Attributes attributes) {
+    public void startElement(String name, org.xml.sax.Attributes attributes) {
         ++calls;
         if (startUnderConstruction) {
             write(">");
@@ -169,7 +165,7 @@ public class Wandler implements ContentHandler, Spell {
         }
     }
 
-    public void startElement(String uri, String localName, String qName, Attributes atts)
+    public void startElement(String uri, String localName, String qName, org.xml.sax.Attributes atts)
             throws SAXException {
         try {
             rootSpell.startElement(localName, atts);
@@ -178,7 +174,7 @@ public class Wandler implements ContentHandler, Spell {
         }
     }
 
-    protected String stringFor(String label, Attributes attr) {
+    protected String stringFor(String label, org.xml.sax.Attributes attr) {
         StringBuilder sb = new StringBuilder();
         sb.append("<"); sb.append(label);
         for (int i = 0; i < attr.getLength(); ++i) {
@@ -209,7 +205,7 @@ public class Wandler implements ContentHandler, Spell {
         return (calls - lastStart) == 1;
     }
 
-    protected void openElement(String name, Attributes atts) {
+    protected void openElement(String name, org.xml.sax.Attributes atts) {
         write("<");
         write(name);
         if (atts != null) {
@@ -268,7 +264,7 @@ public class Wandler implements ContentHandler, Spell {
     public void setParent(Spell transformation) {
     }
 
-    public void startTransformedElement(String name, Attributes attributes) {
+    public void startTransformedElement(String name, org.xml.sax.Attributes attributes) {
         startElement(name, attributes);
     }
 
