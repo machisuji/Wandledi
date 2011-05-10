@@ -1,6 +1,9 @@
 package org.wandledi;
 
 import org.xml.sax.Attributes;
+
+import java.util.List;
+
 import static org.wandledi.util.Methods.select;
 
 /**A UniversalSelector can match an element against arbitrary attributes.
@@ -56,11 +59,13 @@ public class UniversalSelector implements Selector {
     /**Tries to match this selector against the element with the given
      * label and attributes.
      *
+     *
      * @param label
      * @param attributes
+     * @param elementPath
      * @return
      */
-    public boolean matches(String label, Attributes attributes) {
+    public boolean matches(String label, Attributes attributes, List<ElementStart> elementPath) {
 
         boolean matches = this.label != null ? this.label.equals(label) : true;
         if (matches) {

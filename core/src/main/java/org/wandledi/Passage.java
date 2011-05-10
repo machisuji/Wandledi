@@ -103,9 +103,9 @@ public class Passage implements Selector {
         }
     }
 
-    public boolean matches(String label, Attributes attributes) {
+    public boolean matches(String label, Attributes attributes, List<ElementStart> elementPath) {
 
-        return selector.matches(label, attributes);
+        return selector.matches(label, attributes, elementPath);
     }
 
     public int compareTo(Object o) {

@@ -97,20 +97,22 @@ public class Scroll implements Selectable {
      *
      * Found spells lose charges upon a call of this method!
      *
+     *
      * @param label
      * @param attributes
+     * @param elementPath
      * @return The list of found spells, which is empty, if none were found.
      */
-    public List<Spell> readSpellsFor(String label, Attributes attributes) {
+    public List<Spell> readSpellsFor(String label, Attributes attributes, List<ElementStart> elementPath) {
 
         List<Spell> spells = new LinkedList<Spell>();
         for (Passage passage: passages) {
-            if (passage.matches(label, attributes)) {
+            if (passage.matches(label, attributes, elementPath)) {
                 passage.transferSpellsInto(spells);
             }
         }
         for (Scroll scroll: scrolls) {
-            spells.addAll(scroll.readSpellsFor(label, attributes));
+            spells.addAll(scroll.readSpellsFor(label, attributes, elementPath));
         }
         return spells;
     }

@@ -26,4 +26,27 @@ public class ElementStart implements SpellLine {
 
         parent.startElement(name, attributes);
     }
+
+    public String getName() {
+        return name;
+    }
+
+    public Attributes getAttributes() {
+        return attributes;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("<");
+        sb.append(name);
+        for (int i = 0; i < attributes.getLength(); ++i) {
+            sb.append(" ");
+            sb.append(attributes.getLocalName(i));
+            sb.append("=\"");
+            sb.append(attributes.getValue(i));
+            sb.append("\"");
+        }
+        sb.append(">");
+        return sb.toString();
+    }
 }

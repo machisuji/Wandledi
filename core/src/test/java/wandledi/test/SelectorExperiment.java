@@ -1,11 +1,10 @@
 package wandledi.test;
 
-import org.wandledi.Attribute;
-import org.wandledi.CssSelector;
-import org.wandledi.Selector;
-import org.wandledi.UniversalSelector;
+import org.wandledi.*;
 import org.testng.annotations.Test;
 import org.xml.sax.helpers.AttributesImpl;
+
+import java.util.LinkedList;
 
 import static org.testng.Assert.*;
 
@@ -57,9 +56,9 @@ public class SelectorExperiment {
         AttributesImpl attributes = new AttributesImpl();
         attributes.addAttribute(null, "style", "style", null, "color: black;");
 
-        assertTrue(selector.matches("span", attributes),
+        assertTrue(selector.matches("span", attributes, new LinkedList<ElementStart>()),
                 "The empty UniversalSelector should match anything.");
-        assertTrue(selector.matches("div", new AttributesImpl()),
+        assertTrue(selector.matches("div", new AttributesImpl(), new LinkedList<ElementStart>()),
                 "The empty UniversalSelector should match anything.");
     }
 }

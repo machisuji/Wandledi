@@ -60,6 +60,87 @@ public class SpellExperiment {
         pages = new SelectableImpl(new Scroll());
     }
 
+    @Test
+    public void testBasicCssSelectors() {
+        Element label = pages.get("div");
+        Element id = pages.get("#code");
+        Element klass = pages.get(".time");
+        Element labelClass = pages.get("p.content");
+
+        label.setAttribute("selector", "label");
+        id.setAttribute("selector", "id");
+        klass.setAttribute("selector", "class");
+        labelClass.setAttribute("selector", "label+class");
+
+        String result = wandle("selectors.xhtml");
+        Document doc = parseXML(result);
+
+        // check label-selected
+        NodeList divs = doc.getElementsByTagName("div");
+        assertEquals(divs.getLength(), 3);
+        for (int i = 0; i < divs.getLength(); ++i) {
+            String attr = divs.item(i).getAttributes().getNamedItem("selector").getTextContent();
+            assertEquals(attr, "label");
+        }
+
+        // check id-selected
+        NodeList pres = doc.getElementsByTagName("pre");
+        int codes = 0;
+        for (int i = 0; i < pres.getLength(); ++i) {
+            Node attr = pres.item(i).getAttributes().getNamedItem("selector");
+            if (attr != null) {
+                assertEquals(attr.getTextContent(), "id");
+                ++codes;
+            }
+        }
+        assertEquals(codes, 1);
+
+        // check class-selected
+        NodeList spans = doc.getElementsByTagName("span");
+        int times = 0;
+        for (int i = 0; i < spans.getLength(); ++i) {
+            Node attr = spans.item(i).getAttributes().getNamedItem("selector");
+            if (attr != null) {
+                assertEquals(attr.getTextContent(), "class");
+                ++times;
+            }
+        }
+        assertEquals(times, 2);
+
+        // check label+class-selected
+        NodeList ps = doc.getElementsByTagName("p");
+        int occurences = 0;
+        for (int i = 0; i < ps.getLength(); ++i) {
+            Node attr = ps.item(i).getAttributes().getNamedItem("selector");
+            if (attr != null) {
+                assertEquals(attr.getTextContent(), "label+class");
+                ++occurences;
+            }
+        }
+        assertEquals(occurences, 1);
+    }
+
+    @Test
+    public void testAdvancedCssSelectors() {
+        Element e = pages.get("div.left span.time");
+        e.replace(true, "buyakasha");
+
+        String result = wandle("selectors.xhtml");
+        Document doc = parseXML(result);
+        NodeList spans = doc.getElementsByTagName("span");
+
+        int occurences = 0;
+        for (int i = 0; i < spans.getLength(); ++i) {
+            Node klass = spans.item(i).getAttributes().getNamedItem("class");
+            if (klass != null) {
+                if ("time".equals(klass.getTextContent()) && "buyakasha".equals(spans.item(i).getTextContent())) {
+                    ++occurences;
+                }
+            }
+        }
+        assertEquals(occurences, 1, "number of occurences");
+    }
+
     /**This test fails for some reason.
      * In a real usage scenario in a PageController however, it seems
      * to work. Dunno why, yet. Let's disable this for the time being.
