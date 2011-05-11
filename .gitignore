@@ -10,3 +10,4 @@ target/**
 **/lib_managed/**
 nbproject/**
 test-output/**
+.redcar
