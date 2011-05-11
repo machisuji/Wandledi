@@ -130,18 +130,18 @@ public class SimpleAttributes implements Attributes {
     }
 
     public String getURI(int index) {
-        throw new UnsupportedOperationException("Not supported.");
+        return "";
     }
 
     public String getType(int index) {
-        throw new UnsupportedOperationException("Not supported.");
+        return "CDATA";
     }
 
     public String getType(String uri, String localName) {
-        throw new UnsupportedOperationException("Not supported.");
+        return "CDATA";
     }
 
     public String getType(String qName) {
-        throw new UnsupportedOperationException("Not supported.");
+        return "CDATA";
     }
 }
