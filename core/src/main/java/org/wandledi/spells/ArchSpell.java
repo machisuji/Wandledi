@@ -114,7 +114,7 @@ public class ArchSpell extends AbstractSpell {
     }
 
     protected Attributes copy(Attributes attr) {
-        return new AttributesImpl(attr);
+        return new SimpleAttributes(attr);
     }
 
     public void endElement(String name) {
