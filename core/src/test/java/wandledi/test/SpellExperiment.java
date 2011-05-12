@@ -12,16 +12,7 @@ import org.wandledi.SelectableImpl;
 import org.wandledi.SimpleAttributes;
 import org.wandledi.Spell;
 import org.wandledi.Wandler;
-import org.wandledi.spells.ArchSpell;
-import org.wandledi.spells.AttributeTransformation;
-import org.wandledi.spells.Changeling;
-import org.wandledi.spells.ComplexSpell;
-import org.wandledi.spells.Duplication;
-import org.wandledi.spells.Inclusion;
-import org.wandledi.spells.Insertion;
-import org.wandledi.spells.InsertionIntent;
-import org.wandledi.spells.ReplacementIntent;
-import org.wandledi.spells.StringTransformation;
+import org.wandledi.spells.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
@@ -571,6 +562,19 @@ public class SpellExperiment {
         }
         Node div = divs.item(2);
         assertNotNull(div.getAttributes().getNamedItem("attr"), "added attribute");
+    }
+
+    @Test
+    public void testTruncate() {
+        Element div = pages.get("div");
+        div.cast(new Truncate(1));
+
+        String result = wandle("test.xhtml"); System.out.println(result);
+        Document doc = parseXML(result);
+        NodeList divs = doc.getElementsByTagName("div");
+
+        assertEquals(divs.getLength(), 0, "number of remaining divs");
+        assertTrue(result.indexOf("Info: Repeat:") != -1, "nested divs truncated");
     }
 
     public String wandle(String file) {
