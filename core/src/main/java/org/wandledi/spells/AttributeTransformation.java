@@ -6,6 +6,8 @@ import org.wandledi.AbstractSpell;
 import org.wandledi.Attribute;
 import org.wandledi.SimpleAttributes;
 import org.wandledi.Spell;
+import java.util.List;
+import java.util.LinkedList;
 
 /**
  *
@@ -33,11 +35,14 @@ public class AttributeTransformation extends AbstractSpell {
 
         this(new AttributeTransformationIntent() {
             public Attribute[] getAttributes(String element, Attributes atts) {
-                Attribute[] ret = new Attribute[attributes.length];
-                for (int i = 0; i < ret.length; ++i) {
-                    ret[i] = attributes[i].toAttribute(atts);
+                List<Attribute> transformed = new LinkedList<Attribute>();
+                for (TransformedAttribute attr : attributes) {
+                    Attribute tAttr = attr.toAttribute(atts);
+                    if (tAttr != null) {
+                        transformed.add(tAttr);
+                    }
                 }
-                return ret;
+                return transformed.toArray(new Attribute[transformed.size()]);
             }
         });
     }

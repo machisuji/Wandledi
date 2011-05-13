@@ -150,12 +150,19 @@ public class SpellExperiment {
 
         String style = "background-color: black;";
         pages.get("body").setAttribute("style", style);
-        pages.get("#time").setAttribute("id", new StringTransformation() {
+        pages.get("#time").setAttribute("id", new StringTransformation() { // transform attr
             public String transform(String input) {
                 StringBuilder sb = new StringBuilder(input);
                 return sb.reverse().toString();
             }
         });
+        pages.get("#time").setAttribute("foobar", new StringTransformation() { // transform non-existing attr
+            public String transform(String input) {
+                return "NAAAH " + input;
+            }
+        });
+        pages.get("#time").changeAttribute("baz", "iyuup $val"); // transform non-existing attr
+        pages.get(".info").changeAttribute("class", "$val text"); // transform existing one
 
         String result = wandle("test.xhtml");
         Document doc = parseXML(result);
@@ -163,9 +170,18 @@ public class SpellExperiment {
 
         assertEquals(bodies.getLength(), 1);
         assertEquals(bodies.item(0).getAttributes().getNamedItem("style").getTextContent(), style);
-        assertEquals(doc.getElementsByTagName("span").item(0).
-                    getAttributes().getNamedItem("id").getTextContent(),
-                "emit", "transformed attribute");
+        assertEquals(
+            doc.getElementsByTagName("span").item(0).getAttributes().getNamedItem("id").getTextContent(),
+            "emit", "transformed attribute");
+        assertNull(
+            doc.getElementsByTagName("span").item(0).getAttributes().getNamedItem("foobar"),
+            "nothing");
+        assertNull(
+            doc.getElementsByTagName("span").item(0).getAttributes().getNamedItem("baz"),
+            "nothing");
+        assertEquals(
+            doc.getElementsByTagName("div").item(1).getAttributes().getNamedItem("class").getTextContent(),
+            "info text", "transformed attribute");
     }
 
     @Test
