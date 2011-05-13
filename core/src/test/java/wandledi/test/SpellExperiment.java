@@ -567,7 +567,7 @@ public class SpellExperiment {
     @Test
     public void testTruncate() {
         Element div = pages.get("div");
-        div.cast(new Truncate(1));
+        div.truncate(1);
 
         String result = wandle("test.xhtml");
         Document doc = parseXML(result);
@@ -581,7 +581,7 @@ public class SpellExperiment {
     public void testTruncatedForeach() {
         List<String> words = Arrays.asList("Friede", "Freude", "Eierkuchen");
         Element li = pages.get("li.flatten");
-        li.cast(new Truncate(2));
+        li.truncate(2);
         li.foreachIn(words).apply(new Plan<String>() {
             public void execute(SelectableElement e, String word) {
                 Element li = e.get("ul li");

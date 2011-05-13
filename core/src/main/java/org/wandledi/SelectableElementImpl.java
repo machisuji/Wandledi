@@ -119,6 +119,10 @@ public class SelectableElementImpl implements SelectableElement {
         element.replace(contentsOnly, content);
     }
 
+    public void truncate(int depth) {
+        element.truncate(depth);
+    }
+
     public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
         return element.foreachIn(collection);
     }

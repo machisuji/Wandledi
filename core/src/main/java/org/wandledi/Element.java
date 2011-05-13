@@ -55,6 +55,7 @@ public interface Element {
     public void insert(String content, boolean atEnd);
     public void replace(boolean contentsOnly, ReplacementIntent intent);
     public void replace(boolean contentsOnly, String content);
+    public void truncate(int depth);
     public <T> ElementForeach<T> foreachIn(Collection<T> collection);
     public void hide();
     public TextContent getText();
