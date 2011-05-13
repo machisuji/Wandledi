@@ -569,12 +569,37 @@ public class SpellExperiment {
         Element div = pages.get("div");
         div.cast(new Truncate(1));
 
-        String result = wandle("test.xhtml"); System.out.println(result);
+        String result = wandle("test.xhtml");
         Document doc = parseXML(result);
         NodeList divs = doc.getElementsByTagName("div");
 
         assertEquals(divs.getLength(), 0, "number of remaining divs");
         assertTrue(result.indexOf("Info: Repeat:") != -1, "nested divs truncated");
+    }
+
+    @Test
+    public void testTruncatedForeach() {
+        List<String> words = Arrays.asList("Friede", "Freude", "Eierkuchen");
+        Element li = pages.get("li.flatten");
+        li.cast(new Truncate(2));
+        li.foreachIn(words).apply(new Plan<String>() {
+            public void execute(SelectableElement e, String word) {
+                Element li = e.get("ul li");
+                li.at(0).replace(true, word);
+                li.at(1).replace(true, word.toUpperCase());
+            }
+        });
+
+        String result = wandle("foreach.xhtml");
+        Document doc = parseXML(result);
+        NodeList lis = doc.getElementsByTagName("li");
+
+        assertEquals(lis.getLength(), 6, "number of found list items");
+        for (int i = 0; i < words.size(); ++i) {
+            String word = words.get(i);
+            assertEquals(lis.item(i * 2).getTextContent(), word);
+            assertEquals(lis.item(i * 2 + 1).getTextContent(), word.toUpperCase());
+        }
     }
 
     public String wandle(String file) {
