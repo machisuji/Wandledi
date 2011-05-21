@@ -17,7 +17,7 @@ public class TransformedAttribute {
         this.transformation = transformation;
     }
 
-    /**Tries to perform the transformation to a regular Attrbute.
+    /**Tries to perform the transformation to a regular Attribute.
      *
      * @param attributes The attribute set of which one is to be transformed.
      * @return An Attribute or null if no corresponding Attribute to transform could be found.
