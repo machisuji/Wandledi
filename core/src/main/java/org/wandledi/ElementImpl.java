@@ -61,6 +61,10 @@ public class ElementImpl implements Element {
         })));
     }
 
+    public void removeAttribute(String name) {
+        cast(new AttributeTransformation(name));
+    }
+
     public void clone(int times) {
         cast(new Duplication(times));
     }

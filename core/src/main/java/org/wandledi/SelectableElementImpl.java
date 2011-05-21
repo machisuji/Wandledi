@@ -134,4 +134,8 @@ public class SelectableElementImpl implements SelectableElement {
     public void changeAttribute(String name, String value) {
         element.changeAttribute(name, value);
     }
+
+    public void removeAttribute(String name) {
+        element.removeAttribute(name);
+    }
 }

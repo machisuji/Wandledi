@@ -618,6 +618,21 @@ public class SpellExperiment {
         }
     }
 
+    @Test
+    public void testRemoveAttributes() {
+        Element timeSpan = pages.get("#time");
+        timeSpan.removeAttribute("id"); // id should be removed
+        timeSpan.removeAttribute("foobar"); // should have no effect
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList spans = doc.getElementsByTagName("span");
+
+        assertEquals(spans.getLength(), 1);
+        assertNull(spans.item(0).getAttributes().getNamedItem("id"), "id");
+        assertNotNull(spans.item(0).getAttributes().getNamedItem("title"), "title");
+    }
+
     public String wandle(String file) {
 
         StringWriter output = new StringWriter();

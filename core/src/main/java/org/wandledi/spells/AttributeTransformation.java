@@ -16,14 +16,18 @@ import java.util.LinkedList;
 public class AttributeTransformation extends AbstractSpell {
 
     private AttributeTransformationIntent intent;
+    private boolean merge; // merge Intent's result with actual attributes?
+
+    public AttributeTransformation(AttributeTransformationIntent intent, boolean merge) {
+        this.intent = intent;
+        this.merge = merge;
+    }
 
     public AttributeTransformation(AttributeTransformationIntent intent) {
-
-        this.intent = intent;
+        this(intent, true);
     }
 
     public AttributeTransformation(final Attribute... attributes) {
-
         this(new AttributeTransformationIntent() {
             public Attribute[] getAttributes(String element, Attributes atts) {
                 return attributes;
@@ -32,7 +36,6 @@ public class AttributeTransformation extends AbstractSpell {
     }
 
     public AttributeTransformation(final TransformedAttribute... attributes) {
-
         this(new AttributeTransformationIntent() {
             public Attribute[] getAttributes(String element, Attributes atts) {
                 List<Attribute> transformed = new LinkedList<Attribute>();
@@ -47,25 +50,44 @@ public class AttributeTransformation extends AbstractSpell {
         });
     }
 
+    /**Creates an AttributeTransformation that _removes_ an Element's attributes.
+     *
+     * @param attributesToBeRemoved The names of the attributes to be removed.
+     */
+    public AttributeTransformation(final String... attributesToBeRemoved) {
+        this(new AttributeTransformationIntent() {
+            public Attribute[] getAttributes(String element, Attributes attributes) {
+                List<Attribute> remains = new LinkedList<Attribute>();
+                main: for (int i = 0; i < attributes.getLength(); ++i) {
+                    String attr = attributes.getLocalName(i);
+                    for (int j = 0; j < attributesToBeRemoved.length; ++j) {
+                        if (attr.equalsIgnoreCase(attributesToBeRemoved[j])) continue main; // don't add (->remove) this one
+                    }
+                    remains.add(new Attribute(attr, attributes.getValue(i)));
+                }
+                return remains.toArray(new Attribute[remains.size()]);
+            }
+        }, false);
+    }
+
     @Override
     public Spell clone() {
-
-        return new AttributeTransformation(intent);
+        return new AttributeTransformation(intent, merge);
     }
 
     @Override
     public void startTransformedElement(String name, Attributes attributes) {
-
         if (ignoreBounds()) {
             startElement(name, attributes);
         } else {
-            super.startTransformedElement(name, new SimpleAttributes(attributes,
-                    intent.getAttributes(name, attributes)));
+            Attributes newAttributes = merge ?
+                    new SimpleAttributes(attributes, intent.getAttributes(name, attributes)) :
+                    new SimpleAttributes(intent.getAttributes(name, attributes));
+            super.startTransformedElement(name, newAttributes);
         }
     }
 
     public String toString() {
-
         StringBuilder sb = new StringBuilder("AttrTrans [");
         Attribute[] attributes = intent.getAttributes("", new AttributesImpl());
         for (int i = 0; i < attributes.length; ++i) {
@@ -78,7 +100,6 @@ public class AttributeTransformation extends AbstractSpell {
             sb.append("'");
         }
         sb.append("]");
-
         return sb.toString();
     }
 }

@@ -46,6 +46,7 @@ public interface Element {
      * @param value
      */
     public void changeAttribute(String name, String value);
+    public void removeAttribute(String name);
     public void clone(int times);
     public void includeFile(String name);
     public void includeFile(String name, Scroll scroll);
