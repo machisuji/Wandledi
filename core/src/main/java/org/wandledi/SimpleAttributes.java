@@ -144,4 +144,17 @@ public class SimpleAttributes implements Attributes {
     public String getType(String qName) {
         return "CDATA";
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("[");
+        for (int i = 0; i < attributes.length; ++i) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(attributes[i].toString());
+        }
+        sb.append("]");
+        return sb.toString();
+    }
 }

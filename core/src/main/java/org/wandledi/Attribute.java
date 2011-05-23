@@ -53,4 +53,9 @@ public class Attribute {
 
         this.value = value != null ? value : "";
     }
+
+    @Override
+    public String toString() {
+        return name + "=" + value;
+    }
 }
