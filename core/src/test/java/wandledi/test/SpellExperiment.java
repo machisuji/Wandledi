@@ -181,7 +181,7 @@ public class SpellExperiment {
             "nothing");
         assertEquals(
             doc.getElementsByTagName("div").item(1).getAttributes().getNamedItem("class").getTextContent(),
-            "info text", "transformed attribute");
+            "info i18n text", "transformed attribute");
     }
 
     @Test

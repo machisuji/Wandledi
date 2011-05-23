@@ -2,6 +2,8 @@ package org.wandledi;
 
 import org.xml.sax.Attributes;
 
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.List;
 
 import static org.wandledi.util.Methods.select;
@@ -25,7 +27,7 @@ public class CssSelector implements Selector {
     protected CssSelector(String label, String elementClass, String id) {
 
         this.label = label;
-        this.elementClass = elementClass;
+        this.elementClass = elementClass != null ? elementClass.replace(" ", ".") : null;
         this.id = id;
     }
 
@@ -51,6 +53,16 @@ public class CssSelector implements Selector {
             }
         }
         return sel;
+    }
+
+    public Attributes getAttributes() {
+        if (gotElementClass()) {
+            return new SimpleAttributes(new Attribute("class", elementClass.replace(".", " ")));
+        } else if (isId()) {
+            return new SimpleAttributes(new Attribute("id", id));
+        } else {
+            return new SimpleAttributes();
+        }
     }
 
     private static CssSelector parseSingleSelector(String selector) {
@@ -102,36 +114,29 @@ public class CssSelector implements Selector {
             int i = 0;
             for (ElementStart e: elementPath) {
                 if (i == parents.length) break;
-                if (parents[i].equals(e.getName(), e.getAttributes())) {
+                if (parents[i].matches(e.getName(), e.getAttributes())) {
                     ++i;
                 }
             }
             if (i != parents.length) return false;
         }
-        return equals(label, attributes);
+        return matches(label, attributes);
     }
 
     @Override
     public boolean equals(Object o) {
         if (o instanceof CssSelector) {
-            CssSelector selector = (CssSelector) o;
-            if (isId()) {
-                return this.id.equals(selector.id);
-            } else {
-                boolean equals = gotLabel() || gotElementClass();
-                if (gotLabel()) {
-                    equals &= this.label.equals(selector.label);
-                }
-                if (gotElementClass()) {
-                    equals &= this.elementClass.equals(selector.elementClass);
-                }
-                return equals;
-            }
+            CssSelector that = (CssSelector) o;
+            return this.matches(that) && that.matches(this);
         }
         return false;
     }
 
-    protected boolean equals(String label, Attributes attributes) {
+    public boolean matches(CssSelector selector) {
+        return matches(selector.label, selector.getAttributes());
+    }
+
+    protected boolean matches(String label, Attributes attributes) {
         if (isId()) {
             return this.id.equals(attributes.getValue("id"));
         } else {
@@ -140,9 +145,23 @@ public class CssSelector implements Selector {
                 equals &= this.label.equals(label);
             }
             if (gotElementClass()) {
-                equals &= this.elementClass.equals(attributes.getValue("class"));
+                List<String> theseClasses = split(elementClass, "\\.", true);
+                List<String> thoseClassses = split(attributes.getValue("class"), " ", true);
+                equals &= thoseClassses.containsAll(theseClasses);
             }
             return equals;
+        }
+    }
+
+    protected List<String> split(String value, String delim, boolean toLowerCase) {
+        if (value == null) {
+            return new LinkedList<String>();
+        } else {
+            String[] values = value.split(delim);
+            for (int i = 0; i < values.length && toLowerCase; ++i) {
+                values[i] = values[i].toLowerCase();
+            }
+            return Arrays.asList(values);
         }
     }
 
@@ -156,7 +175,10 @@ public class CssSelector implements Selector {
                 hash += 7 * label.hashCode();
             }
             if (gotElementClass()) {
-                hash += 11 * elementClass.hashCode();
+                String[] classes = elementClass.split(" ");
+                for (String klass: classes) {
+                    hash += 11 * klass.hashCode();
+                }
             }
         }
         return hash;
