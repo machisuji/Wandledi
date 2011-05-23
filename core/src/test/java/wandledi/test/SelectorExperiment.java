@@ -4,7 +4,9 @@ import org.wandledi.*;
 import org.testng.annotations.Test;
 import org.xml.sax.helpers.AttributesImpl;
 
+import java.util.Arrays;
 import java.util.LinkedList;
+import java.util.List;
 
 import static org.testng.Assert.*;
 
@@ -17,14 +19,45 @@ public class SelectorExperiment {
         CssSelector labelAndClass = CssSelector.valueOf("div.info");
         CssSelector id = CssSelector.valueOf("#foobar");
 
-        assertTrue(label.equals(new CssSelector("div", new Attribute("foo", "bar"))),
+        assertTrue(label.matches(new CssSelector("div", new Attribute("foo", "bar"))),
                 "A bare label should be matched.");
-        assertTrue(klass.equals(new CssSelector("div", new Attribute("class", "info"))),
+        assertTrue(klass.matches(new CssSelector("div", new Attribute("class", "info"))),
                 "A label combined with a class should be matched by just a class.");
-        assertTrue(labelAndClass.equals(new CssSelector("div", new Attribute("class", "info"))),
+        assertTrue(labelAndClass.matches(new CssSelector("div", new Attribute("class", "info"))),
                 "A label combined with a class should be matched by a class-and-label selector.");
-        assertTrue(id.equals(new CssSelector("div", new Attribute("id", "foobar"))),
+        assertTrue(id.matches(new CssSelector("div", new Attribute("id", "foobar"))),
                 "Any element with an id should be matched by a corresponding id selector.");
+
+        CssSelector alike1 = CssSelector.valueOf("span.text.i18n");
+        CssSelector alike2 = CssSelector.valueOf("span.i18n.text");
+        CssSelector text = CssSelector.valueOf(".text");
+
+        assertEquals(alike1, alike2, "selectors should be equal");
+        assertTrue(text.matches(alike1), ".text should match span.text.i18n");
+        assertNotSame(text, alike1, ".text should not equal span.text.i18n though");
+    }
+
+    @Test
+    public void testNestedCssSelectors() {
+        CssSelector selector = CssSelector.valueOf(".content lu span");
+        List<ElementStart> validPath = Arrays.asList(
+                new ElementStart("html"),
+                new ElementStart("div", new Attribute("class", "content")),
+                new ElementStart("p"),
+                new ElementStart("lu"),
+                new ElementStart("li"),
+                new ElementStart("span", new Attribute("id", "foobar"))
+        );
+        List<ElementStart> invalidPath = Arrays.asList(
+                new ElementStart("html"),
+                new ElementStart("div"),
+                new ElementStart("p"),
+                new ElementStart("lu"),
+                new ElementStart("li"),
+                new ElementStart("span", new Attribute("id", "foobar"))
+        );
+        assertTrue(selector.matches("span", new SimpleAttributes(new Attribute("id", "foobar")), validPath));
+        assertFalse(selector.matches("span", new SimpleAttributes(new Attribute("id", "foobar")), invalidPath));
     }
 
     @Test
