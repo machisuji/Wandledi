@@ -15,15 +15,13 @@ class ElementImpl(
   aScroll: Scroll)
 extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
 
-  private implicit def toJavaList[T: ClassManifest](l: Iterable[T]) =
-    java.util.Arrays.asList(l.toArray: _*)
-
   def text_=(value: String) {
     text.setContent(value)
   }
   def text: TextContent = new TextContentImpl(this)
 
   def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
+    import collection.JavaConversions._
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElementImpl(e.getSelector, e.getScroll, e.getScroll), item)
@@ -34,6 +32,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
 
   def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
       (fun: (SelectableElement, T, Int) => Unit) {
+    import collection.JavaConversions._
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElementImpl(e.getSelector, e.getScroll, e.getScroll), item, index)
