@@ -1,9 +1,7 @@
 package org.wandledi;
 
 import java.util.Collection;
-
 import org.wandledi.spells.*;
-
 import org.xml.sax.Attributes;
 
 
@@ -32,7 +30,7 @@ public class ElementImpl implements Element {
     public TextContent getText() {
         return new TextContentImpl(this);
     }
-    
+
     public ChargedElement max(int charges) {
         return new ChargedElement(selector, scroll, charges);
     }
@@ -51,6 +49,14 @@ public class ElementImpl implements Element {
 
     public void setAttribute(String name, StringTransformation transformation) {
         cast(new AttributeTransformation(new TransformedAttribute(name, transformation)));
+    }
+
+    public void setAttributes(Attribute... attributes) {
+        cast(new AttributeTransformation(attributes));
+    }
+
+    public void setAttributes(TransformedAttribute... attributes) {
+        cast(new AttributeTransformation(attributes));
     }
 
     public void changeAttribute(String name, final String value) {

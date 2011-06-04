@@ -4,6 +4,7 @@ import java.util.Collection;
 import org.wandledi.spells.InsertionIntent;
 import org.wandledi.spells.ReplacementIntent;
 import org.wandledi.spells.StringTransformation;
+import org.wandledi.spells.TransformedAttribute;
 
 /**
  *
@@ -83,6 +84,10 @@ public class SelectableElementImpl implements SelectableElement {
         element.setAttribute(name, transformation);
     }
 
+    public void setAttributes(Attribute... attributes) {
+        element.setAttributes(attributes);
+    }
+
     public void clone(int times) {
         element.clone(times);
     }
@@ -133,6 +138,10 @@ public class SelectableElementImpl implements SelectableElement {
 
     public void changeAttribute(String name, String value) {
         element.changeAttribute(name, value);
+    }
+
+    public void setAttributes(TransformedAttribute... attributes) {
+        element.setAttributes(attributes);
     }
 
     public void removeAttribute(String name) {

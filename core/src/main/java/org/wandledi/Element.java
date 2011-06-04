@@ -5,6 +5,7 @@ import java.util.Collection;
 import org.wandledi.spells.InsertionIntent;
 import org.wandledi.spells.ReplacementIntent;
 import org.wandledi.spells.StringTransformation;
+import org.wandledi.spells.TransformedAttribute;
 
 /**An HTML element.
  *
@@ -37,11 +38,14 @@ public interface Element {
     public void setAttribute(String name, String value);
     public void setAttribute(String name, StringTransformation transformation);
 
+    public void setAttributes(Attribute... attributes);
+    public void setAttributes(TransformedAttribute... attributes);
+
     /**The same as #setAttribute except that you can reference the attribute's old
      * value in the new value using the string $val.
-     * 
+     *
      * Example: changeAttribute("class", "newClass $val"); // adds a new class to a possibly existing one
-     * 
+     *
      * @param name
      * @param value
      */

@@ -633,6 +633,27 @@ public class SpellExperiment {
         assertNotNull(spans.item(0).getAttributes().getNamedItem("title"), "title");
     }
 
+    @Test
+    public void testSetAttributes() {
+        Element time = pages.get("#time");
+        Element title = pages.get("title");
+        time.setAttributes(new TransformedAttribute("title", new StringTransformation() {
+            public String transform(String value) {
+              return value.toUpperCase();
+            }
+          }));
+        title.setAttributes(new Attribute("blah", "blah"), new Attribute("yada", "yada"));
+
+        String result = wandle("test.xhtml");
+        Document doc = parseXML(result);
+        NodeList titles = doc.getElementsByTagName("title");
+        NodeList spans = doc.getElementsByTagName("span");
+
+        assertNotNull(titles.item(0).getAttributes().getNamedItem("blah"));
+        assertNotNull(titles.item(0).getAttributes().getNamedItem("yada"));
+        assertEquals(spans.item(0).getAttributes().getNamedItem("title").getTextContent(), "WHAT TIME IS IT?");
+    }
+
     public String wandle(String file) {
 
         StringWriter output = new StringWriter();
