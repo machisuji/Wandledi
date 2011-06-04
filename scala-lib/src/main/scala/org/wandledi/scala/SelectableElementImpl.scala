@@ -26,16 +26,22 @@ class SelectableElementImpl(
     element.foreachIn(items)(fun)
   def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
       (fun: (SelectableElement, T, Int) => Unit) = element.foreachWithIndexIn(items)(fun)
+
   def changeAttribute(name: String)(change: (String) => String) =
     element.changeAttribute(name)(change)
+  def changeAttributes(attr: (String, (String) => String)*) =
+    element.changeAttributes(attr: _*)
+  def setAttributes(attr: (String, String)*) =
+    element.setAttributes(attr: _*)
+
   def includeFile(file: String)(magic: (Selectable) => Unit) =
     element.includeFile(file)(magic)
-  
+
   def insert(atEnd: Boolean)(insertion: (Spell) => Unit) =
     element.insert(atEnd)(insertion)
   def insert(atEnd: Boolean = false, insertion: xml.NodeSeq) =
     element.insert(atEnd, insertion)
-  
+
   def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) =
     element.replace(contentsOnly)(replacement)
   def replace(contentsOnly: Boolean, replacement: (String, Attributes) => xml.NodeSeq) =

@@ -9,9 +9,13 @@ trait Element extends org.wandledi.Element {
 
   def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit): Unit
   def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit): Unit
+
   def changeAttribute(name: String)(change: (String) => String): Unit
+  def changeAttributes(attr: (String, (String) => String)*): Unit
+  def setAttributes(attr: (String, String)*): Unit
+
   def includeFile(file: String)(magic: (Selectable) => Unit): Unit
-  
+
   def insert(atEnd: Boolean)(insertion: (Spell) => Unit): Unit
   def insert(atEnd: Boolean = false, insertion: xml.NodeSeq): Unit
 

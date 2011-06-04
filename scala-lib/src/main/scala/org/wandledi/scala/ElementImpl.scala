@@ -1,6 +1,7 @@
 package org.wandledi.scala
 
 import org.xml.sax.Attributes
+import org.wandledi.Attribute
 import org.wandledi.Scroll
 import org.wandledi.Selector
 import org.wandledi.Spell
@@ -9,6 +10,7 @@ import org.wandledi.Plan
 import org.wandledi.spells.InsertionIntent
 import org.wandledi.spells.ReplacementIntent
 import org.wandledi.spells.StringTransformation
+import org.wandledi.spells.TransformedAttribute
 
 class ElementImpl(
   aSelector: Selector,
@@ -45,6 +47,19 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     setAttribute(name, new StringTransformation {
       def transform(value: String) = change(value)
     })
+  }
+
+  def changeAttributes(attr: (String, (String) => String)*) {
+    val changes = attr.map { case (name, change) =>
+      new TransformedAttribute(name, new StringTransformation {
+          def transform(value: String) = change(value)
+        })
+    }
+    setAttributes(changes: _*)
+  }
+
+  def setAttributes(attr: (String, String)*) {
+    setAttributes(attr.map(t => new Attribute(t._1, t._2)): _*)
   }
 
   def includeFile(file: String)(magic: (Selectable) => Unit) {
