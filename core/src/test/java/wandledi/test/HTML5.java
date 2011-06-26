@@ -107,7 +107,7 @@ public class HTML5 {
             }
         });
 
-        String result = wandle("html5.html"); System.out.println(result);
+        String result = wandle("html5.html");
         Document doc = parseXML(result);
         NodeList sections = doc.getElementsByTagName("section");
 
@@ -119,5 +119,24 @@ public class HTML5 {
             }
         }
         assertEquals(occurences, 3, "number of footer sections");
+    }
+
+    @Test
+    public void nestedCssSelectors() {
+        Element e = page.get("footer section");
+        e.setAttribute("id", "footer-section");
+
+        String result = wandle("html5.html");
+        Document doc = parseXML(result);
+        NodeList sections = doc.getElementsByTagName("section");
+
+        int occurences = 0;
+        for (int i = 0; i < sections.getLength(); ++i) {
+            Node id = sections.item(i).getAttributes().getNamedItem("id");
+            if (id != null && id.getTextContent().startsWith("footer-section")) {
+                ++occurences;
+            }
+        }
+        assertEquals(occurences, 1, "number of footer sections");
     }
 }
