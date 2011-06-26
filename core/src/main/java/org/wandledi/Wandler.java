@@ -14,6 +14,9 @@ import org.xml.sax.*;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.wandledi.spells.ArchSpell;
 
+import nu.validator.htmlparser.sax.HtmlParser;
+import nu.validator.htmlparser.common.XmlViolationPolicy;
+
 /**
  *
  * @author Markus Kahl
@@ -39,15 +42,31 @@ public class Wandler implements ContentHandler, Spell {
         }
     };
 
-    public Wandler() {
+    public Wandler(XMLReader xmlReader) {
         rootSpell.setParent(this);
         try {
-            parser = XMLReaderFactory.createXMLReader();
+            parser = xmlReader != null ? xmlReader : XMLReaderFactory.createXMLReader();
             parser.setContentHandler(this);
             parser.setEntityResolver(new VoidResolver());
         } catch (SAXException ex) {
             throw new RuntimeException("Could not create Wandler", ex);
         }
+    }
+
+    /**Creates a Wandler which uses an XMLReader from XMLReaderFactory.
+     *
+     * Calling this is equivalent to 'new Wandler(XMLReaderFactory.createXMLReader())'.
+     */
+    public Wandler() {
+        this(null);
+    }
+
+    public static Wandler forXHTML() {
+        return new Wandler();
+    }
+
+    public static Wandler forHTML() {
+        return new Wandler(new HtmlParser(XmlViolationPolicy.ALLOW));
     }
 
     public void reset() {

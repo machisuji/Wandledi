@@ -9,6 +9,7 @@ class Wandledi(info: ProjectInfo) extends ParentProject(info) {
         scalaLib, wandlet)
   
   class Core(info: ProjectInfo) extends DefaultProject(info) {
+    val htmlparser = "nu.validator.htmlparser" % "htmlparser" % "1.2.1"
     val testng = "org.testng" % "testng" % "5.12.1" % "test" // for Java only
     val scalaToolsSnapshots = ScalaToolsSnapshots
     val scalatest = "org.scalatest" % "scalatest" % "1.2.1-SNAPSHOT" % "test"

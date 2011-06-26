@@ -35,10 +35,15 @@ public class SpellExperiment {
     public static String DIR = "core/src/test/java/wandledi/test/";
 
     private SelectableImpl pages;
-    private Wandler wandler = new Wandler();
+    private Wandler wandler;
     private Random random = new Random();
 
     public SpellExperiment() {
+        this(Wandler.forXHTML());
+    }
+
+    public SpellExperiment(Wandler wandler) {
+        this.wandler = wandler;
         wandler.setResources(new Resources() {
             public Reader open(String resource) throws IOException {
                 return new FileReader(DIR + resource);
