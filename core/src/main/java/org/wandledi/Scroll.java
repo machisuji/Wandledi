@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import org.xml.sax.Attributes;
+import org.wandledi.spells.ArchSpell;
 
 /**A Scroll contains a number of spells which can be applied using the scroll.
  *
@@ -17,14 +18,23 @@ public class Scroll implements Selectable {
     private List<Passage> passages = new ArrayList<Passage>();
     private SelectableImpl selectable = new SelectableImpl(this);
     private List<Scroll> scrolls = new ArrayList<Scroll>();
+    private ArchSpell archSpell; // set if this scroll belongs to an ArchSpell
 
     public Scroll() {
-
+        this(null, null);
     }
 
     public Scroll(String name) {
-
+        this(name, null);
+    }
+    
+    public Scroll(ArchSpell archSpell) {
+        this(null, archSpell);
+    }
+    
+    public Scroll(String name, ArchSpell archSpell) {
         this.name = name;
+        this.archSpell = archSpell;
     }
 
     public void addScroll(Scroll scroll) {
@@ -143,6 +153,14 @@ public class Scroll implements Selectable {
      */
     public void setView(String view) {
         this.view = view;
+    }
+    
+    public void setArchSpell(ArchSpell archSpell) {
+        this.archSpell = archSpell;
+    }
+    
+    public ArchSpell getArchSpell() {
+        return archSpell;
     }
 
     public Element get(String selector) {

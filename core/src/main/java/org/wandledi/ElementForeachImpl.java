@@ -6,6 +6,7 @@ import org.wandledi.spells.ArchSpell;
 
 import java.util.Collection;
 import java.util.LinkedList;
+import java.util.List;
 
 public class ElementForeachImpl<T> implements ElementForeach<T> {
 
@@ -36,8 +37,12 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
         }
         Spell[] modifications = new Spell[scrolls.size()];
         int mi = 0;
+        System.out.println("ArchSpell: " + element.getScroll().getArchSpell());
+        List<ElementStart> parentElementPath = element.getScroll().getArchSpell() != null ?
+            element.getScroll().getArchSpell().getElementPath() :
+            new LinkedList<ElementStart>();
         for (Scroll scroll: scrolls) {
-            modifications[mi++] = new ArchSpell(scroll);
+            modifications[mi++] = new ArchSpell(scroll, parentElementPath);
         }
         Spell duplication = new Duplication(size, new Changeling(modifications));
 

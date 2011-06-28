@@ -82,6 +82,7 @@ public class Duplication extends AbstractSpell {
         } else {
             SpellLine start = pullLine();
             Spell parent = this.parent;
+            System.out.println("### Parent: " + this.parent);
             if (intent.modification() != null) {
                 parent = new ComplexSpell(intent.modification(), this.parent);
             }

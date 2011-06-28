@@ -15,6 +15,7 @@ public class LocalSpells extends AbstractSpell {
 
         this.parentScroll = parentScroll;
         this.localScroll = localScroll;
+        localScroll.setArchSpell(parentScroll.getArchSpell());
     }
 
     public void startTransformedElement(String label, Attributes attributes) {

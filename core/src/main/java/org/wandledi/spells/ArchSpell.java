@@ -8,7 +8,7 @@ import java.util.*;
 
 public class ArchSpell extends AbstractSpell {
 
-    private Scroll scroll = new Scroll();
+    private Scroll scroll;
     private LinkedList<SpellLevel> spellLevels = new LinkedList<SpellLevel>();
 
     /**A list of elements from the root of the document (<html>) down to
@@ -33,17 +33,20 @@ public class ArchSpell extends AbstractSpell {
     private List<ElementStart> elementPathView = Collections.unmodifiableList(elementPath);
 
     public ArchSpell(Scroll scroll) {
-
         this.scroll = scroll;
+        scroll.setArchSpell(this);
+    }
+    
+    public ArchSpell(Scroll scroll, List<ElementStart> elementPath) {
+        this(scroll);
+        this.elementPath.addAll(elementPath);
     }
 
     public void reset() {
-
         spellLevels.clear();
     }
 
     private void checkSpell(String label, Attributes attributes) {
-
         List<Spell> spells = getScroll().readSpellsFor(label, attributes, elementPathView);
         Spell parent = this.parent;
         if (spellLevels.size() > 0) {
@@ -184,5 +187,6 @@ public class ArchSpell extends AbstractSpell {
 
     public void setScroll(Scroll scroll) {
         this.scroll = scroll;
+        scroll.setArchSpell(this);
     }
 }

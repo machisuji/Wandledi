@@ -110,6 +110,7 @@ public class CssSelector implements Selector {
     }
 
     public boolean matches(String label, Attributes attributes, List<ElementStart> elementPath) {
+        System.out.println("CssSelector.matches(" + label + ", " + attributes + ", " + elementPath);
         if (parents.length > 0) {
             int i = 0;
             for (ElementStart e: elementPath) {

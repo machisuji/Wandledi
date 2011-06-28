@@ -12,18 +12,15 @@ public class ElementStart implements SpellLine {
     protected Attributes attributes;
 
     public ElementStart(String name, Attribute... attributes) {
-
         this(name, new SimpleAttributes(attributes));
     }
 
     public ElementStart(String name, Attributes attributes) {
-
         this.name = name;
         this.attributes = attributes;
     }
 
     public void perform(Spell parent) {
-
         parent.startElement(name, attributes);
     }
 
