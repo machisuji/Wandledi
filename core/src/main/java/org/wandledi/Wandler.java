@@ -7,6 +7,7 @@ import java.io.Reader;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -104,6 +105,10 @@ public class Wandler implements ContentHandler, Spell {
 
     public boolean hierarchyContains(Spell spell) {
         return spell == this; // Wandler is the end of the hierarchy
+    }
+
+    public List<ElementStart> getElementPath() {
+        return rootSpell.getElementPath();
     }
 
     protected boolean preserveSpace(String localName) {

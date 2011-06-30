@@ -8,7 +8,7 @@ import java.util.*;
 
 public class ArchSpell extends AbstractSpell {
 
-    private Scroll scroll = new Scroll();
+    private Scroll scroll;
     private LinkedList<SpellLevel> spellLevels = new LinkedList<SpellLevel>();
 
     /**A list of elements from the root of the document (<html>) down to
@@ -31,10 +31,15 @@ public class ArchSpell extends AbstractSpell {
      */
     private ArrayList<ElementStart> elementPath = new ArrayList<ElementStart>(12);
     private List<ElementStart> elementPathView = Collections.unmodifiableList(elementPath);
+    private boolean inheritElementPath = false;
+
+    public ArchSpell(Scroll scroll, boolean inheritElementPath) {
+        this.scroll = scroll;
+        this.inheritElementPath = inheritElementPath;
+    }
 
     public ArchSpell(Scroll scroll) {
-
-        this.scroll = scroll;
+        this(scroll, false);
     }
 
     public void reset() {
@@ -44,7 +49,7 @@ public class ArchSpell extends AbstractSpell {
 
     private void checkSpell(String label, Attributes attributes) {
 
-        List<Spell> spells = getScroll().readSpellsFor(label, attributes, elementPathView);
+        List<Spell> spells = getScroll().readSpellsFor(label, attributes, getElementPath());
         Spell parent = this.parent;
         if (spellLevels.size() > 0) {
             parent = spellLevels.getLast().spell;
@@ -174,8 +179,16 @@ public class ArchSpell extends AbstractSpell {
      *
      * @return An immutable list of path elements.
      */
+    @Override
     public List<ElementStart> getElementPath() {
-        return elementPathView;
+        if (inheritElementPath && parent != null) {
+            List<ElementStart> path = new ArrayList<ElementStart>(parent.getElementPath());
+            path.addAll(elementPath);
+            System.out.println("Combined Element Path: " + path);
+            return path;
+        } else {
+            return elementPathView;
+        }
     }
 
     public Scroll getScroll() {

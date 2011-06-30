@@ -602,7 +602,7 @@ public class SpellExperiment {
     public void testTruncatedForeach() {
         List<String> words = Arrays.asList("Friede", "Freude", "Eierkuchen");
         Element li = pages.get("li.flatten");
-        li.truncate(2);
+        // li.truncate(0);
         li.foreachIn(words).apply(new Plan<String>() {
             public void execute(SelectableElement e, String word) {
                 Element li = e.get("ul li");
@@ -611,7 +611,7 @@ public class SpellExperiment {
             }
         });
 
-        String result = wandle("foreach.xhtml");
+        String result = wandle("foreach.xhtml"); System.out.println(result);
         Document doc = parseXML(result);
         NodeList lis = doc.getElementsByTagName("li");
 

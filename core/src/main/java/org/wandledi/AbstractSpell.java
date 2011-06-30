@@ -21,6 +21,10 @@ public abstract class AbstractSpell implements Spell {
         return this == spell || parent.hierarchyContains(spell);
     }
 
+    public List<ElementStart> getElementPath() {
+        return parent.getElementPath();
+    }
+
     public Resources getResources() {
         return parent.getResources();
     }

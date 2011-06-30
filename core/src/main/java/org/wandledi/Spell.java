@@ -1,6 +1,7 @@
 package org.wandledi;
 
 import org.xml.sax.Attributes;
+import java.util.List;
 
 /**This is how a spell look like.
  *
@@ -16,14 +17,14 @@ public interface Spell {
     /**This shall only be a convenience method that makes a call to #writeCharacters.
      */
     public void writeString(String string);
-    
+
     public void startTransformedElement(String name, Attributes attributes);
     public void endTransformedElement(String name);
 
     /**Each Spell must implement this method and above all mind it
      * within its implementation of #startTransformedElement and
      * #endTransformedElement, which mark the bounds of a transformation.
-     * 
+     *
      * If this method is called with true as an argument,
      * a Spell must not execute its actual implementation of
      * the respective method, but instead the normal #startElement and
@@ -72,4 +73,6 @@ public interface Spell {
      * @return The parent's Resources.
      */
     public Resources getResources();
+
+    public List<ElementStart> getElementPath();
 }

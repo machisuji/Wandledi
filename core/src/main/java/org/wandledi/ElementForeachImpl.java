@@ -37,7 +37,7 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
         Spell[] modifications = new Spell[scrolls.size()];
         int mi = 0;
         for (Scroll scroll: scrolls) {
-            modifications[mi++] = new ArchSpell(scroll);
+            modifications[mi++] = new ArchSpell(scroll, true);
         }
         Spell duplication = new Duplication(size, new Changeling(modifications));
 
