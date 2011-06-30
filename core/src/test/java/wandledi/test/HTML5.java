@@ -94,11 +94,10 @@ public class HTML5 {
 
     @Test
     public void replication() {
-        // Element e = page.at("footer").get("section"); [old-way]
-        Element e = page.get("footer section"); // [new-way]
+        Element e = page.get("footer section");
         e.foreachIn(Arrays.asList(1, 2, 3)).apply(new Plan<Integer>() {
             public void execute(SelectableElement e, final Integer i) {
-                e.setAttribute("id", "footer-" + i); // doesn't work the new way, but the old way
+                e.setAttribute("id", "footer-" + i);
                 e.get("img").setAttribute("title", new StringTransformation() {
                     public String transform(String input) {
                         return input + " (" + i + ")";
