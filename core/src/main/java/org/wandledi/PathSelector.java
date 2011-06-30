@@ -3,7 +3,6 @@ package org.wandledi;
 import org.xml.sax.Attributes;
 import java.util.List;
 import java.util.Arrays;
-import static org.wandledi.util.Methods.select;
 
 /**A PathSelector matches only against the element path ignoring everything else.
  * Note that the element path does not include the currently processed element,
