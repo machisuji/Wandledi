@@ -11,13 +11,16 @@ import org.wandledi.spells.TransformedAttribute;
  * @author Markus Kahl
  */
 public class SelectableElementImpl implements SelectableElement {
-    private SelectableImpl selectable;
-    private ElementImpl element;
+    private Selectable selectable;
+    private Element element;
+
+    public SelectableElementImpl(Selectable selectable, Element element) {
+        this.selectable = selectable;
+        this.element = element;
+    }
 
     public SelectableElementImpl(Selector selector, Scroll parentScroll, Scroll localScroll) {
-
-        selectable = new SelectableImpl(localScroll);
-        element = new ElementImpl(selector, parentScroll);
+        this(new SelectableImpl(localScroll), new ElementImpl(selector, parentScroll));
     }
 
     public Element get(String selector) {

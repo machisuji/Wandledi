@@ -9,24 +9,25 @@ import java.util.LinkedList;
 
 public class ElementForeachImpl<T> implements ElementForeach<T> {
 
-    private ElementImpl element;
+    private Element element;
     private Collection<T> collection;
 
-    public ElementForeachImpl(ElementImpl element, Collection<T> collection) {
+    public ElementForeachImpl(Element element, Collection<T> collection) {
 
         this.element = element;
         this.collection = collection;
     }
 
     public void apply(Plan<T> plan) {
-
         Collection<Scroll> scrolls = new LinkedList<Scroll>();
         int index = 0;
         int size = collection.size();
         plan.setLast(false);
         for (T item: collection) {
             Scroll scroll = new Scroll();
-            SelectableElement e = new SelectableElementImpl(element.getSelector(), scroll, scroll);
+            SelectableElement e = new SelectableElementImpl(
+                new SelectableImpl(scroll),
+                new ElementImpl(new PathSelector(), scroll));
             plan.setIndex(index++);
             if (index == size) {
                 plan.setLast(true);
