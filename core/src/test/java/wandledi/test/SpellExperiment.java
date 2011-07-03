@@ -1,17 +1,6 @@
 package wandledi.test;
 
-import org.wandledi.Element;
-import org.wandledi.Resources;
-import org.wandledi.Attribute;
-import org.wandledi.ElementImpl;
-import org.wandledi.Plan;
-import org.wandledi.Scroll;
-import org.wandledi.Selectable;
-import org.wandledi.SelectableElement;
-import org.wandledi.SelectableImpl;
-import org.wandledi.SimpleAttributes;
-import org.wandledi.Spell;
-import org.wandledi.Wandler;
+import org.wandledi.*;
 import org.wandledi.spells.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -657,6 +646,16 @@ public class SpellExperiment {
         assertNotNull(titles.item(0).getAttributes().getNamedItem("blah"));
         assertNotNull(titles.item(0).getAttributes().getNamedItem("yada"));
         assertEquals(spans.item(0).getAttributes().getNamedItem("title").getTextContent(), "WHAT TIME IS IT?");
+    }
+
+    @Test
+    public void testEncoding() {
+        Element doc = pages.get(new UniversalSelector());
+        doc.getText().replaceAll("Ü", "(-.-)#");
+
+        String result = wandle("umlaut.xhtml");
+        assertTrue(result.contains("(-.-)#"));
+        assertTrue(result.contains("ä"));
     }
 
     public String wandle(String file) {
