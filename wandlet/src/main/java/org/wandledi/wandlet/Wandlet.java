@@ -38,22 +38,30 @@ import org.wandledi.Wandler;
 public class Wandlet implements Resources {
 
     private ServletContext servletContext;
+    private String charset = "UTF-8";
+    private String contentType = "text/html";
     private boolean directFileAccess = false;
     private boolean debug = false;
+    private boolean html5 = false;
 
     protected Wandlet() {
 
     }
 
-    public Wandlet(ServletContext servletContext) {
+    public Wandlet(ServletContext servletContext, boolean html5) {
         this.servletContext = servletContext;
+        this.html5 = html5;
     }
 
-    public String getContentType() {
-        return "text/html;charset=UTF-8";
+    public Wandlet(ServletContext servletContext) {
+        this(servletContext, false);
     }
-    
-    /**Used to read an XHTML file from the hard drive.
+
+    private String getContentTypeWithCharset() {
+        return getContentType() + ";charset=" + getCharset();
+    }
+
+    /**Used to read an (X)HTML file from the hard drive.
      * Override this if the used XHTML files reside somewhere else
      * than the paths they are referred to with.
      * Such as when you want to refer to "WEB-INF/templates/user/index.xhtml" as
@@ -62,7 +70,7 @@ public class Wandlet implements Resources {
      * The default implementation should look in the webapp directory (i.e. WEB-INF/..).
      */
     public Reader open(String file) throws IOException {
-        return new InputStreamReader(inputStreamFor(file));
+        return new InputStreamReader(inputStreamFor(file), getCharset());
     }
 
     protected InputStream inputStreamFor(String file) throws IOException {
@@ -77,21 +85,21 @@ public class Wandlet implements Resources {
             }
         }
     }
-    
+
     /**Used to write to the HttpServletResponse.
      * Sets the content type before opening the response for writing.
      */
     protected Writer open(HttpServletResponse response) throws IOException {
-        response.setContentType(getContentType());
+        response.setContentType(getContentTypeWithCharset());
         return response.getWriter();
     }
-    
+
     /**The Wandler used to transform the input page.
      * Remember that Wandlers are stateful and therefore a single instance
      * must not be used by more than one Thread at the same time.
      */
     protected Wandler getWandler() {
-        Wandler wandler = new Wandler();
+        Wandler wandler = html5 ? Wandler.forHTML() : Wandler.forXHTML();
         wandler.setResources(this);
         return wandler;
     }
@@ -116,13 +124,34 @@ public class Wandlet implements Resources {
             }
             if (debug) {
                 ms = System.currentTimeMillis() - ms;
-                Logger.getLogger("org.wandledi").info("Rendered response within " + ms + " ms.");
+                Logger.getLogger("org.wandledi").info("Rendered '" + response.getFile() +
+                    "' within " + ms + " ms.");
             }
         }
     }
 
     public ServletContext getServletContext() {
         return servletContext;
+    }
+
+    /** Sets the charset to use. */
+    public void setCharset(String charset) {
+        this.charset = charset;
+    }
+
+    /** Charset to use. Default: UTF-8 */
+    public String getCharset() {
+        return charset;
+    }
+
+    /** Sets the content type to use (without charset). */
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    /** The content type to use. Default: text/html */
+    public String getContentType() {
+        return contentType;
     }
 
     public void setDirectFileAccess(boolean directFileAccess) {
@@ -145,5 +174,13 @@ public class Wandlet implements Resources {
 
     public boolean isDebug() {
         return debug;
+    }
+
+    public void setHtml5(boolean html5) {
+        this.html5 = html5;
+    }
+
+    public boolean isHtml5() {
+        return html5;
     }
 }

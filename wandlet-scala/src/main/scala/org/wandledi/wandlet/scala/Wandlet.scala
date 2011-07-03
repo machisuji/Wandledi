@@ -24,4 +24,21 @@ trait Wandlet {
   def render(response: Response) {
     javaWandlet.render(response, httpServletResponse)
   }
+
+  object settings {
+    def contentType_=(contentType: String) = javaWandlet.setContentType(contentType)
+    def contentType = javaWandlet.getContentType
+
+    def charset_=(charset: String) = javaWandlet.setCharset(charset)
+    def charset = javaWandlet.getCharset
+
+    def html5_=(html5: Boolean) = javaWandlet.setHtml5(html5)
+    def html5 = javaWandlet.isHtml5
+
+    def debug_=(debug: Boolean) = javaWandlet.setDebug(debug)
+    def debug = javaWandlet.isDebug
+
+    def directFileAccess_=(dfa: Boolean) = javaWandlet.setDirectFileAccess(dfa)
+    def directFileAccess = javaWandlet.isDirectFileAccess
+  }
 }
