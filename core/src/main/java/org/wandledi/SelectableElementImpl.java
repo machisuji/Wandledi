@@ -131,8 +131,16 @@ public class SelectableElementImpl implements SelectableElement {
         element.truncate(depth);
     }
 
+    public void reduce() {
+        element.reduce();
+    }
+
     public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
         return element.foreachIn(collection);
+    }
+
+    public <T> ElementForeach<T> foreachIn(Collection<T> collection, boolean reduceBefore) {
+        return element.foreachIn(collection, reduceBefore);
     }
 
     public void hide() {

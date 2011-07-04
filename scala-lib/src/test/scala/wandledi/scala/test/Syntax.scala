@@ -17,6 +17,12 @@ class SyntaxTest {
   e.foreachWithIndexIn(List(1, 2, 3)) { (e, item, index) =>
     e.replace(true, item.toString + " in row " + (index + 1))
   }
+
+  e.foreachIn(1 to 10 toList)((e, item) =>
+    e.hide)
+  e.foreachIn(1 to 10 toList, reduceBefore = true)((e, item) =>
+    e.hide)
+
   e.includeFile("/home/post.xhtml") { page => import page._
     $("#right").insert("message")
   }

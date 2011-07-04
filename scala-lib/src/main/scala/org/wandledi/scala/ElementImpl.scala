@@ -22,24 +22,24 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
   }
   def text: TextContent = new TextContentImpl(this)
 
-  def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) {
+  def foreachIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)(fun: (SelectableElement, T) => Unit) {
     import collection.JavaConversions._
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElementImpl(e.getSelector, e.getScroll, e.getScroll), item)
     }
-    val foreach = new ElementForeachImpl(this, items)
+    val foreach = new ElementForeachImpl(this, items, reduceBefore)
     foreach.apply(plan)
   }
 
-  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
+  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
       (fun: (SelectableElement, T, Int) => Unit) {
     import collection.JavaConversions._
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
         fun(new SelectableElementImpl(e.getSelector, e.getScroll, e.getScroll), item, index)
     }
-    val foreach = new ElementForeachImpl(this, items)
+    val foreach = new ElementForeachImpl(this, items, reduceBefore)
     foreach.apply(plan)
   }
 

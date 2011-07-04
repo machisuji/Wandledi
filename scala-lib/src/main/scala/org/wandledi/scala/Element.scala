@@ -7,8 +7,10 @@ import org.wandledi.Spell
 
 trait Element extends org.wandledi.Element {
 
-  def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit): Unit
-  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T, Int) => Unit): Unit
+  def foreachIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
+    (fun: (SelectableElement, T) => Unit): Unit
+  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
+    (fun: (SelectableElement, T, Int) => Unit): Unit
 
   def changeAttribute(name: String)(change: (String) => String): Unit
   def changeAttributes(attr: (String, (String) => String)*): Unit

@@ -22,10 +22,10 @@ class SelectableElementImpl(
 
   private val element = new ElementImpl(selector, parentScroll)
 
-  def foreachIn[T: ClassManifest](items: Iterable[T])(fun: (SelectableElement, T) => Unit) =
-    element.foreachIn(items)(fun)
-  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T])
-      (fun: (SelectableElement, T, Int) => Unit) = element.foreachWithIndexIn(items)(fun)
+  def foreachIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
+    (fun: (SelectableElement, T) => Unit) = element.foreachIn(items, reduceBefore)(fun)
+  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
+    (fun: (SelectableElement, T, Int) => Unit) = element.foreachWithIndexIn(items, reduceBefore)(fun)
 
   def changeAttribute(name: String)(change: (String) => String) =
     element.changeAttribute(name)(change)

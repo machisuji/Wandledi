@@ -138,4 +138,42 @@ public class HTML5 {
         }
         assertEquals(occurences, 1, "number of footer sections");
     }
+
+    @Test
+    public void reduce() {
+        Element sec = page.get("#Content section");
+        sec.cast(new Reduction());
+
+        String result = wandle("html5.html");
+        Document doc = parseXML(result);
+        NodeList items = doc.getElementsByTagName("section");
+        int occurences = 0;
+        for (int i = 0; i < items.getLength(); ++i) {
+            if (items.item(i).getAttributes().getNamedItem("id") != null) {
+                ++occurences;
+            }
+        }
+        assertEquals(occurences, 1, "number of sections");
+    }
+
+    @Test
+    public void foreachReduced() {
+        Element sec = page.get("#Content section");
+        sec.foreachIn(Arrays.asList(1, 2, 3, 4), true).apply(new Plan<Integer>() {
+            public void execute(SelectableElement e, Integer i) {
+                e.insert("foobar" + i);
+            }
+        });
+
+        String result = wandle("html5.html");
+        Document doc = parseXML(result);
+        NodeList sections = doc.getElementsByTagName("section");
+        int occurences = 0;
+        for (int i = 0; i < sections.getLength(); ++i) {
+            if (sections.item(i).getAttributes().getNamedItem("id") != null &&
+                sections.item(i).getTextContent().startsWith("foobar")
+            ) { ++occurences; }
+        }
+        assertEquals(occurences, 4, "number of sections");
+    }
 }

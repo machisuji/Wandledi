@@ -11,11 +11,16 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
 
     private Element element;
     private Collection<T> collection;
+    private boolean reduce = false;
 
     public ElementForeachImpl(Element element, Collection<T> collection) {
+        this(element, collection, false);
+    }
 
+    public ElementForeachImpl(Element element, Collection<T> collection, boolean reduceBefore) {
         this.element = element;
         this.collection = collection;
+        this.reduce = reduceBefore;
     }
 
     public void apply(Plan<T> plan) {
@@ -41,7 +46,9 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
             modifications[mi++] = new ArchSpell(scroll);
         }
         Spell duplication = new Duplication(size, new Changeling(modifications));
-
         element.cast(duplication);
+        if (reduce) {
+            element.reduce(); // casting it after the duplication puts it before it in the event chain
+        }
     }
 }

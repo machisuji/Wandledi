@@ -121,8 +121,16 @@ public class ElementImpl implements Element {
         cast(new Truncate(depth));
     }
 
+    public void reduce() {
+        cast(new Reduction());
+    }
+
     public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
         return new ElementForeachImpl(this, collection);
+    }
+
+    public <T> ElementForeach<T> foreachIn(Collection<T> collection, boolean reduceBefore) {
+        return new ElementForeachImpl(this, collection, reduceBefore);
     }
 
     public void hide() {
