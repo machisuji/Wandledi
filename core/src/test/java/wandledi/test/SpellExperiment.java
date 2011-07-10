@@ -649,6 +649,35 @@ public class SpellExperiment {
     }
 
     @Test
+    /** Test that the Extraction works and in conjuction with other spells too.
+     *
+     */
+    public void testExtraction() {
+        Selector sel = CssSelector.valueOf("div.left");
+        Extraction extr = new Extraction(sel);
+        pages.get(new PathSelector()).cast(extr); // apply to root element
+        SelectableElement left = pages.at(sel);
+
+        left.get(".time").getText().replaceAll("baz", "TEST");
+        left.get("p").foreachIn(Arrays.asList(1, 2, 3)).apply(new Plan<Integer>() {
+            public void execute(SelectableElement e, Integer i) {
+                e.insert(i + ": ");
+            }
+        });
+
+        String result = wandle("selectors.xhtml"); System.out.println("Result:\n" + result);
+        Document doc = parseXML(result);
+        NodeList children = doc.getChildNodes();
+        NodeList spans = doc.getElementsByTagName("span");
+
+        assertEquals(children.getLength(), 1, "only one div");
+        assertEquals(spans.getLength(), 3, "paragraphs including spans tripled");
+        for (int i = 0; i < 2; ++i) {
+            assertEquals(spans.item(i).getTextContent(), "TEST");
+        }
+    }
+
+    @Test
     public void testEncoding() {
         Element doc = pages.get(new UniversalSelector());
         doc.getText().replaceAll("Ü", "(-.-)#");
