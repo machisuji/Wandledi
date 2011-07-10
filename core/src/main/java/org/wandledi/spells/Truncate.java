@@ -12,13 +12,15 @@ import org.xml.sax.Attributes;
  */
 public class Truncate extends AbstractSpell{
 
-    private int depth;
-    private int level;
+    protected int depth;
+    protected int level;
 
     public Truncate(int depth) {
         this.depth = depth;
         if (depth < 0) throw new IllegalArgumentException("Truncation depth must be at least 0");
     }
+
+    protected Truncate() { }
 
     @Override
     public Spell clone() {
