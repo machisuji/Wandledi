@@ -20,7 +20,7 @@ import org.wandledi.Spell;
  */
 public class ComplexSpell extends AbstractSpell {
 
-    Spell[] spells;
+    protected Spell[] spells;
 
     /**Creates a complex spell with the combined effects of the given spells.
      * The effects apply in order of the given array.
@@ -28,14 +28,16 @@ public class ComplexSpell extends AbstractSpell {
      * @param spells
      */
     public ComplexSpell(Spell... spells) {
-
         this.spells = spells;
         weave(spells);
     }
 
+    protected ComplexSpell() {
+
+    }
+
     @Override
     public void setParent(Spell parent) {
-
         spells[spells.length - 1].setParent(parent);
     }
 
@@ -46,7 +48,6 @@ public class ComplexSpell extends AbstractSpell {
      * @return This spell (no new spell).
      */
     protected void weave(Spell... spells) {
-
         super.setParent(spells[0]);
         for (int i = 0; i < spells.length - 1; ++i) {
             spells[i].setParent(spells[i + 1]);
@@ -55,7 +56,6 @@ public class ComplexSpell extends AbstractSpell {
 
     @Override
     public Spell clone() {
-
         Spell[] copies = new Spell[spells.length];
         for (int i = 0; i < spells.length; ++i) {
             copies[i] = spells[i].clone();
