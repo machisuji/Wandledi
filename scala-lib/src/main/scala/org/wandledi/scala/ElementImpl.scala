@@ -22,7 +22,8 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
   }
   def text: TextContent = new TextContentImpl(this)
 
-  def foreachIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)(fun: (SelectableElement, T) => Unit) {
+  def foreachIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
+      (fun: (SelectableElement, T) => Unit) {
     import collection.JavaConversions._
     val plan = new Plan[T] {
       def execute(e: org.wandledi.SelectableElement, item: T): Unit =
