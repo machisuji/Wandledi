@@ -62,6 +62,7 @@ public interface Element {
     public void replace(boolean contentsOnly, String content);
     public void truncate(int depth);
     public void reduce();
+    public void extract(Selector target);
     public <T> ElementForeach<T> foreachIn(Collection<T> collection);
     public <T> ElementForeach<T> foreachIn(Collection<T> collection, boolean reduceBefore);
     public void hide();

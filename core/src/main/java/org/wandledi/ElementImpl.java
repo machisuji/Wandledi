@@ -125,6 +125,10 @@ public class ElementImpl implements Element {
         cast(new Reduction());
     }
 
+    public void extract(Selector target) {
+        cast(new Extraction(target));
+    }
+
     public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
         return new ElementForeachImpl(this, collection);
     }

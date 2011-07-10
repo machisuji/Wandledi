@@ -654,10 +654,9 @@ public class SpellExperiment {
      */
     public void testExtraction() {
         Selector sel = CssSelector.valueOf("div.left");
-        Extraction extr = new Extraction(sel);
-        pages.get(new PathSelector()).cast(extr); // apply to root element
         SelectableElement left = pages.at(sel);
 
+        pages.get(new PathSelector()).extract(sel);
         left.get(".time").getText().replaceAll("baz", "TEST");
         left.get("p").foreachIn(Arrays.asList(1, 2, 3)).apply(new Plan<Integer>() {
             public void execute(SelectableElement e, Integer i) {

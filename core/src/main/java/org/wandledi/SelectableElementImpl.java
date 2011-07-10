@@ -135,6 +135,10 @@ public class SelectableElementImpl implements SelectableElement {
         element.reduce();
     }
 
+    public void extract(Selector target) {
+        element.extract(target);
+    }
+
     public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
         return element.foreachIn(collection);
     }
