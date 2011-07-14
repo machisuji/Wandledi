@@ -46,5 +46,12 @@ class HomePage extends Page {
       $("h1").changeAttribute("class")("header " + _)
     }
     $$("class" -> "header") { }
+    Module.insertName("Hans Wurst")
+  }
+}
+
+object Module extends Paragraphs {
+  def insertName(name: String)(implicit context: Selectable) = using(context) {
+    $(".name").text = name
   }
 }
