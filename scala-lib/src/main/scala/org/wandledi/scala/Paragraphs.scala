@@ -32,7 +32,7 @@ trait Paragraphs extends Selectable {
 
   val error = """Error:
   This Selectable is only a container and always requires an explicit context which has to be set
-  with #using. Example:
+  with #using. Selection works only through $. Example:
     def insertName(name: String)(implicit context: Selectable) = using(context) {
       $(".name").text = name
     }"""
