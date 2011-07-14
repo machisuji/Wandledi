@@ -9,6 +9,8 @@ import org.wandledi.LocalSpells
 
 class SelectableImpl(aScroll: Scroll) extends org.wandledi.SelectableImpl(aScroll) with Selectable {
 
+  def this() = this(new Scroll)
+
   override def get(selector: Selector) = new ElementImpl(selector, scroll)
 
   def get(atts: Tuple2[String, String]*): Element = {
