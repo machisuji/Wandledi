@@ -664,7 +664,7 @@ public class SpellExperiment {
             }
         });
 
-        String result = wandle("selectors.xhtml"); System.out.println("Result:\n" + result);
+        String result = wandle("selectors.xhtml");
         Document doc = parseXML(result);
         NodeList children = doc.getChildNodes();
         NodeList spans = doc.getElementsByTagName("span");
