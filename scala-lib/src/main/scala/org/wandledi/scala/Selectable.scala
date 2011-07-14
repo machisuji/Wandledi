@@ -8,6 +8,8 @@ trait Selectable extends org.wandledi.Selectable {
   protected type SelectContext = DynamicVariable[Selectable]
   protected val selectContext = new SelectContext(this)
 
+  implicit val enclosingSelectable = this
+
   def get(selector: Selector): Element
   def get(atts: Tuple2[String, String]*): Element
   def get(label: String, atts: Tuple2[String, String]*): Element
