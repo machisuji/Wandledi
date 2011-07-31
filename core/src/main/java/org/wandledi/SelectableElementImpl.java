@@ -83,8 +83,8 @@ public class SelectableElementImpl implements SelectableElement {
         element.setAttribute(name, value);
     }
 
-    public void setAttribute(String name, StringTransformation transformation) {
-        element.setAttribute(name, transformation);
+    public void changeAttribute(String name, StringTransformation transformation) {
+        element.changeAttribute(name, transformation);
     }
 
     public void setAttributes(Attribute... attributes) {
@@ -155,8 +155,8 @@ public class SelectableElementImpl implements SelectableElement {
         element.changeAttribute(name, value);
     }
 
-    public void setAttributes(TransformedAttribute... attributes) {
-        element.setAttributes(attributes);
+    public void changeAttributes(TransformedAttribute... attributes) {
+        element.changeAttributes(attributes);
     }
 
     public void removeAttribute(String name) {

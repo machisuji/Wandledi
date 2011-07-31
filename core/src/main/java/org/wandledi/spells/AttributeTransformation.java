@@ -27,6 +27,11 @@ public class AttributeTransformation extends AbstractSpell {
         this(intent, true);
     }
 
+    /**Creates a new AttributeTransformation which sets an Element's attributes.
+     * Already existing attributes will be overridden.
+     *
+     * @param attributes Attributes to set.
+     */
     public AttributeTransformation(final Attribute... attributes) {
         this(new AttributeTransformationIntent() {
             public Attribute[] getAttributes(String element, Attributes atts) {
@@ -35,6 +40,11 @@ public class AttributeTransformation extends AbstractSpell {
         });
     }
 
+    /**Creates a new AttributeTransformation which changes existing attributes.
+     * Transformations for attributes which don't already exist will have no effect.
+     *
+     * @param attributes Transformations to be applied to an Element's attributes.
+     */
     public AttributeTransformation(final TransformedAttribute... attributes) {
         this(new AttributeTransformationIntent() {
             public Attribute[] getAttributes(String element, Attributes atts) {

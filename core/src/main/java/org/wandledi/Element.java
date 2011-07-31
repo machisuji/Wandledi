@@ -36,35 +36,43 @@ public interface Element {
     public Scroll getScroll();
     public void cast(Spell spell);
     public void setAttribute(String name, String value);
-    public void setAttribute(String name, StringTransformation transformation);
 
     public void setAttributes(Attribute... attributes);
-    public void setAttributes(TransformedAttribute... attributes);
 
-    /**The same as #setAttribute except that you can reference the attribute's old
-     * value in the new value using the string $val.
+    /**Changes an existing attribute's value. You can reference the attribute's old
+     * value in the new value using the string '$val'.
      *
      * Example: changeAttribute("class", "newClass $val"); // adds a new class to a possibly existing one
      *
-     * @param name
-     * @param value
+     * @param name Attribute name.
+     * @param value Attribute's new value
      */
     public void changeAttribute(String name, String value);
+    public void changeAttribute(String name, StringTransformation transformation);
+    public void changeAttributes(TransformedAttribute... attributes);
+
     public void removeAttribute(String name);
+
     public void clone(int times);
+
     public void includeFile(String name);
     public void includeFile(String name, Scroll scroll);
+
     public void insert(boolean atEnd, InsertionIntent intent);
     public void insert(String content);
     public void insertLast(String content);
     public void insert(String content, boolean atEnd);
+
     public void replace(boolean contentsOnly, ReplacementIntent intent);
     public void replace(boolean contentsOnly, String content);
+
     public void truncate(int depth);
     public void reduce();
     public void extract(Selector target);
+
     public <T> ElementForeach<T> foreachIn(Collection<T> collection);
     public <T> ElementForeach<T> foreachIn(Collection<T> collection, boolean reduceBefore);
+    
     public void hide();
     public TextContent getText();
 }

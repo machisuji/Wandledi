@@ -47,15 +47,7 @@ public class ElementImpl implements Element {
         cast(new AttributeTransformation(new Attribute(name, value)));
     }
 
-    public void setAttribute(String name, StringTransformation transformation) {
-        cast(new AttributeTransformation(new TransformedAttribute(name, transformation)));
-    }
-
     public void setAttributes(Attribute... attributes) {
-        cast(new AttributeTransformation(attributes));
-    }
-
-    public void setAttributes(TransformedAttribute... attributes) {
         cast(new AttributeTransformation(attributes));
     }
 
@@ -65,6 +57,14 @@ public class ElementImpl implements Element {
                 return value.replace("$val", input);
             }
         })));
+    }
+
+    public void changeAttribute(String name, StringTransformation transformation) {
+        cast(new AttributeTransformation(new TransformedAttribute(name, transformation)));
+    }
+
+    public void changeAttributes(TransformedAttribute... attributes) {
+        cast(new AttributeTransformation(attributes));
     }
 
     public void removeAttribute(String name) {
