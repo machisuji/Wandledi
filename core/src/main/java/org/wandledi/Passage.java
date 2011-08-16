@@ -47,8 +47,7 @@ public class Passage implements Selector {
      * @param spell
      */
     public void addSpell(Spell spell) {
-
-        spells.add(spell);
+        spells.add(0, spell);
     }
 
     /**Adds this spell to this passages late transient spells.
@@ -61,8 +60,7 @@ public class Passage implements Selector {
      * @param offset number of impulses required for this spell to go off
      */
     public void addSpell(Spell spell, int offset) {
-
-        lateSpells.add(new LateEntry(spell, offset));
+        lateSpells.add(0, new LateEntry(spell, offset));
     }
 
     /**Reads this scroll's spells and transfers them into the given collection.

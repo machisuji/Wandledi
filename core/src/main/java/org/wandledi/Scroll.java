@@ -112,7 +112,7 @@ public class Scroll implements Selectable {
             }
         }
         for (Scroll scroll: scrolls) {
-            spells.addAll(scroll.readSpellsFor(label, attributes, elementPath));
+            spells.addAll(0, scroll.readSpellsFor(label, attributes, elementPath));
         }
         return spells;
     }
