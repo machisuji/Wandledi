@@ -10,15 +10,13 @@ import javax.xml.parsers.DocumentBuilderFactory
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
 import org.w3c.dom.Document
-import org.wandledi.Resources
-import org.wandledi.Scroll
-import org.wandledi.Wandler
 import org.wandledi.scala.Selectable
 import org.wandledi.spells.SpotMapping
 import org.wandledi.spells.TextTransformation
 import org.xml.sax.InputSource
 import scala.xml.NodeSeq
 import scala.xml.XML
+import org.wandledi.{PathSelector, Resources, Scroll, Wandler}
 
 class Semantics extends Spec with ShouldMatchers {
   val testFileDirectory = "core/src/test/java/wandledi/test/"
@@ -269,6 +267,30 @@ class Semantics extends Spec with ShouldMatchers {
       ps(3).text.trim should startWith ("WELCOME")
       ps(4).text.trim should startWith ("Unwelcome")
       ps(5).text should equal ("Foobar")
+    }
+  }
+
+  describe("Truncate") {
+    it("should work within Extractions too") {
+      val doc = transform("test.xhtml") { page => import page._
+        get("title").includeFile("strings.xhtml")(using(_) {
+          $("head").truncate(1)
+          $(new PathSelector).extract("head")
+          // if $("head").truncate(1) would be here, it would not work,
+          // because then Truncate would be called first in the chain
+          // and thereby consume the head element, which in consequence can no longer
+          // be extracted
+          // - mabye new Spells should always be placed at the head of the chain rather than at the end?
+          // @todo decide
+          $("meta").hide()
+        })
+      }
+      val title = doc \\ "title"
+      val head = doc \\ "head"
+
+      head should have size (1)
+      title should have size (1)
+      title(0).text should include ("String Insertion Test")
     }
   }
   
