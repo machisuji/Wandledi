@@ -18,6 +18,7 @@ class Wandledi(info: ProjectInfo) extends ParentProject(info) {
   
   class Wandlet(info: ProjectInfo) extends DefaultProject(info) {
     val servlet = "javax.servlet" % "servlet-api" % "2.5" % "provided"
+    val jetty = "org.eclipse.jetty" % "jetty-webapp" % "7.4.+" % "provided"
   }
   class WandletScala(info: ProjectInfo) extends DefaultProject(info)
 }
