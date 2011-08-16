@@ -12,7 +12,6 @@ public class Passage implements Selector {
     private List<LateEntry> lateSpells = new ArrayList<LateEntry>();
 
     public Passage(Selector selector) {
-
         this.selector = selector;
     }
 
@@ -29,7 +28,6 @@ public class Passage implements Selector {
      * @param charges
      */
     public void addTransientSpell(Spell spell, int charges) {
-
         transientSpells.add(new ChargedEntry(spell, charges));
     }
 
@@ -38,7 +36,6 @@ public class Passage implements Selector {
      * @param spell
      */
     public void addTransientSpell(Spell spell) {
-
         addTransientSpell(spell, 1);
     }
 
@@ -72,14 +69,12 @@ public class Passage implements Selector {
      * @param spells
      */
     public void transferSpellsInto(Collection<Spell> spells) {
-
         spells.addAll(this.spells);
         transferTransientSpellsInto(spells);
         transferLateSpellsInto(spells);
     }
 
     private void transferTransientSpellsInto(Collection<Spell> spells) {
-
         if (!transientSpells.isEmpty()) {
             ChargedEntry entry = transientSpells.peek();
             if (--entry.charges <= 0) {
@@ -90,7 +85,6 @@ public class Passage implements Selector {
     }
 
     private void transferLateSpellsInto(Collection<Spell> spells) {
-
         Iterator<LateEntry> entries = lateSpells.iterator();
         while (entries.hasNext()) {
             LateEntry entry = entries.next();
@@ -102,22 +96,18 @@ public class Passage implements Selector {
     }
 
     public boolean matches(String label, Attributes attributes, List<ElementStart> elementPath) {
-
         return selector.matches(label, attributes, elementPath);
     }
 
     public int compareTo(Object o) {
-
         return selector.compareTo(o);
     }
 
     public boolean equals(Object o) {
-
         return selector.equals(o);
     }
 
     public int hashCode() {
-
         return selector.hashCode();
     }
 
@@ -127,7 +117,6 @@ public class Passage implements Selector {
         int charges; // how often a Spell is applied until its power is used up
 
         ChargedEntry(Spell spell, int charges) {
-
             this.spell = spell;
             this.charges = charges;
         }
@@ -139,7 +128,6 @@ public class Passage implements Selector {
         int offset;
 
         LateEntry(Spell spell, int offset) {
-
             this.spell = spell;
             this.offset = offset;
         }
