@@ -28,13 +28,17 @@ public class Truncate extends AbstractSpell{
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
-        if (level++ >= depth) {
+        if (ignoreBounds()) {
+            startElement(name, attributes);
+        } else if (level++ >= depth) {
             super.startTransformedElement(name, attributes);
         }
     }
 
     public void endTransformedElement(String name) {
-        if (level-- > depth) {
+        if (ignoreBounds()) {
+            super.endTransformedElement(name);
+        } else if (level-- > depth) {
             super.endTransformedElement(name);
         }
     }
