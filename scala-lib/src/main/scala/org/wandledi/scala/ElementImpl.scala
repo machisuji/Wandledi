@@ -45,7 +45,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
   }
 
   def changeAttribute(name: String)(change: (String) => String) {
-    setAttribute(name, new StringTransformation {
+    changeAttribute(name, new StringTransformation {
       def transform(value: String) = change(value)
     })
   }
@@ -56,7 +56,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
           def transform(value: String) = change(value)
         })
     }
-    setAttributes(changes: _*)
+    changeAttributes(changes: _*)
   }
 
   def setAttributes(attr: (String, String)*) {

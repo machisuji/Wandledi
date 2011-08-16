@@ -98,7 +98,7 @@ public class HTML5 {
         e.foreachIn(Arrays.asList(1, 2, 3)).apply(new Plan<Integer>() {
             public void execute(SelectableElement e, final Integer i) {
                 e.setAttribute("id", "footer-" + i);
-                e.get("img").setAttribute("title", new StringTransformation() {
+                e.get("img").changeAttribute("title", new StringTransformation() {
                     public String transform(String input) {
                         return input + " (" + i + ")";
                     }

@@ -136,7 +136,7 @@ public class SpellExperiment {
         String result = wandle("entities.xhtml");
         System.out.println(result);
 
-        assertTrue(result.indexOf("&#169;") != -1, "copyright sign");
+        assertTrue(result.contains("&#169;"), "copyright sign");
     }
 
     @Test
@@ -144,13 +144,13 @@ public class SpellExperiment {
 
         String style = "background-color: black;";
         pages.get("body").setAttribute("style", style);
-        pages.get("#time").setAttribute("id", new StringTransformation() { // transform attr
+        pages.get("#time").changeAttribute("id", new StringTransformation() { // transform attr
             public String transform(String input) {
                 StringBuilder sb = new StringBuilder(input);
                 return sb.reverse().toString();
             }
         });
-        pages.get("#time").setAttribute("foobar", new StringTransformation() { // transform non-existing attr
+        pages.get("#time").changeAttribute("foobar", new StringTransformation() { // transform non-existing attr
             public String transform(String input) {
                 return "NAAAH " + input;
             }
@@ -584,7 +584,7 @@ public class SpellExperiment {
         NodeList divs = doc.getElementsByTagName("div");
 
         assertEquals(divs.getLength(), 0, "number of remaining divs");
-        assertTrue(result.indexOf("Info: Repeat:") != -1, "nested divs truncated");
+        assertTrue(result.contains("Info: Repeat:"), "nested divs truncated");
     }
 
     @Test
@@ -631,7 +631,7 @@ public class SpellExperiment {
     public void testSetAttributes() {
         Element time = pages.get("#time");
         Element title = pages.get("title");
-        time.setAttributes(new TransformedAttribute("title", new StringTransformation() {
+        time.changeAttributes(new TransformedAttribute("title", new StringTransformation() {
             public String transform(String value) {
               return value.toUpperCase();
             }
