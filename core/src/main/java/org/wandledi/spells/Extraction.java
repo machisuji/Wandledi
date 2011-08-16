@@ -35,14 +35,22 @@ public class Extraction extends ComplexSpell {
         }
 
         public void startTransformedElement(String name, Attributes attributes) {
-            if (extract) {
-                super.startTransformedElement(name, attributes);
+            if (!ignoreBounds()) {
+                if (extract) {
+                    super.startTransformedElement(name, attributes);
+                }
+            } else {
+                startElement(name, attributes);
             }
         }
 
         public void endTransformedElement(String name) {
-            if (extract) {
-                super.endTransformedElement(name);
+            if (!ignoreBounds()) {
+                if (extract) {
+                    super.endTransformedElement(name);
+                }
+            } else {
+                endElement(name);
             }
         }
 
