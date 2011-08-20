@@ -204,8 +204,8 @@ public class SpellExperiment {
         String start = String.valueOf(random.nextInt(1000));
         String start2 = String.valueOf(random.nextInt(1000));
         String end = String.valueOf(random.nextInt(1000));
-        pages.get("title").insert(start);
         pages.get("title").insert(start2);
+        pages.get("title").insert(start); // gets inserted before start2, since insert always inserts at the start
         pages.get("title").insertLast(end);
 
         String result = wandle("test.xhtml");
@@ -591,7 +591,6 @@ public class SpellExperiment {
     public void testTruncatedForeach() {
         List<String> words = Arrays.asList("Friede", "Freude", "Eierkuchen");
         Element li = pages.get("li.flatten");
-        li.truncate(2);
         li.foreachIn(words).apply(new Plan<String>() {
             public void execute(SelectableElement e, String word) {
                 Element li = e.get("ul li");
@@ -599,6 +598,7 @@ public class SpellExperiment {
                 li.at(1).replace(true, word.toUpperCase());
             }
         });
+        li.truncate(2);
 
         String result = wandle("foreach.xhtml");
         Document doc = parseXML(result);

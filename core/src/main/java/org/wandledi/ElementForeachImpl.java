@@ -46,9 +46,9 @@ public class ElementForeachImpl<T> implements ElementForeach<T> {
             modifications[mi++] = new ArchSpell(scroll);
         }
         Spell duplication = new Duplication(size, new Changeling(modifications));
-        element.cast(duplication);
         if (reduce) {
-            element.reduce(); // casting it after the duplication puts it before it in the event chain
+            element.reduce();
         }
+        element.cast(duplication);
     }
 }

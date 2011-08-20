@@ -274,14 +274,8 @@ class Semantics extends Spec with ShouldMatchers {
     it("should work within Extractions too") {
       val doc = transform("test.xhtml") { page => import page._
         get("title").includeFile("strings.xhtml")(using(_) {
-          $("head").truncate(1)
           $(new PathSelector).extract("head")
-          // if $("head").truncate(1) would be here, it would not work,
-          // because then Truncate would be called first in the chain
-          // and thereby consume the head element, which in consequence can no longer
-          // be extracted
-          // - mabye new Spells should always be placed at the head of the chain rather than at the end?
-          // @todo decide
+          $("head").truncate(1)
           $("meta").hide()
         })
       }
