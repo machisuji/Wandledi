@@ -12,7 +12,7 @@ trait Element extends org.wandledi.Element {
   def foreachWithIndexIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
     (fun: (SelectableElement, T, Int) => Unit): Unit
 
-  def changeAttribute(name: String)(change: (String) => String): Unit
+  def changeAttribute(name: String, change: (String) => String): Unit
   def changeAttributes(attr: (String, (String) => String)*): Unit
   def setAttributes(attr: (String, String)*): Unit
 

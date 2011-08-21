@@ -9,10 +9,10 @@ import org.wandledi.{CssSelector, Scroll, SimpleAttributes}
 class SyntaxTest {
   val e = Element(new CssSelector("foo"), new Scroll)
 
-  e.changeAttribute("class") {
+  e.changeAttribute("class", {
     ".entry " + _
-  }
-  e.changeAttribute("class")("entry " + _)
+  })
+  e.changeAttribute("class", "entry " + _)
   e.setAttribute("style", "color: red;")
   e.foreachWithIndexIn(List(1, 2, 3)) { (e, item, index) =>
     e.replace(true, item.toString + " in row " + (index + 1))
@@ -43,7 +43,7 @@ class HomePage extends Page {
     $("body").setAttribute("style", "background-color: white;")
     $$(".title") {
       $.insertLast("foobar")
-      $("h1").changeAttribute("class")("header " + _)
+      $("h1").changeAttribute("class", "header " + _)
     }
     $$("class" -> "header") { }
     Module.insertName("Hans Wurst")

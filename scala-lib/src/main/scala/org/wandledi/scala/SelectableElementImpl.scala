@@ -27,8 +27,8 @@ class SelectableElementImpl(
   def foreachWithIndexIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
     (fun: (SelectableElement, T, Int) => Unit) = element.foreachWithIndexIn(items, reduceBefore)(fun)
 
-  def changeAttribute(name: String)(change: (String) => String) =
-    element.changeAttribute(name)(change)
+  def changeAttribute(name: String, change: (String) => String) =
+    element.changeAttribute(name, change)
   def changeAttributes(attr: (String, (String) => String)*) =
     element.changeAttributes(attr: _*)
   def setAttributes(attr: (String, String)*) =

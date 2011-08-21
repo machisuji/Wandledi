@@ -44,7 +44,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     foreach.apply(plan)
   }
 
-  def changeAttribute(name: String)(change: (String) => String) {
+  def changeAttribute(name: String, change: (String) => String) {
     changeAttribute(name, new StringTransformation {
       def transform(value: String) = change(value)
     })
