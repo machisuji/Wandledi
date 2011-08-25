@@ -17,4 +17,6 @@ class Page(val file: String) extends SelectableImpl(new Scroll) with Response {
       get(new PathSelector).extract(sel)
       using(this at sel)(block)
     }
+
+    override def toString = "scala.Page("+getFile+")"
 }

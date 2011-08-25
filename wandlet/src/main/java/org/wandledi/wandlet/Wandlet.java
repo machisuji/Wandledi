@@ -124,8 +124,8 @@ public class Wandlet implements Resources {
             }
             if (debug) {
                 ms = System.currentTimeMillis() - ms;
-                Logger.getLogger("org.wandledi").info("Rendered '" + response.getFile() +
-                    "' within " + ms + " ms.");
+                Logger.getLogger("org.wandledi").info("Rendered " + response +
+                    " within " + ms + " ms.");
             }
         }
     }

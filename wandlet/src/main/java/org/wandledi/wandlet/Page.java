@@ -21,4 +21,9 @@ public class Page extends SelectableImpl implements Response {
     public String getFile() {
         return file;
     }
+
+    @Override
+    public String toString() {
+        return "Page(" + getFile() + ")";
+    }
 }
