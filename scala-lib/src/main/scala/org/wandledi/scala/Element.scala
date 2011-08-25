@@ -21,9 +21,33 @@ trait Element extends org.wandledi.Element {
   def insert(atEnd: Boolean)(insertion: (Spell) => Unit): Unit
   def insert(atEnd: Boolean = false, insertion: xml.NodeSeq): Unit
 
-  def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit): Unit
-  def replace(contentsOnly: Boolean, replacement: (String, Attributes) => xml.NodeSeq): Unit
-  def replace(contentsOnly: Boolean = true, replacement: xml.NodeSeq): Unit
+  /**
+   * Replace this element (or its contents only) with the XML returned by the given function.
+   *
+   * @param contentsOnly Replace only the element's contents instead of the whole element?
+   * @param replacement A function which is passed name and attributes of this element and is to return
+   *                    XML for the replacement.
+   */
+  def replace(contentsOnly: Boolean)(replacement: (String, Attributes) => xml.NodeSeq): Unit
+
+  /**
+   * Replace this element (or its contents only) with XML.
+   *
+   * @param contentsOnly Replace only the element's contents instead of the whole element?
+   * @param replacement XML for the replacement.
+   */
+  def replace(contentsOnly: Boolean, replacement: xml.NodeSeq): Unit
+
+  /**
+   * Replace this element (or its contents only) according to the given intent.
+   *
+   * @param contentsOnly Replace only the element's contents instead of the whole element?
+   * @param replacementIntent A function which is passed name and attributes of this element, as well as a Spell
+   *                          to be used for writing new content with help of its methods #startElement,
+   *                          #endElement and #writeCharacters.
+   * @see org.wandledi.spells.ReplacementIntent
+   */
+  def replace(contentsOnly: Boolean, replacementIntent: (String, Attributes, Spell) => Unit)
 
   def text_=(value: String): Unit
   def text: TextContent

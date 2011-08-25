@@ -29,10 +29,14 @@ class SyntaxTest {
   e.insert(true) { (spell) =>
     spell.writeString("Hallo Welt")
   }
-  e.replace(true) { (label, attributes, spell) =>
+  e.replace(true, (label, attributes, spell) => {
     spell.startElement("p", new SimpleAttributes)
     spell.writeString("Paragraph")
     spell.endElement("p")
+  })
+  e.replace(true, <h1>Hallo Welt</h1>)
+  e.replace(false) { (label, attr) =>
+    <label>{label}</label>
   }
 }
 

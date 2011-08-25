@@ -42,11 +42,11 @@ class SelectableElementImpl(
   def insert(atEnd: Boolean = false, insertion: xml.NodeSeq) =
     element.insert(atEnd, insertion)
 
-  def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) =
-    element.replace(contentsOnly)(replacement)
-  def replace(contentsOnly: Boolean, replacement: (String, Attributes) => xml.NodeSeq) =
+  def replace(contentsOnly: Boolean, replacement: (String, Attributes, Spell) => Unit) =
     element.replace(contentsOnly, replacement)
-  def replace(contentsOnly: Boolean = true, replacement: xml.NodeSeq) =
+  def replace(contentsOnly: Boolean)(replacement: (String, Attributes) => xml.NodeSeq) =
+    element.replace(contentsOnly)(replacement)
+  def replace(contentsOnly: Boolean, replacement: xml.NodeSeq) =
     element.replace(contentsOnly, replacement)
 
   def text_=(value: String) = element.text_=(value)

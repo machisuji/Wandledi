@@ -82,7 +82,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     insert(insertion.toString, atEnd)
   }
 
-  def replace(contentsOnly: Boolean)(replacement: (String, Attributes, Spell) => Unit) {
+  def replace(contentsOnly: Boolean, replacement: (String, Attributes, Spell) => Unit) {
     val intent = new ReplacementIntent {
       def replace(label: String, attributes: Attributes, parent: Spell) {
         replacement(label, attributes, parent)
@@ -91,7 +91,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     replace(contentsOnly, intent)
   }
 
-  def replace(contentsOnly: Boolean, replacement: (String, Attributes) => xml.NodeSeq) {
+  def replace(contentsOnly: Boolean)(replacement: (String, Attributes) => xml.NodeSeq) {
     val intent = new ReplacementIntent {
       def replace(label: String, attributes: Attributes, parent: Spell) {
         parent.writeString(replacement(label, attributes).toString)
@@ -100,7 +100,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     replace(contentsOnly, intent)
   }
 
-  def replace(contentsOnly: Boolean = true, replacement: xml.NodeSeq) {
+  def replace(contentsOnly: Boolean, replacement: xml.NodeSeq) {
     replace(contentsOnly, replacement.toString)
   }
 }
