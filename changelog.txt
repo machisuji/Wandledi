@@ -5,4 +5,10 @@ Wandledi Changelog
  -
 
 # V0.2
- - Element#changeAttribute(String)((String) => String) changed to #changeAttribute(String, (String) => String) 
+ - scala.Element#changeAttribute(String)((String) => String) changed to #changeAttribute(String, (String) => String)
+
+# V0.3
+ - scala.Element replace API changed to:
+   #replace(contentsOnly: Boolean, replacement: xml.NodeSeq)
+   #replace(contentsOnly: Boolean, replacementIntent: (String, Attributes, Spell) => Unit)
+   #replace(contentsOnly: Boolean)(replacement: (String, Attributes) => xml.NodeSeq)
