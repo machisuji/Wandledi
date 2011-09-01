@@ -5,6 +5,11 @@ import org.wandledi.spells.StringTransformation
 
 trait TextContent extends org.wandledi.TextContent {
 
+  /**
+   * Transforms an Element's text.
+   *
+   * @param stringTransformation A function transforming the text.
+   */
   def transform(stringTransformation: String => String) {
     val st = new StringTransformation {
       def transform(input: String) = stringTransformation(input)
@@ -12,6 +17,12 @@ trait TextContent extends org.wandledi.TextContent {
     transform(st)
   }
 
+  /**
+   * Selects parts of the text according to a regex and transforms those parts.
+   *
+   * @param regex Regex to match the parts to be transformed.
+   * @param stringTransformation A function transforming the text.
+   */
   def transform(regex: String)(stringTransformation: String => String) {
     val st = new StringTransformation {
       def transform(input: String) = stringTransformation(input)

@@ -49,6 +49,9 @@ trait Element extends org.wandledi.Element {
    */
   def replace(contentsOnly: Boolean, replacementIntent: (String, Attributes, Spell) => Unit)
 
+  /**
+   * Sets this Element's text. Equivalent to Element.text.setContent().
+   */
   def text_=(value: String): Unit
   def text: TextContent
 
