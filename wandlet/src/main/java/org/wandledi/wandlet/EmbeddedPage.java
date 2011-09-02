@@ -12,9 +12,14 @@ import org.wandledi.Selector;
 public class EmbeddedPage extends Page {
 
     private Page gantry;
+    private String file;
+    private Selector embedAt;
 
     public EmbeddedPage(String file, String hostFile, Selector embedAt) {
         super(null);
+        this.file = file;
+        this.embedAt = embedAt;
+
         gantry = new Page(hostFile);
         gantry.get(embedAt).includeFile(file, scroll);
     }
@@ -31,5 +36,10 @@ public class EmbeddedPage extends Page {
     @Override
     public Scroll getScroll() {
         return gantry.getScroll();
+    }
+
+    @Override
+    public String toString() {
+        return "EmbeddedPage(" + file + " at " + embedAt + " in " + gantry.getFile() + ")";
     }
 }
