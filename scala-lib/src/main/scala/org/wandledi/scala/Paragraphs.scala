@@ -5,28 +5,34 @@ import org.wandledi.Selector
 import org.wandledi.PathSelector
 import org.wandledi.{Element => JElement}
 
-/**Paragraph - "A distinct portion of written or printed matter dealing with a particular idea[...]."
+/**<h1>Paragraph - "A distinct portion of written or printed matter dealing with a particular idea [...]"</h1>
  *
+ * <p>
  * To be used as a container for 'Scroll paragraphs', that is methods that perform
  * transformations using arbitrary Selectables. So that transformations
  * can be put into modules.
+ * </p>
  *
  * Example:
- *
+ * <pre>
  * object CommonStuff extends Paragraphs {
  *   def insertName(name: String)(implicit context: Selectable) = using(context) {
  *     $(".name").text = name
  *   }
  * }
+ * </pre>
  *
+ * <p>
  * All methods must have the same implicit parameter context and start with 'using(context) {'.
  * Such a module can then be used inside other Selectables like this:
+ * </p>
  *
+ * <pre>
  * class Main(scroll: Scroll) extends SelectableImpl(scroll) {
  *   $("#title").insert("Hallo Welt!")
  *   Index.insertName("Hans Wurst") // Selectable provide an implicit 'this', which is the context here
  * }
- *
+ * </pre>
  */
 trait Paragraphs extends Selectable {
 
