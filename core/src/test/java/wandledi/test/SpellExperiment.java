@@ -137,6 +137,7 @@ public class SpellExperiment {
         System.out.println(result);
 
         assertTrue(result.contains("&#169;"), "copyright sign");
+        assertTrue(result.contains("&lt;div=&quot;header&quot;&gt;"));
     }
 
     @Test
