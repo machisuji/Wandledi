@@ -126,18 +126,18 @@ public class SpellExperiment {
         assertEquals(occurences, 1, "number of occurences");
     }
 
-    /**This test fails for some reason.
-     * In a real usage scenario in a PageController however, it seems
-     * to work. Dunno why, yet. Let's disable this for the time being.
-     */
-    @Test(enabled=false)
-    public void testEntities() {
-
+    @Test
+    public void testValidHtml() {
         String result = wandle("entities.xhtml");
-        System.out.println(result);
+
+        assertTrue(result.contains("&lt;div class=&quot;header&quot;&gt;"));
+    }
+
+    @Test(enabled=false)
+    public void testValidXHtml() {
+        String result = wandle("entities.xhtml");
 
         assertTrue(result.contains("&#169;"), "copyright sign");
-        assertTrue(result.contains("&lt;div=&quot;header&quot;&gt;"));
     }
 
     @Test
@@ -228,11 +228,11 @@ public class SpellExperiment {
         pages.get("body").insert(true, new InsertionIntent() {
             public void insert(Spell parent) {
                 parent.startElement("p", new SimpleAttributes(new Attribute("id", id)));
-                parent.writeString("Just follow ");
+                parent.writeString("Just follow ", true);
                 parent.startElement("span", new SimpleAttributes(new Attribute("style", style)));
-                parent.writeString("the");
+                parent.writeString("the", true);
                 parent.endElement("span");
-                parent.writeString(" day!");
+                parent.writeString(" day!", true);
                 parent.endElement("p");
             }
         });
@@ -303,7 +303,7 @@ public class SpellExperiment {
                 assertEquals(label, "span");
                 assertEquals(attributes.getValue("id"), "time");
                 parent.startElement("b", new SimpleAttributes());
-                parent.writeString(time);
+                parent.writeString(time, true);
                 parent.endElement("b");
             }
         });
@@ -378,7 +378,7 @@ public class SpellExperiment {
         scroll.addSpell("#time", new AttributeTransformation(new Attribute("style", style)));
         scroll.addSpell("#time", new Insertion(true, new InsertionIntent() {
             public void insert(Spell parent) {
-                parent.writeString(" !");
+                parent.writeString(" !", true);
             }
         }));
         Spell sos = new ArchSpell(scroll);
@@ -456,7 +456,7 @@ public class SpellExperiment {
         Spell attr = new AttributeTransformation(new Attribute("style", style));
         Spell insrt = new Insertion(false, new InsertionIntent() {
             public void insert(Spell parent) {
-                parent.writeString("HALLO");
+                parent.writeString("HALLO", true);
             }
         });
         Spell cmplx = new ComplexSpell(attr, insrt, new Duplication(2));

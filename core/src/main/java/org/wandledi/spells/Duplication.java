@@ -111,8 +111,8 @@ public class Duplication extends AbstractSpell {
     }
 
     @Override
-    public void writeCharacters(char[] characters, int offset, int length) {
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
 
-        pushLine(new Characters(characters, offset, length));
+        pushLine(new Characters(characters, offset, length, safe));
     }
 }

@@ -2,7 +2,6 @@ package org.wandledi.spells;
 
 import org.wandledi.*;
 import org.xml.sax.Attributes;
-import org.xml.sax.helpers.AttributesImpl;
 
 import java.util.*;
 
@@ -139,12 +138,12 @@ public class ArchSpell extends AbstractSpell {
         }
     }
 
-    public void writeCharacters(char[] characters, int offset, int length) {
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
         if (spellLevels.size() == 0) {
-            parent.writeCharacters(characters, offset, length);
+            parent.writeCharacters(characters, offset, length, safe);
         } else {
             SpellLevel level = spellLevels.getLast();
-            level.spell.writeCharacters(characters, offset, length);
+            level.spell.writeCharacters(characters, offset, length, safe);
         }
     }
 

@@ -58,9 +58,9 @@ public class Truncate extends AbstractSpell{
     }
 
     @Override
-    public void writeCharacters(char[] characters, int offset, int length) {
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
         if (level >= depth) {
-            super.writeCharacters(characters, offset, length);
+            super.writeCharacters(characters, offset, length, safe);
         }
     }
 }

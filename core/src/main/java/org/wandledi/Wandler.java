@@ -160,17 +160,49 @@ public class Wandler implements ContentHandler, Spell {
         startUnderConstruction = false;
     }
 
-    public void writeCharacters(char[] characters, int offset, int length) {
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
         if (startUnderConstruction) {
             write(">");
             startUnderConstruction = false;
         }
-        write(characters, offset, length);
+        if (safe) {
+            write(characters, offset, length);
+        } else {
+            writeSanitized(characters, offset, length);
+        }
     }
 
-    public void writeString(String string) {
+    protected void writeSanitized(char[] chars, int offset, int length) {
+        int from = offset;
+        int end = offset + length;
+        for (int i = offset; i < end; ++i) {
+            char ch = chars[i];
+            String sanitized = sanitize(ch);
+            if (sanitized != null) {
+                write(chars, from, i - from);
+                from = i + 1;
+                write(sanitized);
+            }
+        }
+        if (from < end) {
+            write(chars, from, end - from);
+        }
+    }
+
+    protected String sanitize(char ch) {
+        switch (ch) {
+            case '<': return "&lt;";
+            case '>': return "&gt;";
+            case '&': return "&amp;";
+            case '"': return "&quot;";
+            case '\'': return "&amp;";
+            default: return null;
+        }
+    }
+
+    public void writeString(String string, boolean safe) {
         char[] characters = string.toCharArray();
-        writeCharacters(characters, 0, characters.length);
+        writeCharacters(characters, 0, characters.length, safe);
     }
 
     public void startDocument() throws SAXException {
@@ -214,7 +246,10 @@ public class Wandler implements ContentHandler, Spell {
 
     public void characters(char[] ch, int start, int length) throws SAXException {
         try {
-            rootSpell.writeCharacters(ch, start, length);
+            rootSpell.writeCharacters(ch, start, length, false);
+            // Since SAX automatically resolves and replaces entities the incoming characters are not safe,
+            // that is they may contain reserved characters such as <, >, & and so on.
+            // A real solution (making SAX *not* do that) would be way better, I just don't know how to pull it off.
         } catch (Exception e) {
             throw new SAXException("Could not write \"" + new String(ch, start, length) + "\"", e);
         }

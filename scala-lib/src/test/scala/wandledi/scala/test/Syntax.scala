@@ -27,11 +27,11 @@ class SyntaxTest {
     $("#right").insert("message")
   }
   e.insert(true) { (spell) =>
-    spell.writeString("Hallo Welt")
+    spell.writeString("Hallo Welt", true)
   }
   e.replace(true, (label, attributes, spell) => {
     spell.startElement("p", new SimpleAttributes)
-    spell.writeString("Paragraph")
+    spell.writeString("Paragraph", true)
     spell.endElement("p")
   })
   e.replace(true, <h1>Hallo Welt</h1>)

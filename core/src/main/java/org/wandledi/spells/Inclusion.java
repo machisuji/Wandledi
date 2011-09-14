@@ -1,6 +1,5 @@
 package org.wandledi.spells;
 
-import java.io.FileReader;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -91,7 +90,7 @@ public class Inclusion extends ArchSpell implements ContentHandler {
 
     public void endElement(String name) { }
 
-    public void writeCharacters(char[] characters, int offset, int length) { }
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) { }
 
     public void endTransformedElement(String name) { }
 
@@ -112,7 +111,7 @@ public class Inclusion extends ArchSpell implements ContentHandler {
 
     public void characters(char[] ch, int start, int length) throws SAXException {
 
-        super.writeCharacters(ch, start, length);
+        super.writeCharacters(ch, start, length, false);
     }
 
     public void setDocumentLocator(Locator locator) {
@@ -132,8 +131,8 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     public void processingInstruction(String target, String data) throws SAXException { }
 
     public void skippedEntity(String name) throws SAXException {
-        writeString("&");
-        writeString(name);
-        writeString(";");
+        writeString("&", true);
+        writeString(name, true);
+        writeString(";", true);
     }
 }

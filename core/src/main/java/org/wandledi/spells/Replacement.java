@@ -68,12 +68,12 @@ public class Replacement extends AbstractSpell {
     }
 
     @Override
-    public void writeCharacters(char[] characters, int offset, int length) {
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
 
         if (contentsOnly && justStarted) {
             String string = new String(characters, offset, length);
             if (string.trim().length() == 0) { // keep whitespace, linebreaks etc.
-                parent.writeCharacters(characters, offset, length);
+                parent.writeCharacters(characters, offset, length, safe);
             } else {
                 justStarted = false;
             }

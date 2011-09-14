@@ -94,7 +94,7 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
   def replace(contentsOnly: Boolean)(replacement: (String, Attributes) => xml.NodeSeq) {
     val intent = new ReplacementIntent {
       def replace(label: String, attributes: Attributes, parent: Spell) {
-        parent.writeString(replacement(label, attributes).toString)
+        parent.writeString(replacement(label, attributes).toString, true)
       }
     }
     replace(contentsOnly, intent)

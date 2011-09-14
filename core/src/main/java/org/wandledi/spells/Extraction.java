@@ -4,9 +4,6 @@ import org.xml.sax.Attributes;
 import org.wandledi.AbstractSpell;
 import org.wandledi.Spell;
 import org.wandledi.Selector;
-import org.wandledi.SelectableElement;
-import java.util.List;
-import java.util.ArrayList;
 
 /**Extracts a given Node from the document.
  *
@@ -66,9 +63,9 @@ public class Extraction extends ComplexSpell {
             }
         }
 
-        public void writeCharacters(char[] chars, int offset, int length) {
+        public void writeCharacters(char[] chars, int offset, int length, boolean safe) {
             if (extract) {
-                super.writeCharacters(chars, offset, length);
+                super.writeCharacters(chars, offset, length, safe);
             }
         }
     }

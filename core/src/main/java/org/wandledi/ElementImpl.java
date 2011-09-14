@@ -98,7 +98,7 @@ public class ElementImpl implements Element {
     public void insert(final String content, boolean atEnd) {
         InsertionIntent intent = new InsertionIntent() {
             public void insert(Spell parent) {
-                parent.writeString(content);
+                parent.writeString(content, true);
             }
         };
         cast(new Insertion(atEnd, intent));
@@ -111,7 +111,7 @@ public class ElementImpl implements Element {
     public void replace(boolean contentsOnly, final String content) {
         ReplacementIntent intent = new ReplacementIntent() {
             public void replace(String label, Attributes attributes, Spell parent) {
-                parent.writeString(content);
+                parent.writeString(content, true);
             }
         };
         cast(new Replacement(intent, contentsOnly));

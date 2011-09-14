@@ -55,8 +55,8 @@ public class Reduction extends AbstractSpell {
         --level;
     }
 
-    public void writeCharacters(char[] chars, int offset, int length) {
+    public void writeCharacters(char[] chars, int offset, int length, boolean safe) {
         if (!firstIteration) return;
-        super.writeCharacters(chars, offset, length);
+        super.writeCharacters(chars, offset, length, safe);
     }
 }

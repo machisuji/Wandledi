@@ -76,14 +76,14 @@ public class Changeling extends AbstractSpell {
         identities[index].endElement(name);
     }
 
-    public void writeCharacters(char[] characters, int offset, int length) {
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
 
-        identities[index].writeCharacters(characters, offset, length);
+        identities[index].writeCharacters(characters, offset, length, safe);
     }
 
-    public void writeString(String string) {
+    public void writeString(String string, boolean safe) {
 
-        identities[index].writeString(string);
+        identities[index].writeString(string, safe);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class Invisibility extends AbstractSpell {
 
     }
 
-    public void writeCharacters(char[] chars, int offset, int length) {
+    public void writeCharacters(char[] chars, int offset, int length, boolean safe) {
         
     }
 }

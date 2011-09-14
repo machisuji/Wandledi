@@ -11,11 +11,20 @@ public interface Spell {
     public void setParent(Spell spell);
     public void startElement(String name, Attributes attributes);
     public void endElement(String name);
-    public void writeCharacters(char[] characters, int offset, int length);
+
+    /**
+     * Write the given characters to the output.
+     *
+     * @param characters Character array from which to read.
+     * @param offset Start reading here.
+     * @param length Stop there.
+     * @param safe Is this data safe or does it have to be checked for invalid (reserved) characters (<, >, &, ...)?
+     */
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe);
 
     /**This shall only be a convenience method that makes a call to #writeCharacters.
      */
-    public void writeString(String string);
+    public void writeString(String string, boolean safe);
     
     public void startTransformedElement(String name, Attributes attributes);
     public void endTransformedElement(String name);

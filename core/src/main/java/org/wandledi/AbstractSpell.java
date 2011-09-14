@@ -73,13 +73,13 @@ public abstract class AbstractSpell implements Spell {
         parent.endElement(name);
     }
 
-    public void writeCharacters(char[] characters, int offset, int length) {
-        parent.writeCharacters(characters, offset, length);
+    public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
+        parent.writeCharacters(characters, offset, length, safe);
     }
 
-    public void writeString(String string) {
+    public void writeString(String string, boolean safe) {
         char[] characters = string.toCharArray();
-        writeCharacters(characters, 0, characters.length);
+        writeCharacters(characters, 0, characters.length, safe);
     }
 
     public void ignoreBounds(boolean ignoreBounds) {
