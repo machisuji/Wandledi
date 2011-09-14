@@ -195,7 +195,7 @@ public class Wandler implements ContentHandler, Spell {
             case '>': return "&gt;";
             case '&': return "&amp;";
             case '"': return "&quot;";
-            case '\'': return "&amp;";
+            case '\'': return "&apos;";
             default: return null;
         }
     }
