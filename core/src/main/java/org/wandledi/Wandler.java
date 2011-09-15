@@ -190,6 +190,8 @@ public class Wandler implements ContentHandler, Spell {
     }
 
     protected String sanitize(char ch) {
+        // this will be called *pretty* often, so micro-optimization to bypass the lookupswitch is justifiable IMO
+        if (ch > '>' || ch < '"') return null;
         switch (ch) {
             case '<': return "&lt;";
             case '>': return "&gt;";
