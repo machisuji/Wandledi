@@ -1,8 +1,12 @@
 package org.wandledi.spells;
 
 import java.io.IOException;
+import java.io.Reader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import org.wandledi.Wandler;
+import org.wandledi.io.MagicReader;
 import org.xml.sax.Attributes;
 import org.xml.sax.ContentHandler;
 import org.xml.sax.InputSource;
@@ -14,7 +18,8 @@ import org.wandledi.Scroll;
 import org.wandledi.Spell;
 import org.wandledi.VoidResolver;
 
-/**With this spell you can include other html files into the current one.
+/**
+ * With this spell you can include other html files into the current one.
  * Note that the element this spell is apply upon will cease existing.
  * You could say that it is sacrificed for the summoning of the
  * new content.
@@ -26,9 +31,10 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     private XMLReader parser;
     private Locator locator;
     private InclusionIntent intent;
+    private MagicReader magic = new MagicReader(null);
+    private boolean useMagic;
 
     public Inclusion(final String file) {
-
         this(new InclusionIntent() {
             public String getFile() {
                 return file;
@@ -40,11 +46,11 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     }
 
     public Inclusion(final String file, final Scroll scroll) {
-
         this(new InclusionIntent() {
             public String getFile() {
                 return file;
             }
+
             public Scroll getScroll() {
                 return scroll;
             }
@@ -52,11 +58,12 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     }
 
     public Inclusion(InclusionIntent intent) {
-
         super(intent.getScroll() != null ? intent.getScroll() : new Scroll());
         this.intent = intent;
+        boolean xhtml = intent.getFile().endsWith(".xhtml");
+        this.useMagic = !xhtml;
         try {
-            parser = XMLReaderFactory.createXMLReader();
+            parser = xhtml ? Wandler.getXHTMLParser() : Wandler.getHTMLParser();
             parser.setContentHandler(this);
             parser.setEntityResolver(new VoidResolver());
         } catch (SAXException ex) {
@@ -66,15 +73,14 @@ public class Inclusion extends ArchSpell implements ContentHandler {
 
     @Override
     public Spell clone() {
-
         return new Inclusion(intent);
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
-
         if (ignoreBounds()) return;
         try {
-            parser.parse(new InputSource(getResources().open(intent.getFile())));
+            Reader in = getResources().open(intent.getFile());
+            parser.parse(new InputSource(useMagic ? new MagicReader(in) : in));
         } catch (IOException ex) {
             String message = "Error reading " + intent.getFile();
             Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, message, ex);
@@ -103,15 +109,16 @@ public class Inclusion extends ArchSpell implements ContentHandler {
     }
 
     public void endElement(String uri, String localName, String qName) throws SAXException {
-
         if (!localName.equalsIgnoreCase("html")) {
             super.endElement(localName);
         } // else skip HTML root element
     }
 
     public void characters(char[] ch, int start, int length) throws SAXException {
-
-        super.writeCharacters(ch, start, length, false);
+        if (useMagic) {
+            magic.showAllIn(ch, start, length);
+        }
+        super.writeCharacters(ch, start, length, true);
     }
 
     public void setDocumentLocator(Locator locator) {

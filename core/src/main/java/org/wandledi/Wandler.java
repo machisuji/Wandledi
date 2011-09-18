@@ -27,7 +27,8 @@ public class Wandler implements ContentHandler, Spell {
     private XMLReader parser;
     private Locator locator;
     private BufferedWriter out;
-    private boolean preserve;
+    private boolean xhtml = false;
+    private boolean preserve = false;
     private boolean startUnderConstruction = false;
     private boolean hideEntitiesAndCharacterReferencesFromSax = false;
     private long calls = 0;
@@ -45,10 +46,10 @@ public class Wandler implements ContentHandler, Spell {
     };
     private MagicReader magic = new MagicReader(null);
 
-    public Wandler(XMLReader xmlReader) {
+    protected Wandler(XMLReader xmlReader) {
         rootSpell.setParent(this);
         try {
-            parser = xmlReader != null ? xmlReader : XMLReaderFactory.createXMLReader();
+            parser = xmlReader != null ? xmlReader : getXHTMLParser();
             parser.setContentHandler(this);
             parser.setEntityResolver(new VoidResolver());
         } catch (SAXException ex) {
@@ -60,7 +61,7 @@ public class Wandler implements ContentHandler, Spell {
      *
      * Calling this is equivalent to 'new Wandler(XMLReaderFactory.createXMLReader())'.
      */
-    public Wandler() {
+    protected Wandler() {
         this(null);
     }
 
@@ -71,7 +72,10 @@ public class Wandler implements ContentHandler, Spell {
      * @return A new Wandler used for processing XHTML input.
      */
     public static Wandler forXHTML() {
-        return new Wandler();
+        Wandler wandler = new Wandler();
+        wandler.setXHTML(true);
+
+        return wandler;
     }
 
     /**
@@ -80,10 +84,18 @@ public class Wandler implements ContentHandler, Spell {
      * @return A new Wandler used for processing HTML input.
      */
     public static Wandler forHTML() {
-        Wandler wandler = new Wandler(new HtmlParser(XmlViolationPolicy.ALLOW));
+        Wandler wandler = new Wandler(getHTMLParser());
         wandler.setHideEntitiesAndCharacterReferencesFromSax(true);
 
         return wandler;
+    }
+
+    public static XMLReader getXHTMLParser() throws SAXException {
+        return XMLReaderFactory.createXMLReader();
+    }
+
+    public static XMLReader getHTMLParser() {
+        return new HtmlParser(XmlViolationPolicy.ALLOW);
     }
 
     public XMLReader getParser() {
@@ -121,6 +133,10 @@ public class Wandler implements ContentHandler, Spell {
      */
     public Resources getResources() {
         return resources;
+    }
+
+    public Wandler getWandler() {
+        return this;
     }
 
     public boolean hierarchyContains(Spell spell) {
@@ -376,5 +392,13 @@ public class Wandler implements ContentHandler, Spell {
 
     public boolean isHideEntitiesAndCharacterReferencesFromSax() {
         return hideEntitiesAndCharacterReferencesFromSax;
+    }
+
+    protected void setXHTML(boolean xhtml) {
+        this.xhtml = xhtml;
+    }
+
+    public boolean isXHTML() {
+        return xhtml;
     }
 }

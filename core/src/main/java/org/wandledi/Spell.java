@@ -81,4 +81,11 @@ public interface Spell {
      * @return The parent's Resources.
      */
     public Resources getResources();
+
+    /**
+     * Implement as parent.getWandler().
+     *
+     * @return The Wandler this Spell is used in.
+     */
+    public Wandler getWandler();
 }

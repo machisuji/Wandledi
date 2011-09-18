@@ -289,7 +289,7 @@ class Semantics extends Spec with ShouldMatchers {
   }
   
   def wandle(file: String, scroll: Scroll): Option[String] = {
-    val wandler = new Wandler
+    val wandler = Wandler.forXHTML
     val output = new StringWriter
     var input: FileReader = null
     wandler.setResources(new Resources {

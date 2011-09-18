@@ -12,3 +12,12 @@ Wandledi Changelog
    #replace(contentsOnly: Boolean, replacement: xml.NodeSeq)
    #replace(contentsOnly: Boolean, replacementIntent: (String, Attributes, Spell) => Unit)
    #replace(contentsOnly: Boolean)(replacement: (String, Attributes) => xml.NodeSeq)
+
+# V0.4
+ - character data sanitizing ('<' -> &lt; etc.)
+ - Spell#writeCharacters and #writeString now include a parameter 'safe' which indicates whether or not the data has to be sanitized
+
+# V0.5
+ - Wandler constructor no longer public; use Wandler#forHTML() and Wandler#forXHTML()
+ - html entities and character references are now left alone (hidden from the SAX parser); still only character references supported for xhtml
+ - added #getWandler() to Spell interface

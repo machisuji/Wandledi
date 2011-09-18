@@ -25,6 +25,10 @@ public abstract class AbstractSpell implements Spell {
         return parent.getResources();
     }
 
+    public Wandler getWandler() {
+        return parent.getWandler();
+    }
+
     protected void reset() {
         clearLines();
     }

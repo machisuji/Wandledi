@@ -184,4 +184,13 @@ public class HTML5 {
         }
         assertEquals(occurences, 4, "number of sections");
     }
+
+    @Test
+    public void testIncludedEntities() {
+        page.get("#Content").cast(new Inclusion("entities.html"));
+
+        String result = wandle("html5.html");
+        assertTrue(result.contains("&#169;"));
+        assertTrue(result.contains("&quot;&gt;"));
+    }
 }
