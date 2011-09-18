@@ -82,7 +82,7 @@ class Semantics extends Spec with ShouldMatchers {
     }
 
     it("should make it possible to switch context via #using") {
-      val doc = transform("entities.xhtml") { page => import page._
+      val doc = transform("selectors.xhtml") { page => import page._
         $("p").includeFile("inclusion.xhtml") { page =>
           using(page) {
             $("p").setAttribute("color", "red")
