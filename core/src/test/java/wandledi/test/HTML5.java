@@ -75,6 +75,14 @@ public class HTML5 {
     }
 
     @Test
+    public void testValidHtml() {
+        String result = wandle("entities.html");
+
+        assertTrue(result.contains("&#169;"), "copyright sign");
+        assertTrue(result.contains("&lt;div class=&quot;header&quot;&gt;"));
+    }
+
+    @Test
     public void simpleTest() {
         Element e = page.get("h1");
         e.replace(true, "buyakasha");

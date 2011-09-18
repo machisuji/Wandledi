@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import org.wandledi.io.MagicReader;
 import org.xml.sax.*;
 import org.xml.sax.helpers.XMLReaderFactory;
 import org.wandledi.spells.ArchSpell;
@@ -28,6 +29,7 @@ public class Wandler implements ContentHandler, Spell {
     private BufferedWriter out;
     private boolean preserve;
     private boolean startUnderConstruction = false;
+    private boolean hideEntitiesAndCharacterReferencesFromSax = false;
     private long calls = 0;
     private long lastStart = -1;
     private final static Set<String> emptyElements = new HashSet<String>(
@@ -41,6 +43,7 @@ public class Wandler implements ContentHandler, Spell {
             return new FileReader(file);
         }
     };
+    private MagicReader magic = new MagicReader(null);
 
     public Wandler(XMLReader xmlReader) {
         rootSpell.setParent(this);
@@ -61,12 +64,30 @@ public class Wandler implements ContentHandler, Spell {
         this(null);
     }
 
+    /**
+     * Wandler for XHTML. Notice: No DTD support, meaning entity references are taboo.
+     * Use only character references instead.
+     *
+     * @return A new Wandler used for processing XHTML input.
+     */
     public static Wandler forXHTML() {
         return new Wandler();
     }
 
+    /**
+     * Wandler for HTML5.
+     *
+     * @return A new Wandler used for processing HTML input.
+     */
     public static Wandler forHTML() {
-        return new Wandler(new HtmlParser(XmlViolationPolicy.ALLOW));
+        Wandler wandler = new Wandler(new HtmlParser(XmlViolationPolicy.ALLOW));
+        wandler.setHideEntitiesAndCharacterReferencesFromSax(true);
+
+        return wandler;
+    }
+
+    public XMLReader getParser() {
+        return parser;
     }
 
     public void reset() {
@@ -113,8 +134,10 @@ public class Wandler implements ContentHandler, Spell {
     public void wandle(Reader in, Writer out) {
         try {
             reset();
+            InputSource src = isHideEntitiesAndCharacterReferencesFromSax() ?
+                    new InputSource(new MagicReader(in)) : new InputSource(in);
             this.out = new BufferedWriter(out, 2048);
-            parser.parse(new InputSource(in));
+            parser.parse(src);
         } catch (IOException ex) {
             Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, "IOException", ex);
         } catch (SAXException ex) {
@@ -248,7 +271,10 @@ public class Wandler implements ContentHandler, Spell {
 
     public void characters(char[] ch, int start, int length) throws SAXException {
         try {
-            rootSpell.writeCharacters(ch, start, length, false);
+            if (isHideEntitiesAndCharacterReferencesFromSax()) {
+                magic.showAllIn(ch, start, length);
+            }
+            rootSpell.writeCharacters(ch, start, length, true);
             // Since SAX automatically resolves and replaces entities the incoming characters are not safe,
             // that is they may contain reserved characters such as <, >, & and so on.
             // A real solution (making SAX *not* do that) would be way better, I just don't know how to pull it off.
@@ -342,5 +368,13 @@ public class Wandler implements ContentHandler, Spell {
 
     public boolean ignoreBounds() {
         return false;
+    }
+
+    public void setHideEntitiesAndCharacterReferencesFromSax(boolean hide) {
+        this.hideEntitiesAndCharacterReferencesFromSax = hide;
+    }
+
+    public boolean isHideEntitiesAndCharacterReferencesFromSax() {
+        return hideEntitiesAndCharacterReferencesFromSax;
     }
 }

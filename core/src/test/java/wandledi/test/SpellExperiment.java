@@ -8,6 +8,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.Attributes;
+import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -124,20 +125,6 @@ public class SpellExperiment {
             }
         }
         assertEquals(occurences, 1, "number of occurences");
-    }
-
-    @Test
-    public void testValidHtml() {
-        String result = wandle("entities.xhtml");
-
-        assertTrue(result.contains("&lt;div class=&quot;header&quot;&gt;"));
-    }
-
-    @Test(enabled=false)
-    public void testValidXHtml() {
-        String result = wandle("entities.xhtml");
-
-        assertTrue(result.contains("&#169;"), "copyright sign");
     }
 
     @Test
