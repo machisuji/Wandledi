@@ -8,7 +8,7 @@ import java.util.List;
  * equals() and hashCode() properly.
  *
  */
-public interface Selector extends Comparable {
+public interface Selector extends Comparable<Selector> {
 
     /**Tries to match this selector against the element with the given
      * label and attributes.

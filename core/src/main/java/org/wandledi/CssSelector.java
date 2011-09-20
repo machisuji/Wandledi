@@ -184,7 +184,7 @@ public class CssSelector implements Selector {
         return hash;
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(Selector o) {
         if (o instanceof CssSelector) {
             CssSelector selector = (CssSelector) o;
             if (this.isId() && selector.isId()) {

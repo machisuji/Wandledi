@@ -32,7 +32,7 @@ public class PathSelector implements Selector {
         return this.elementPath.equals(elementPath);
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(Selector o) {
         if (o instanceof CssSelector) {
             return 10;
         } else if (o instanceof UniversalSelector) {

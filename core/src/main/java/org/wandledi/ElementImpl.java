@@ -130,11 +130,11 @@ public class ElementImpl implements Element {
     }
 
     public <T> ElementForeach<T> foreachIn(Collection<T> collection) {
-        return new ElementForeachImpl(this, collection);
+        return new ElementForeachImpl<T>(this, collection);
     }
 
     public <T> ElementForeach<T> foreachIn(Collection<T> collection, boolean reduceBefore) {
-        return new ElementForeachImpl(this, collection, reduceBefore);
+        return new ElementForeachImpl<T>(this, collection, reduceBefore);
     }
 
     public void hide() {

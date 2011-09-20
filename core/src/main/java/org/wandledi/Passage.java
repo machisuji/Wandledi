@@ -99,7 +99,7 @@ public class Passage implements Selector {
         return selector.matches(label, attributes, elementPath);
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(Selector o) {
         return selector.compareTo(o);
     }
 

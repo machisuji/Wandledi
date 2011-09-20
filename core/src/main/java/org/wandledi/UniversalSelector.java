@@ -76,7 +76,7 @@ public class UniversalSelector implements Selector {
         return matches;
     }
 
-    public int compareTo(Object o) {
+    public int compareTo(Selector o) {
 
         if (o instanceof CssSelector) {
             return 10;
