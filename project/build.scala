@@ -5,18 +5,20 @@ object Wandledi extends Build {
   import Dependencies._
 
   val wandlediSettings = Defaults.defaultSettings ++ Seq (
-    version       := "0.5",
-    organization  := "org.wandledi",
-    resolvers     := Resolvers.all
-  )
+    version             := "0.5",
+    organization        := "org.wandledi",
+    scalaVersion        := "2.8.1",
+    crossScalaVersions  := Seq("2.8.0", "2.8.1", "2.9.0", "2.9.1"),
+    resolvers           := Resolvers.all
+  ) ++ Unidoc.settings
 
   val javaSettings = wandlediSettings ++ Seq (
-    javacOptions  := Seq("-target", "5", "-Xlint:unchecked")
+    javacOptions      := Seq("-target", "5", "-Xlint:unchecked"),
+    autoScalaLibrary  := false,
+    crossPaths        := false
   )
 
   val scalaSettings = wandlediSettings ++ Seq (
-    scalaVersion        := "2.8.1",
-    crossScalaVersions  := Seq("2.8.1", "2.9.0", "2.9.0-1", "2.9.1"),
     scalacOptions       ++= Seq("-unchecked", "-deprecation")
   )
 
