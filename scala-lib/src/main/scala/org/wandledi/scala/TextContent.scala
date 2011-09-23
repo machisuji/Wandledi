@@ -3,12 +3,18 @@ package org.wandledi.scala
 import org.wandledi.spells.SpotMapping
 import org.wandledi.spells.StringTransformation
 
+/**
+ * TextContent provides transformations for an Element's text content, all of which are
+ * different instances of TextTransformation.
+ *
+ * @see org.wandledi.spells.TextTransformation
+ */
 trait TextContent extends org.wandledi.TextContent {
 
   /**
    * Transforms an Element's text.
    *
-   * @param stringTransformation A function transforming the text.
+   * @param stringTransformation A function taking the original text and returning the new one to be used instead.
    */
   def transform(stringTransformation: String => String) {
     val st = new StringTransformation {
@@ -30,7 +36,8 @@ trait TextContent extends org.wandledi.TextContent {
     transform(regex, st)
   }
 
-  /**Inserts values at the marked spots within this text.
+  /**
+   * Inserts values at the marked spots within this text.
    * A spot is any part of the text that is enclosed with parenthesis.
    * The values are mapped the respective spots via an index.
    * Example:
@@ -51,7 +58,8 @@ trait TextContent extends org.wandledi.TextContent {
     insert(orderedValues: _*)
   }
 
-  /**Inserts values at the marked spots within this text.
+  /**
+   * Inserts values at the marked spots within this text.
    * A spot is any part of the text that is enclosed with parenthesis.
    * The values are mapped to the respective spots via a name.
    * Example:
@@ -69,7 +77,8 @@ trait TextContent extends org.wandledi.TextContent {
     insert(false, (valuesHead +: valuesTail): _*)
   }
 
-  /**Same as insert((String, String)+) though regex are used to identify the spots
+  /**
+   * Same as insert((String, String)+) though regex are used to identify the spots
    * instead of (slightly enhanced) names.
    */
   def insertR(values: (String, String)*) {
