@@ -9,7 +9,9 @@ import org.wandledi.PathSelector
 class Page(val file: String) extends SelectableImpl(new Scroll) with Response {
     override def getFile = file
 
-    /** Extracts the target Element.
+    /**
+     * Extracts the target Element.
+     *
      * @param sel Target Element to extract.
      * @param block Block to execute in the context of the extracted Element.
      */
