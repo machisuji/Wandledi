@@ -90,7 +90,7 @@ public class UniversalSelector implements Selector {
     @Override
     public String toString() {
 
-        StringBuilder sb = new StringBuilder("<");
+        StringBuilder sb = new StringBuilder("UniversalSelector(<");
         if (label != null) {
             sb.append(label);
         } else {
@@ -103,7 +103,7 @@ public class UniversalSelector implements Selector {
             sb.append(attr.getValue());
             sb.append("\"");
         }
-        sb.append("/>");
+        sb.append("/>)");
         return sb.toString();
     }
 

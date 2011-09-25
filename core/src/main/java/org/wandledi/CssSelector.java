@@ -89,7 +89,7 @@ public class CssSelector implements Selector {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
+        StringBuilder sb = new StringBuilder("CssSelector(");
         for (CssSelector parent: parents) {
             sb.append(parent.toString());
             sb.append(" ");
@@ -106,6 +106,7 @@ public class CssSelector implements Selector {
                 sb.append(elementClass);
             }
         }
+        sb.append(")");
         return sb.toString();
     }
 
