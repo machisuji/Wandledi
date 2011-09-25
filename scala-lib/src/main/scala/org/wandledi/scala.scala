@@ -6,7 +6,7 @@ import collection.JavaConversions._
  * Provide implicit conversions for Selectors.
  *
  * @author Markus Kahl
- * @version: 0.1
+ * @version 0.1
  *
  * 25.09.11
  */
