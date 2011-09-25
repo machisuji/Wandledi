@@ -21,3 +21,7 @@ Wandledi Changelog
  - Wandler constructor no longer public; use Wandler#forHTML() and Wandler#forXHTML()
  - html entities and character references are now left alone (hidden from the SAX parser); still only character references supported for xhtml
  - added #getWandler() to Spell interface
+
+# V0.6
+ - changed Selectable#get(String, Attribute...) to Selectable#get(String, Attribute, Attribute...) and made analogous changes to $ and $$ in the Scala lib
+ - selector implicits no longer defined in scala.Selectable but in org.wandledi.scala

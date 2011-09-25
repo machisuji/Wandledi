@@ -1,9 +1,6 @@
 package org.wandledi.scala
 
-import org.wandledi.Scroll
-import org.wandledi.Selector
-import org.wandledi.PathSelector
-import org.wandledi.{Element => JElement}
+import org.wandledi.{Attribute, Scroll, Selector, PathSelector, Element => JElement}
 
 /**<h1>Paragraph - "A distinct portion of written or printed matter dealing with a particular idea [...]"</h1>
  *
@@ -47,14 +44,14 @@ trait Paragraphs extends Selectable {
 
   def get(selector: Selector): Element = notice
   def get(atts: Tuple2[String, String]*): Element = notice
-  def get(label: String, atts: Tuple2[String, String]*): Element = notice
+  def get(name: String, attrHead: (String, String), attrTail: (String, String)*): Element = notice
   def get(selector: String): Element = notice
   def at(selector: Selector): SelectableElement = notice
   def at(selector: String): SelectableElement = notice
 
   def getScroll: Scroll = notice
   def get(attr: org.wandledi.Attribute*): JElement = notice
-  def get(label: String, attr: org.wandledi.Attribute*): JElement = notice
+  def get(name: String, attrHead: Attribute, attrTail: Attribute*): Element = notice
   def get(attr: String, value: String): JElement = notice
   def get(label: String, attr: String, value: String): JElement = notice
 }

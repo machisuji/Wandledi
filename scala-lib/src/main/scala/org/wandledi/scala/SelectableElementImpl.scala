@@ -15,7 +15,8 @@ class SelectableElementImpl(
 
   override def get(selector: Selector): Element = selectable.get(selector)
   override def get(atts: Tuple2[String, String]*): Element = selectable.get(atts: _*)
-  override def get(label: String, atts: Tuple2[String, String]*): Element = selectable.get(label, atts: _*)
+  override def get(label: String, attrHead: (String, String), attrTail: (String, String)*): Element =
+    selectable.get(label, attrHead, attrTail: _*)
   override def get(selector: String): Element = selectable.get(selector)
   override def at(selector: Selector) = selectable.at(selector)
   override def at(selector: String) = selectable.at(selector)

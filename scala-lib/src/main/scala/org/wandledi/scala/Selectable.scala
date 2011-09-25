@@ -1,6 +1,6 @@
 package org.wandledi.scala
 
-import org.wandledi.{Selector, CssSelector, UniversalSelector, Attribute, Scroll}
+import org.wandledi.{Selector => JSelector, UniversalSelector, Attribute, Scroll}
 import scala.util.DynamicVariable
 
 /**
@@ -25,7 +25,7 @@ trait Selectable extends org.wandledi.Selectable {
    * @param selector Selector to be used to match the target element(s).
    * @return An Element providing means to transform the target element(s).
    */
-  def get(selector: Selector): Element
+  def get(selector: JSelector): Element
 
   /**
    * Selects elements with the specified attributes.
@@ -33,17 +33,18 @@ trait Selectable extends org.wandledi.Selectable {
    * @param atts Element attribute name-value pairs.
    * @return An Element providing means to transform the target element(s).
    */
-  def get(atts: Tuple2[String, String]*): Element
+  def get(atts: (String, String)*): Element
 
   /**
    * Selects elements with the specified attributes and tag name.
    *
    * @param name Target element name.
-   * @param atts Target element attributes.
+   * @param attrHead One of the target element's attributes.
+   * @param attrTail The rest of the target element's attributes.
    *
    * @return An Element providing means to transform the target element(s).
    */
-  def get(name: String, atts: Tuple2[String, String]*): Element
+  def get(name: String, attrHead: (String, String), attrTail: (String, String)*): Element
 
   /**
    * Selects elements matching a given CSS selector.
@@ -63,7 +64,7 @@ trait Selectable extends org.wandledi.Selectable {
    * @return A SelectableElement providing transformations for the target element(s) as well
    *         as selection methods to select child elements.
    */
-  def at(selector: Selector): SelectableElement
+  def at(selector: JSelector): SelectableElement
   /**
    * Selects another Selectable which can only select elements underneath it
    * For instance <em>at("head").get("body")</em> will match nothing, since the body element
@@ -85,7 +86,7 @@ trait Selectable extends org.wandledi.Selectable {
    *
    * @return An Element providing transformations.
    */
-  def $(selector: Selector) = selectContext.value.get(selector)
+  def $(selector: JSelector) = selectContext.value.get(selector)
 
   /**
    * Selects elements with the specified attributes from the current context.
@@ -106,17 +107,8 @@ trait Selectable extends org.wandledi.Selectable {
    * @return An Element providing transformations.
    * @see org.wandledi.UniversalSelector
    */
-  def $(name: String, atts: Tuple2[String, String]*) = selectContext.value.get(name, atts: _*)
-
-  /**
-   * Selects elements matched by the given CSS selector from the current context.
-   *
-   * @param selector CSS selector
-   *
-   * @return An Element providing transformations.
-   * @see org.wandledi.CssSelector
-   */
-  def $(selector: String) = selectContext.value.get(selector)
+  def $(name: String, attrHead: (String, String), attrTail: (String, String)*) =
+    selectContext.value.get(name, attrHead, attrTail: _*)
 
   /**
    * This refers to the current SelectableElement,
@@ -145,7 +137,7 @@ trait Selectable extends org.wandledi.Selectable {
    * @param selector Selector to be used to match the target element(s).
    * @param block Block to be called with the target Element as context.
    */
-  def $$(selector: Selector)(block: => Unit) {
+  def $$(selector: JSelector)(block: => Unit) {
     val selectable = selectContext.value
     val selected = selectable.at(selector)
     selectContext.withValue(selected)(block)
@@ -202,12 +194,6 @@ trait Selectable extends org.wandledi.Selectable {
   def using(e: Selectable)(block: => Unit) {
     selectContext.withValue(e)(block)
   }
-
-  /**
-   * Enables strings as selectors by implicitly converting them
-   * using CssSelector.
-   */
-  implicit def cssSelector(selector: String): Selector = CssSelector.valueOf(selector)
 }
 
 object Selectable {
@@ -220,4 +206,6 @@ object Selectable {
    * @return A new Selectable to be used for selecting elements.
    */
   def apply(scroll: Scroll) = new SelectableImpl(scroll)
+
+  def apply() = new SelectableImpl
 }

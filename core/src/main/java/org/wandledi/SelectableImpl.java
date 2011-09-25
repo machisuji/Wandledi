@@ -34,9 +34,11 @@ public class SelectableImpl implements Selectable {
         return get(new UniversalSelector(new Attribute(attrName, attrValue)));
     }
 
-    public Element get(String label, Attribute... attributes) {
-
-        return get(new UniversalSelector(label, attributes));
+    public Element get(String label, Attribute attrHead, Attribute... attrTail) {
+        Attribute[] attr = new Attribute[attrTail.length + 1];
+        attr[0] = attrHead;
+        System.arraycopy(attrTail, 0, attr, 1, attrTail.length);
+        return get(new UniversalSelector(label, attr));
     }
 
     public Element get(Attribute... attributes) {
@@ -49,7 +51,8 @@ public class SelectableImpl implements Selectable {
         return new ElementImpl(selector, scroll);
     }
 
-    /**Returns a new Selectable to select elements with.
+    /**
+     * Returns a new Selectable to select elements with.
      * The Selection is relative to the element matched by the
      * given selector and works only below it in the element tree.
      *
@@ -61,7 +64,8 @@ public class SelectableImpl implements Selectable {
         return at(CssSelector.valueOf(selector));
     }
 
-    /**Returns a new Selectable to select elements with.
+    /**
+     * Returns a new Selectable to select elements with.
      * The Selection is relative to the element matched by the
      * given selector and works only below it in the element tree.
      *

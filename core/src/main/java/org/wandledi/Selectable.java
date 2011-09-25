@@ -8,7 +8,7 @@ public interface Selectable {
 
     Element get(String attrName, String attrValue);
 
-    Element get(String label, Attribute... attributes);
+    Element get(String label, Attribute attrHead, Attribute... attrTail);
 
     Element get(Attribute... attributes);
 

@@ -35,8 +35,8 @@ public class SelectableElementImpl implements SelectableElement {
         return selectable.get(attrName, attrValue);
     }
 
-    public Element get(String label, Attribute... attributes) {
-        return selectable.get(label, attributes);
+    public Element get(String label, Attribute attrHead, Attribute... attrTail) {
+        return selectable.get(label, attrHead, attrTail);
     }
 
     public Element get(Attribute... attributes) {

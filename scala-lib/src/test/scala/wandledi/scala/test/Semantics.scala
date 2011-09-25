@@ -6,17 +6,20 @@ import java.io.IOException
 import java.io.Reader
 import java.io.StringReader
 import java.io.StringWriter
-import javax.xml.parsers.DocumentBuilderFactory
+
 import org.scalatest.Spec
 import org.scalatest.matchers.ShouldMatchers
+
+import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
-import org.wandledi.scala.Selectable
-import org.wandledi.spells.SpotMapping
-import org.wandledi.spells.TextTransformation
 import org.xml.sax.InputSource
 import scala.xml.NodeSeq
 import scala.xml.XML
-import org.wandledi.{PathSelector, Resources, Scroll, Wandler}
+
+import org.wandledi.{Selectable => _, _}
+import org.wandledi.spells.SpotMapping
+import org.wandledi.spells.TextTransformation
+import org.wandledi.scala._
 
 class Semantics extends Spec with ShouldMatchers {
   val testFileDirectory = "core/src/test/java/wandledi/test/"
@@ -285,6 +288,20 @@ class Semantics extends Spec with ShouldMatchers {
       head should have size (1)
       title should have size (1)
       title(0).text should include ("String Insertion Test")
+    }
+  }
+
+  describe("Selection") {
+    val selectable = Selectable()
+    import selectable.$
+    it("should work with strings as CSS selectors") {
+      val isCss = $("#content").getSelector.isInstanceOf[CssSelector]
+      isCss should be (true)
+    }
+    it("should take Sequences for PathSelectors") {
+      $(Seq[String]()).getSelector.getClass should equal ($(Seq()).getSelector.getClass)
+      $(Seq()).getSelector.getClass should equal ($(Nil).getSelector.getClass)
+      $(Nil).getSelector.getClass should equal (classOf[PathSelector])
     }
   }
   

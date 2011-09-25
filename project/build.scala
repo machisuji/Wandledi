@@ -5,7 +5,7 @@ object Wandledi extends Build {
   import Dependencies._
 
   val wandlediSettings = Defaults.defaultSettings ++ Seq (
-    version             := "0.5",
+    version             := "0.6",
     organization        := "org.wandledi",
     scalaVersion        := "2.8.1",
     crossScalaVersions  := Seq("2.8.0", "2.8.1", "2.9.0", "2.9.1"),
@@ -32,7 +32,7 @@ object Wandledi extends Build {
     "wandledi",
     file("core"),
     settings = javaSettings ++ Seq (
-      libraryDependencies ++= Seq(htmlparser, testng)
+      libraryDependencies ++= Seq(htmlparser, testng, scalatest)
     )
   )
 
@@ -67,7 +67,7 @@ object Dependencies {
   val servletApi = "javax.servlet" % "servlet-api" % "2.5" % "provided"
 
   val testng = "org.testng" % "testng" % "5.12.1" % "test" // for Java only
-  val scalatest = "org.scalatest" % "scalatest" % "1.2.1-SNAPSHOT" % "test"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.5.+" % "test"
 }
 
 object Resolvers {
