@@ -291,9 +291,6 @@ public class Wandler implements ContentHandler, Spell {
                 magic.showAllIn(ch, start, length);
             }
             rootSpell.writeCharacters(ch, start, length, true);
-            // Since SAX automatically resolves and replaces entities the incoming characters are not safe,
-            // that is they may contain reserved characters such as <, >, & and so on.
-            // A real solution (making SAX *not* do that) would be way better, I just don't know how to pull it off.
         } catch (Exception e) {
             throw new SAXException("Could not write \"" + new String(ch, start, length) + "\"", e);
         }

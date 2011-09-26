@@ -222,7 +222,7 @@ public class TextTransformation extends AbstractSpell {
     protected void flush() {
         if (buffer.length() > 0 || considerEmptyText) {
             String result = transform(buffer);
-            super.writeCharacters(result.toCharArray(), 0, result.length(), false);
+            super.writeCharacters(result.toCharArray(), 0, result.length(), true);
             buffer.setLength(0);
         }
     }
@@ -265,7 +265,7 @@ public class TextTransformation extends AbstractSpell {
         if (nestingLevel <= 0) { // inside text body of element
             buffer.append(characters, offset, length);
         } else {
-            super.writeCharacters(characters, offset, length, false);
+            super.writeCharacters(characters, offset, length, safe);
         }
     }
 
