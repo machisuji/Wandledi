@@ -7,8 +7,8 @@ import java.io.Reader
 import java.io.StringReader
 import java.io.StringWriter
 
-import org.scalatest.Spec
-import org.scalatest.matchers.ShouldMatchers
+import org.testng.annotations._
+import org.testng.Assert._
 
 import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
@@ -21,8 +21,15 @@ import org.wandledi.spells.SpotMapping
 import org.wandledi.spells.TextTransformation
 import org.wandledi.scala._
 
-class Semantics extends Spec with ShouldMatchers {
+/**
+ * This suite also tests the Java API, so the Java build is only ok if these tests pass, too!
+ * I've put them here, because it's simply more convenient to write tests in Scala than in Java.
+ * Even when not using ScalaTest.
+ */
+class Semantics {
+
   val testFileDirectory = "core/src/test/java/wandledi/test/"
+
   def transform(file: String, debug: Boolean = false)(magic: (Selectable) => Unit): NodeSeq = {
     val page = Selectable(new Scroll)
     magic(page)
@@ -31,164 +38,208 @@ class Semantics extends Spec with ShouldMatchers {
     if (debug) println(result.get)
     XML.loadString(result.get)
   }
+
   implicit def pimped(node: xml.Node) = new {
     def check(attr: (String, String)) = node.attribute(attr._1).exists(_.exists(_.text == attr._2))
   }
+
   implicit def pimped(nodeSeq: xml.NodeSeq) = new {
     def \(attr: (String, String)) =
       nodeSeq.filter(_.attribute(attr._1).exists(_.exists(_.text == attr._2)))
   }
 
-  describe("scala.Selectable") {
-    it("should provide a functioning Element per #get") {
-      val doc = transform("test.xhtml") { page => import page._
-        val e = get("div")
-        val offset = 1
-        e.at(offset).setAttribute("foo", "bar")
-      }
-      val divs = doc \\ "div"
-      divs should have size (3)
-      divs(0).attribute("foo") should not be ('defined)
-      divs(2).attribute("foo") should not be ('defined)
-      divs(1).attribute("foo") should be ('defined)
-      divs(1).attribute("foo").get(0).text should equal ("bar")
+  /**
+   * scala.Selectable should provide a functioning Element per #get
+   */
+  @Test
+  def selectableGet {
+    val doc = transform("test.xhtml") { page => import page._
+      val e = get("div")
+      val offset = 1
+      e.at(offset).setAttribute("foo", "bar")
     }
+    val divs = doc \\ "div"
+    assertEquals(3, divs.size, "number of divs")
 
-    it("should provide a functioning SelectableElement per #at") {
-      val doc = transform("test.xhtml") { page => import page._
-        val e = at("div")
-        val offset = 2
-        e.at(offset).setAttribute("foo", "bar")
-      }
-      val divs = doc \\ "div"
-      divs should have size (3)
-      divs(0).attribute("foo") should not be ('defined)
-      divs(1).attribute("foo") should not be ('defined)
-      divs(2).attribute("foo") should be ('defined)
-      divs(2).attribute("foo").get(0).text should equal ("bar")
+    assertFalse(divs(0).attribute("foo").isDefined, "foo is defined")
+    assertFalse(divs(2).attribute("foo").isDefined, "foo is defined")
+    assertTrue(divs(1).attribute("foo").isDefined, "foo should be defined")
+    assertEquals("bar", divs(1).attribute("foo").get(0).text, "attribute foo")
+  }
+
+  /**
+   * scala.Selectable should provide a functioning SelectableElement per #at
+   */
+  @Test
+  def selectableAt {
+    val doc = transform("test.xhtml") { page => import page._
+      val e = at("div")
+      val offset = 2
+      e.at(offset).setAttribute("foo", "bar")
     }
+    val divs = doc \\ "div"
+    assertEquals(3, divs.size, "number of divs")
 
-    it("should support context sensitive selection ($)") {
-      val doc = transform("test.xhtml") { page => import page._
-        $("div").setAttribute("foo", "bar")
-        $$(".info") {
-          $("div").setAttribute("color", "red") // should only apply to the nested div
+    assertFalse(divs(0).attribute("foo").isDefined, "foo is defined")
+    assertFalse(divs(1).attribute("foo").isDefined, "foo is defined")
+    assertTrue(divs(2).attribute("foo").isDefined, "foo is defined")
+    assertEquals("bar", divs(2).attribute("foo").get(0).text, "attribute foo")
+  }
+
+  /**
+   * scala.Selectable should support context sensitive selection ($)
+   */
+  @Test
+  def contextSensitiveSelection {
+    val doc = transform("test.xhtml") { page => import page._
+      $("div").setAttribute("foo", "bar")
+      $$(".info") {
+        $("div").setAttribute("color", "red") // should only apply to the nested div
+      }
+      // the previous statement should have the same effect as the following:
+      // at(".info").get("div").setAttribute("color", "red")
+    }
+    val divs = doc \\ "div"
+    val redDivs = divs.filter(div => div.attribute("color").isDefined)
+
+    divs.foreach(div =>
+      assertEquals("bar", div.attribute("foo").get.head.text), "attribute foo")
+
+    assertEquals(1, redDivs.size, "number of red divs")
+    assertEquals("Repeat: ", redDivs.head.text, "red divs' text")
+  }
+
+  /**
+   * scala.Selectable should make it possible to switch context via #using
+   */
+  @Test
+  def contextSensitiveSelection2 {
+    val doc = transform("selectors.xhtml") { page => import page._
+      $("p").includeFile("inclusion.xhtml") { page =>
+        using(page) {
+          $("p").setAttribute("color", "red")
         }
-        // the previous statement should have the same effect as the following:
-        // at(".info").get("div").setAttribute("color", "red")
       }
-      val divs = doc \\ "div"
-      divs.foreach(_.attribute("foo").get.head.text should equal ("bar"))
-      val redDivs = divs.filter(div => div.attribute("color").isDefined)
-      redDivs should have size (1)
-      redDivs.head.text should equal ("Repeat: ")
     }
-
-    it("should make it possible to switch context via #using") {
-      val doc = transform("selectors.xhtml") { page => import page._
-        $("p").includeFile("inclusion.xhtml") { page =>
-          using(page) {
-            $("p").setAttribute("color", "red")
-          }
-        }
-      }
-      val p = (doc \\ "p").headOption
-      p should be ('defined)
-      p.get.text should include ("inclusion")
-      p.get.attribute("color") should be ('defined)
+    val p = (doc \\ "p").headOption
+    assertTrue(p.isDefined, "p is defined")
+    p.foreach { p =>
+      assertTrue(p.text contains "inclusion", "p contains 'inclusion'")
+      assertTrue(p.attribute("color").isDefined, "attribute color is defined")
     }
   }
 
-  describe("scala.Element") {
-    it("should support the foreach transformation") {
-      val titles = List("It's", "something", "only", "you", "can", "take.")
-      val doc = transform("test.xhtml") { page => import page._
-        $("h1").foreachWithIndexIn(titles) { (e, item, index) =>
-          e.replace(true, item)
-          if (index % 2 == 1) {
-            e.setAttribute("style", "background-color: red;")
-          } else {
-            e.setAttribute("style", "background-color: blue;")
-          }
-        }
-      }
-      val headings = doc \\ "h1"
-      headings.size should be (titles.size)
-      headings.zipWithIndex.foreach { tuple =>
-        val (h1, index) = tuple
-        val expected = if (index % 2 == 1) "red" else "blue"
-        h1.attribute("style").get(0).text should include (expected)
+  /**
+   * scala.Element should support the foreach transformation
+   */
+  @Test
+  def elementForeach {
+    val titles = List("It's", "something", "only", "you", "can", "take.")
+    val doc = transform("test.xhtml") { page => import page._
+      $("h1").foreachWithIndexIn(titles) { (e, item, index) =>
+        e.replace(true, item)
+        if (index % 2 == 1) e.setAttribute("style", "background-color: red;")
+        else e.setAttribute("style", "background-color: blue;")
       }
     }
-    it("should accept xml.NodeSeqs as insertions and as replacements") {
-      val doc = transform("test.xhtml") { page => import page._
-        $("body").insert(false, <pre id="insertion">Quid Quo Pro</pre>)
-        $(".info").replace(true, <p>Quid Quo Pro</p>)
-      }
-      val pre = doc \\ "pre"
-      pre.size should be (1)
-      pre(0).text should equal ("Quid Quo Pro")
-      val p = doc \\ "p"
-      p.size should be (1)
-      p(0).text should equal ("Quid Quo Pro")
+    val headings = doc \\ "h1"
+    assertEquals(titles.size, headings.size, "number of headings")
+    headings.zipWithIndex.foreach { case (h1, index) =>
+      val expected = if (index % 2 == 1) "red" else "blue"
+      assertTrue(h1.attribute("style").head.text contains expected, "color is "+expected)
     }
   }
 
-  describe("org.wandledi.spells.TextTransformation") {
-    it("should support index-based 'spot' insertion") {
-      val insertions = Array("Hans", "FunFilms", "Airplane!")
-      val doc = transform("strings.xhtml") { page => import page._
-        val ttf = new TextTransformation(insertions)
-        page.at("#parenthesis").get(".text").cast(ttf)
-      }
-      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
-      div should have size (1)
-      val text = (div \ "p")(0).text
-      text should not include ("(")
-      text should not include (")")
-      insertions.foreach(text should include (_))
+  /**
+   * scala.Element should accept xml.NodeSeqs as insertions and as replacements
+   */
+  @Test
+  def elementInsertReplaceXml {
+    val doc = transform("test.xhtml") { page => import page._
+      $("body").insert(false, <pre id="insertion">Quid Quo Pro</pre>)
+      $(".info").replace(true, <p>Quid Quo Pro</p>)
     }
-    it("should support regex-based 'spot' insertion") {
-      val insertions = Map("Mar.+" -> "Heinz", "(T|t)he [a-zA-z]+.*" -> "Vertigo", "Spam.Free" -> "SpareTV")
-      val doc = transform("strings.xhtml") { page => import page._
-        val ttf = new TextTransformation(insertions.map(m =>
-            new SpotMapping(m._1, true, Array(m._2): _*)).toArray: _*)
-        page.at("#parenthesis").get(".text").cast(ttf)
-      }
-      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
-      div should have size (1)
-      val text = (div \ "p")(0).text
-      text should not include ("(Markus)")
-      text should include ("Heinz")
-      text should include ("SpareTV")
-      text should include ("Vertigo")
+    val pre = doc \\ "pre"
+    assertEquals(1, pre.size, "numbers of pre's")
+    assertEquals("Quid Quo Pro", pre.head.text, "pre's text")
+    val p = doc \\ "p"
+    assertEquals(1, p.size, "numbers of p's")
+    assertEquals("Quid Quo Pro", p.head.text, "p's text")
+  }
+
+  /**
+   * TextTransformation should support index-based 'spot' insertion
+   */
+  @Test
+  def ttIndexBasedSpots {
+    val insertions = Array("Hans", "FunFilms", "Airplane!")
+    val doc = transform("strings.xhtml") { page => import page._
+      val ttf = new TextTransformation(insertions)
+      page.at("#parenthesis").get(".text").cast(ttf)
     }
-    it("should support name-based 'spot' insertion") {
-      val insertions = Map("Mar*" -> "Heinz", "*Ugly" -> "Vertigo", "Spam4Free" -> "SpareTV")
-      val doc = transform("strings.xhtml") { page => import page._
-        val ttf = new TextTransformation(insertions.map(m =>
-            new SpotMapping(m._1, Array(m._2): _*)).toArray: _*)
-        page.at("#parenthesis").get(".text").cast(ttf)
-      }
-      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
-      div should have size (1)
-      val text = (div \ "p")(0).text
-      text should not include ("(Markus)")
-      text should include ("Heinz")
-      text should include ("SpareTV")
-      text should include ("Vertigo")
+    val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+    div should have size (1)
+    val text = (div \ "p")(0).text
+    text should not include ("(")
+    text should not include (")")
+    insertions.foreach(text should include (_))
+  }
+
+  /**
+   * TextTransformation should support regex-based 'spot' insertion
+   */
+  @Test
+  def ttRegexBasedSpots {
+    val insertions = Map("Mar.+" -> "Heinz", "(T|t)he [a-zA-z]+.*" -> "Vertigo", "Spam.Free" -> "SpareTV")
+    val doc = transform("strings.xhtml") { page =>
+      val ttf = new TextTransformation(insertions.map(m =>
+        new SpotMapping(m._1, true, Array(m._2): _*)).toArray: _*)
+      page.at("#parenthesis").get(".text").cast(ttf)
     }
-    it("should support regex-based insertion") {
-      val doc = transform("strings.xhtml") { page => import page._
-        val ttf = new TextTransformation("(T|t)he [a-zA-z]+", "Gals")
-        page.at("#parenthesis").get(".text").cast(ttf)
-      }
-      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
-      div should have size (1)
-      val text = (div \ "p")(0).text
-      text should not include ("the Ugly")
-      text should include ("(Gals, Gals and Gals)")
+    val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+    assertEquals(1, div.size, "number of divs")
+    val text = (div \ "p").head.text
+    assertFalse(text contains "(Markus)", "text contains '(Markus)'")
+    assertTrue(text contains "Heinz", "text contains 'Heinz'")
+    assertTrue(text contains "SpareTV", "text contains 'SpareTV'")
+    assertTrue(text contains "Vertigo", "text contains 'Vertigo'")
+  }
+
+  /**
+   * TextTransformation should support name-based 'spot' insertion
+   */
+  @Test
+  def ttNameBasedSpots {
+    val insertions = Map("Mar*" -> "Heinz", "*Ugly" -> "Vertigo", "Spam4Free" -> "SpareTV")
+    val doc = transform("strings.xhtml") { page =>
+      val ttf = new TextTransformation(insertions.map(m =>
+        new SpotMapping(m._1, Array(m._2): _*)).toArray: _*)
+      page.at("#parenthesis").get(".text").cast(ttf)
     }
+    val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+    assertEquals(1, div.size, "number of divs")
+    val text = (div \ "p")(0).text
+    assertFalse(text contains "(Markus)", "text contains '(Markus)'")
+    assertTrue(text contains "Heinz", "text contains 'Heinz'")
+    assertTrue(text contains "SpareTV", "text contains 'SpareTV'")
+    assertTrue(text contains "Vertigo", "text contains 'Vertigo'")
+  }
+
+  /**
+   * TextTransformation should support regex-based insertion
+   */
+  @Test
+  def ttRegexBasedInsertion {
+    val doc = transform("strings.xhtml") { page =>
+      val ttf = new TextTransformation("(T|t)he [a-zA-z]+", "Gals")
+      page.at("#parenthesis").get(".text").cast(ttf)
+    }
+    val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+    assertEquals(1, div.size, "number of divs")
+    val text = (div \ "p")(0).text
+    assertFalse(text contains "the Ugly", "text contains 'the Ugly'")
+    assertTrue(text contains "(Gals, Gals and Gals)", "text contains '(Gals, Gals and Gals)'")
+  }
     it("should support regex-based insertion where the regex contains a single capturing group") {
       val doc = transform("strings.xhtml") { page => import page._
         val ttf = new TextTransformation("The Good, the (bad) and the Ugly", "Bad")
@@ -235,7 +286,7 @@ class Semantics extends Spec with ShouldMatchers {
       p should have size (1)
       p(0).text should be ('empty)
     }
-  }
+
 
   describe("scala.TextContent") {
     val values = List("Hans", "FunFilms", "\"Airplane!\"")
