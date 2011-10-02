@@ -10,7 +10,7 @@ object Wandledi extends Build {
     version             := "0.6.1-SNAPSHOT",
     organization        := "org.wandledi",
     scalaVersion        := "2.8.1",
-    crossScalaVersions  := Seq("2.8.0", "2.8.1", "2.9.0", "2.9.1"),
+    crossScalaVersions  := Seq("2.8.0", "2.8.1", "2.8.2", "2.9.0", "2.9.1"),
     publishTo           <<= (version) { version: String =>
       if (version.trim.endsWith("SNAPSHOT")) Some(
         "Sonatype Nexus Snapshots" at
@@ -70,7 +70,8 @@ object Wandledi extends Build {
     file("core"),
     settings = javaSettings ++ Seq (
       description := "Wandledi Java Core",
-      libraryDependencies ++= Seq(htmlparser, testng, scalatest)
+      libraryDependencies ++= Seq(htmlparser, testng),
+      libraryDependencies <+= scalaVersion(scalatest(_))
     )
   )
 
@@ -79,7 +80,7 @@ object Wandledi extends Build {
     file("scala-lib"),
     settings = scalaSettings ++ Seq (
       description := "Scala API for Wandledi",
-      libraryDependencies ++= Seq(scalatest)
+      libraryDependencies <+= scalaVersion(scalatest(_))
     )
   ).dependsOn(wandlediCore % "compile;provided->provided;test->test")
 
@@ -109,5 +110,9 @@ object Dependencies {
   val servletApi = "javax.servlet" % "servlet-api" % "2.5" % "provided"
 
   val testng = "org.testng" % "testng" % "5.12.1" % "test" // for Java only
-  val scalatest = "org.scalatest" %% "scalatest" % "1.5.+" % "test"
+
+  def scalatest(scalaVersion: String) = {
+    val version = if (scalaVersion startsWith "2.9.") "1.4.+" else "1.3"
+    "org.scalatest" % "scalatest" % version % "test"
+  }
 }
