@@ -120,6 +120,34 @@ class Semantics extends Spec with ShouldMatchers {
         h1.attribute("style").get(0).text should include (expected)
       }
     }
+
+    it("should support reductions") {
+      val unreduced = transform("html5.html")(p => Unit)
+      val reduced = transform("html5.html") { page => import page.$
+        $("section").reduce()
+      }
+      val unreducedSections = (unreduced \\ "section").size
+      val reducedSections = (reduced \\ "section").size
+
+      unreducedSections should be > (1)
+      reducedSections should be === (1)
+    }
+
+    it("should support foreach-integrated reductions") {
+      val labels = List("One", "Ring", "To", "Rule", "Them", "All")
+      val numSections = (transform("html5.html", true)(page => Unit) \\ "section").size
+      val doc = transform("html5.html", true) { page => import page.$
+        $("section").foreachIn(labels, true) { (section, label) =>
+          section.replace(true, label)
+        }
+      }
+      val numNewSections = (doc \\ "section").size
+
+      numNewSections should be === (labels.size)
+      numNewSections should not be === (numSections)
+      numNewSections should not be === (numSections * labels.size)
+    }
+
     it("should accept xml.NodeSeqs as insertions and as replacements") {
       val doc = transform("test.xhtml") { page => import page._
         $("body").insert(false, <pre id="insertion">Quid Quo Pro</pre>)
@@ -306,7 +334,7 @@ class Semantics extends Spec with ShouldMatchers {
   }
   
   def wandle(file: String, scroll: Scroll): Option[String] = {
-    val wandler = Wandler.forXHTML
+    val wandler = if (file.endsWith(".xhtml")) Wandler.forXHTML else Wandler.forHTML
     val output = new StringWriter
     var input: FileReader = null
     wandler.setResources(new Resources {
