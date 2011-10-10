@@ -22,13 +22,15 @@ trait Element extends org.wandledi.Element {
    *                     If false each matched element will be replicated.
    * @param fun A function taking a SelectableElement and an item from the collection. The SelectableElement is the
    *            currently replicated Element and allows to apply modifications to it.
+   * @param context The Selectable in the context of which this is called. If provided, that Selectable's
+   *                selection context will be set to each respective SelectableElement during the duplication.
    *
    * @see org.wandledi.spells.Duplication
    * @see org.wandledi.spells.Changeling
    * @see org.wandledi.ElementForeach
    */
-  def foreachIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
-    (fun: (SelectableElement, T) => Unit): Unit
+  def foreachIn[T](items: Iterable[T], reduceBefore: Boolean = false)
+    (fun: (SelectableElement, T) => Unit)(implicit context: Selectable = null): Unit
   /**
    * Replicates this Element for each item in a given collection and provides the possiblity
    * to apply modifications during each replication.
@@ -38,13 +40,15 @@ trait Element extends org.wandledi.Element {
    *                     If false each matched element will be replicated.
    * @param fun A function taking a SelectableElement, an item from the collection and the index of that item within
    *            the collection. The SelectableElement is the currently replicated Element and allows to apply modifications to it.
+   * @param context The Selectable in the context of which this is called. If provided, that Selectable's
+   *                selection context will be set to each respective SelectableElement during the duplication.
    *
    * @see org.wandledi.spells.Duplication
    * @see org.wandledi.spells.Changeling
    * @see org.wandledi.ElementForeach
    */
-  def foreachWithIndexIn[T: ClassManifest](items: Iterable[T], reduceBefore: Boolean = false)
-    (fun: (SelectableElement, T, Int) => Unit): Unit
+  def foreachWithIndexIn[T](items: Iterable[T], reduceBefore: Boolean = false)
+    (fun: (SelectableElement, T, Int) => Unit)(implicit context: Selectable = null): Unit
 
   /**
    * Changes an existing attribute of this Element. It doesn't have any effect if there is no such attribute.

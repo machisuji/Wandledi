@@ -137,8 +137,8 @@ class Semantics extends Spec with ShouldMatchers {
 
     it("should support foreach-integrated reductions") {
       val labels = List("One", "Ring", "To", "Rule", "Them", "All")
-      val numSections = (transform("html5.html", true)(page => Unit) \\ "section").size
-      val doc = transform("html5.html", true) { page => import page.$
+      val numSections = (transform("html5.html")(page => Unit) \\ "section").size
+      val doc = transform("html5.html") { page => import page.$
         $("section").foreachIn(labels, true) { (section, label) =>
           section.replace(true, label)
         }
@@ -148,6 +148,22 @@ class Semantics extends Spec with ShouldMatchers {
       numNewSections should be === (labels.size)
       numNewSections should not be === (numSections)
       numNewSections should not be === (numSections * labels.size)
+    }
+
+    it("should implicitly switch context to the duplicated item during foreach when inside another Selectable") {
+      val label = "uiuiuiuiui"
+      val page = new org.wandledi.scala.SelectableImpl(new Scroll) {
+        $("#Sidebar").foreachIn(label :: Nil) { (section, txt) =>
+          $("div").replace(true, txt)
+          // if the context isn't switched implictly, *all* divs in the document will be affected
+          // note: Selectable used to switch context provided by SelectableImpl (Selectable)
+        }
+      }
+      val doc = XML.loadString(wandle("html5.html", page.getScroll).get)
+      val sideDivs = (doc \\ "section").filter(_.attribute("id").headOption.exists(_.text == "Sidebar")) \ "div"
+
+      (doc \\ "div").foldLeft(true)((all, div) => all && (div.text.trim == label)) should be (false) // not all divs should've been affected
+      sideDivs.forall(div => div.text.trim == label) should be (true)
     }
 
     it("should accept xml.NodeSeqs as insertions and as replacements") {
