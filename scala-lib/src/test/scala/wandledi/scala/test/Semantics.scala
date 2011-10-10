@@ -23,6 +23,7 @@ import org.wandledi.scala._
 
 class Semantics extends Spec with ShouldMatchers {
   val testFileDirectory = "core/src/test/java/wandledi/test/"
+
   def transform(file: String, debug: Boolean = false)(magic: (Selectable) => Unit): NodeSeq = {
     val page = Selectable(new Scroll)
     magic(page)
@@ -31,6 +32,7 @@ class Semantics extends Spec with ShouldMatchers {
     if (debug) println(result.get)
     XML.loadString(result.get)
   }
+
   implicit def pimped(node: xml.Node) = new {
     def check(attr: (String, String)) = node.attribute(attr._1).exists(_.exists(_.text == attr._2))
   }
@@ -165,7 +167,7 @@ class Semantics extends Spec with ShouldMatchers {
   describe("org.wandledi.spells.TextTransformation") {
     it("should support index-based 'spot' insertion") {
       val insertions = Array("Hans", "FunFilms", "Airplane!")
-      val doc = transform("strings.xhtml") { page => import page._
+      val doc = transform("strings.xhtml") { page =>
         val ttf = new TextTransformation(insertions)
         page.at("#parenthesis").get(".text").cast(ttf)
       }
@@ -178,7 +180,7 @@ class Semantics extends Spec with ShouldMatchers {
     }
     it("should support regex-based 'spot' insertion") {
       val insertions = Map("Mar.+" -> "Heinz", "(T|t)he [a-zA-z]+.*" -> "Vertigo", "Spam.Free" -> "SpareTV")
-      val doc = transform("strings.xhtml") { page => import page._
+      val doc = transform("strings.xhtml") { page =>
         val ttf = new TextTransformation(insertions.map(m =>
             new SpotMapping(m._1, true, Array(m._2): _*)).toArray: _*)
         page.at("#parenthesis").get(".text").cast(ttf)
@@ -193,7 +195,7 @@ class Semantics extends Spec with ShouldMatchers {
     }
     it("should support name-based 'spot' insertion") {
       val insertions = Map("Mar*" -> "Heinz", "*Ugly" -> "Vertigo", "Spam4Free" -> "SpareTV")
-      val doc = transform("strings.xhtml") { page => import page._
+      val doc = transform("strings.xhtml") { page =>
         val ttf = new TextTransformation(insertions.map(m =>
             new SpotMapping(m._1, Array(m._2): _*)).toArray: _*)
         page.at("#parenthesis").get(".text").cast(ttf)
