@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>WGAdmin</title>
+    <link href="Common.css" type="text/css" rel="stylesheet"/>
+    <link href='http://fonts.googleapis.com/css?family=Ubuntu&v1' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Waiting+for+the+Sunrise&v1' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/highcharts/highcharts.js"></script>
+    <script type="text/javascript" src="View.js"></script>
+    <meta charset="utf-8">
+</head>
+<body>
+
+<div id="Frame">
+
+    <header>
+        <nav>
+            <ul>
+                <li>Schuldenverwaltung</li>
+            </ul>
+        </nav>
+        <h1><span>WG</span><span>Admin</span></h1>
+    </header>
+
+    <section id="Form">
+
+        <div class="tabHeaders">
+            <h1 class="tab active" id="TabHeader2">WG-Einkauf</h1>
+            <h1 class="tab" id="TabHeader1">Transaktion</h1>
+            <br style="clear:left;"/>
+        </div>
+
+        <div id="TabContent2" class="content tab active">
+
+            <form action="/transactions" method="POST">
+
+                <div class="hpart" style="width: 25%;">
+                    <h2>Gläubiger</h2>
+
+                    <div>
+
+                        <select id="vonSelect" name="von" tabindex="1" required autofocus
+                                onchange="LoadGravatar(this)" class="person">
+                            <option data-gravatar="5b820ad691356c4542c4b937441d7c33">Mathias</option>
+                            <option data-gravatar="2dba4ca7b639638aaf4039f98dee69f5">Markus</option>
+                            <option>Clemens</option>
+                            <option>Seb</option>
+                        </select> <br/>
+
+                        <img id="vonBild" src="http://gravatar.com/avatar/?d=mm&s=100"/>
+
+                    </div>
+                </div>
+
+                <div class="hpart" style="width: 50%;">
+                    <h2>Betreff</h2>
+
+                    <div>
+
+                        <input type="text" name="wasTitel" id="wasTitel2" placeholder="Titel"
+                               required class="text" size="34" tabindex="2"/>
+
+                    </div>
+
+                    <div id="extra2">
+
+                        <textarea placeholder="Beschreibung (optional)" id="wasBeschreibung2"
+                                  name="wasBeschreibung" cols="37" rows="3" tabindex="3"></textarea> <br/>
+
+                        <input type="date" placeholder="Datum" value="2011-06-24"
+                               id="wasDatum2" name="wasDatum" title="Datum" tabindex="4"/>
+
+                        &nbsp; &nbsp; &nbsp;
+
+                        <input type="text" name="wasSumme" id="wasSumme2" placeholder="Summe" required
+                               value="0.00" title="Summe" size="5" min="0" max="1000" tabindex="5"/>
+
+                        EUR
+
+                    </div>
+
+                </div>
+
+                <div class="hpart" style="width: 25%; display: table-cell; vertical-align: bottom;">
+
+                    <input type="submit" value="erstellen" name="createBtn2" id="createBtn2" tabindex="6"/>
+                    <br/><br/><br/><br/><br/><br/>
+
+                    <div class="hint">Der ausgelegte Betrag wird gleichmäßig auf alle
+                    WG-Mitbewohner umgelegt, inkl. dem Gläubiger selbst.</div>
+
+                </div>
+
+            </form>
+
+            <br style="clear:left;"/>
+
+        </div>
+
+        <div id="TabContent1" class="content tab">
+
+            <form action="/transactions" method="POST">
+
+                <input type="submit" value="erstellen" name="createBtn" id="createBtn" tabindex="13"/>
+
+                <div class="hpart" style="width: 25%;">
+                    <h2>Absender</h2>
+
+                    <div>
+
+                        <select id="wemSelect" name="wem" tabindex="7" required
+                                onchange="LoadGravatar(this)" class="person">
+                            <option>Mathias</option>
+                            <option>Markus</option>
+                            <option>Clemens</option>
+                            <option>Seb</option>
+                        </select> <br/>
+
+                        <img id="wemBild" src="http://gravatar.com/avatar/?d=mm&s=100"/>
+
+                    </div>
+                </div>
+
+                <div class="hpart" style="width:25%;">
+                    <h2>Empfänger</h2>
+
+                    <div>
+
+                        <select id="werSelect" name="wer" tabindex="8" required
+                                onchange="LoadGravatar(this)" class="person">
+                            <option>Mathias</option>
+                            <option selected>Markus</option>
+                            <option>Clemens</option>
+                            <option>Seb</option>
+                        </select> <br/>
+
+                        <img id="werBild" src="http://gravatar.com/avatar/?d=mm&s=100"/>
+
+                    </div>
+                </div>
+
+                <div class="hpart" style="width: 40%;">
+                    <h2>Betreff</h2>
+
+                    <div>
+
+                        <input type="text" name="wasTitel" id="wasTitel" placeholder="Titel"
+                               required class="text" size="34" tabindex="9"/>
+
+                    </div>
+
+                    <div id="extra">
+
+                        <textarea placeholder="Beschreibung (optional)" id="wasBeschreibung"
+                                  name="wasBeschreibung" cols="37" rows="3" tabindex="10"></textarea> <br/>
+
+                        <input type="date" placeholder="Datum" value="2011-06-24"
+                               id="wasDatum" name="wasDatum" title="Datum" tabindex="11"/>
+
+                        &nbsp; &nbsp; &nbsp;
+
+                        <input type="text" name="wasSumme" id="wasSumme" placeholder="Summe" required
+                               value="0.00" title="Summe" size="5" min="0" max="1000" tabindex="12"/>
+
+                        EUR
+
+                    </div>
+
+                </div>
+
+            </form>
+
+            <br style="clear:left;"/>
+        </div>
+
+        <!-- Flash Messages werden standardmäßig nicht angezeigt;
+             Klasse "show" hinzufügen, um anzuzeigen -->
+        <div class="flashMessage success">
+            <span id="Message">Nachricht an den Benutzer</span>
+            <a href="#hideMessage" onclick="return HideMessage();"
+               class="close" title="Meldung ausblenden">X</a>
+        </div>
+    </section>
+
+    <section id="Graph">
+        <h1>Schuldenstand: Übersicht</h1>
+
+        <div class="content">
+            <div id="Chart">
+                Lade...
+            </div>
+        </div>
+    </section>
+
+    <section id="Table">
+        <h1>Transaktionen</h1>
+
+        <div class="headerPagination">
+            <ul class="pagination">
+                <li class="current"><a href="/transactions?offset=0&length=20" title="Seite 1" onclick="return ShowTransactionPage(this);">1</a></li>
+                <li><a href="/transactions?offset=20&length=20" title="Seite 2" onclick="return ShowTransactionPage(this);">2</a></li>
+                <li><a href="/transactions?offset=40&length=20" title="Seite 3" onclick="return ShowTransactionPage(this);">3</a></li>
+                <li><a href="/transactions?offset=60&length=20" title="Seite 4" onclick="return ShowTransactionPage(this);">4</a></li>
+                <li><a href="/transactions?offset=80&length=20" title="Seite 5" onclick="return ShowTransactionPage(this);">5</a></li>
+            </ul>
+        </div>
+
+        <div class="content">
+
+            <table class="data" cellspacing="0">
+                <thead>
+                <tr>
+                    <th width="10%">Datum</th>
+                    <th width="15%">Von</th>
+                    <th width="15%">Zu</th>
+                    <th width="50%">Was</th>
+                    <th width="10%">Summe</th>
+                </tr>
+                </thead>
+
+                <tbody>
+
+                <tr class="transaction">
+                    <td class="date">01.04.2011</td>
+                    <td class="from">Markus</td>
+                    <td class="to">Mathias</td>
+                    <td class="subject">Einkauf (LIDL)</td>
+                    <td class="balance">+ 25,00 &euro;</td>
+                </tr>
+
+                <tr class="transaction">
+                    <td class="date">01.04.2011</td>
+                    <td class="from">Markus</td>
+                    <td class="to">Sebastian</td>
+                    <td class="subject">Einkauf (LIDL)</td>
+                    <td class="balance">+ 25,00 &euro;</td>
+                </tr>
+
+                <tr class="transaction">
+                    <td class="date">01.04.2011</td>
+                    <td class="from">Markus</td>
+                    <td class="to">Clemens</td>
+                    <td class="subject">Einkauf (LIDL)</td>
+                    <td class="balance">+ 25,00 &euro;</td>
+                </tr>
+
+                <tr class="transaction">
+                    <td class="date">02.04.2011</td>
+                    <td class="from">Mathias</td>
+                    <td class="to">Markus</td>
+                    <td class="subject">Einkauf (LIDL) - Rückzahlung</td>
+                    <td class="balance payback">- 25,00 &euro;</td>
+                </tr>
+
+                </tbody>
+            </table>
+
+        </div>
+    </section>
+
+    <footer>
+
+    </footer>
+
+</div>
+
+<script id="chart-js" type="text/javascript">
+
+    // Diagrammoptionen für Highcharts
+    var chartOptions = {
+        chart: {
+            renderTo: 'Chart',
+            defaultSeriesType: 'bar'
+        },
+        title: {
+            text: 'Schuldenübersicht'
+        },
+        xAxis: {
+            categories: ['Mathias','Markus','Seb','Clemens']
+        },
+        yAxis: {
+            /*min: 0,*/
+            title: {
+                text: "Schulden"
+            }
+        },
+        tooltip: {
+            formatter: function()
+            {
+                return '' + this.series.name + ': ' + this.y + '';
+            }
+        },
+        plotOptions: {
+            series: {
+                stacking: 'normal'
+            }
+        },
+        credits: {
+            enabled: false
+        },
+        series: [
+            // i-te Spalte: Schulden von Person bei i-ter Person
+            { name: 'Mathias', data: [100, 0, 200, 50] },
+            { name: 'Markus', data: [0, 0, 0, 0] },
+            { name: 'Seb', data: [230, 180, 0, 100] },
+            { name: 'Clemens', data: [80, 40, 0, 0] }
+        ] // end series
+    };
+
+    // Initialisierung sobald Seite fertig geladen wurde
+    $(document).ready(function()
+    {
+        // Zeigt das Diagramm mit obigen Optionen an
+        new Highcharts.Chart(chartOptions);
+
+        // Initialisiert etwaige Tabs, sodass sie per Klick gewechselt werden können
+        InitTabs();
+
+        // Etwaige Nachricht einblenden
+        $('.flashMessage.show').delay(500).slideDown();
+
+        // Gravatars laden
+        $('select.person').each(function(i,select) {
+            LoadGravatar(select);
+        });
+    });
+
+</script>
+
+</body>
+</html>

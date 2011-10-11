@@ -33,8 +33,10 @@ class Semantics extends Spec with ShouldMatchers {
     XML.loadString(result.get)
   }
 
+  def attribute(attr: (String, String))(node: xml.Node) = node.attribute(attr._1).exists(_.exists(_.text == attr._2))
+
   implicit def pimped(node: xml.Node) = new {
-    def check(attr: (String, String)) = node.attribute(attr._1).exists(_.exists(_.text == attr._2))
+    def check(attr: (String, String)) = attribute(attr)(node)
   }
   implicit def pimped(nodeSeq: xml.NodeSeq) = new {
     def \(attr: (String, String)) =
@@ -84,6 +86,25 @@ class Semantics extends Spec with ShouldMatchers {
       val redDivs = divs.filter(div => div.attribute("color").isDefined)
       redDivs should have size (1)
       redDivs.head.text should equal ("Repeat: ")
+    }
+
+    it("should not mix up local spell order") {
+      val rows = List("Something", "about", "us")
+      val page = new org.wandledi.scala.SelectableImpl(new Scroll) {
+        $(Nil).extract("table.data")
+        $$("table.data") {
+          $("tr.transaction").foreachIn(rows, reduceBefore = true) { (tr, row) =>
+            tr.replace(true, row)
+          } // adds two local spells: reduction, then duplication - not the other way around
+        }
+      }
+      val doc = XML.loadString(wandle("wgadmin.html", page.getScroll).get)
+      val trs = (doc \\ "tr").filter(attribute("class" -> "transaction"))
+
+      trs should have size (rows.size)
+      trs.zip(rows).foreach { case (tr, row) =>
+        tr.text.trim should equal (row)
+      }
     }
 
     it("should make it possible to switch context via #using") {
@@ -160,10 +181,28 @@ class Semantics extends Spec with ShouldMatchers {
         }
       }
       val doc = XML.loadString(wandle("html5.html", page.getScroll).get)
-      val sideDivs = (doc \\ "section").filter(_.attribute("id").headOption.exists(_.text == "Sidebar")) \ "div"
+      val sideDivs = (doc \\ "section").filter(_.check("id" -> "Sidebar")) \ "div"
 
       (doc \\ "div").foldLeft(true)((all, div) => all && (div.text.trim == label)) should be (false) // not all divs should've been affected
       sideDivs.forall(div => div.text.trim == label) should be (true)
+    }
+
+    it("should feature a working reducing foreach with implicit context switches") {
+      val labels = List("uiuiuiuiui", "ieieieieie")
+      val page = new org.wandledi.scala.SelectableImpl(new Scroll) {
+        $("section").foreachIn(labels, reduceBefore = true) { (section, txt) =>
+          $("div").replace(true, txt)
+          // if the context isn't switched implictly, *all* divs in the document will be affected
+          // note: Selectable used to switch context provided by SelectableImpl (Selectable)
+        }
+      }
+      val doc = XML.loadString(wandle("html5.html", page.getScroll).get)
+      val secDivs = doc \\ "section" \ "div"
+
+      (doc \\ "div").foldLeft(true)((all, div) =>
+        all && labels.contains(div.text.trim)) should be (false) // not all divs should've been affected
+      secDivs.forall(div => labels contains div.text.trim) should be (true)
+      secDivs should have size (labels.size)
     }
 
     it("should accept xml.NodeSeqs as insertions and as replacements") {
@@ -187,7 +226,7 @@ class Semantics extends Spec with ShouldMatchers {
         val ttf = new TextTransformation(insertions)
         page.at("#parenthesis").get(".text").cast(ttf)
       }
-      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+      val div = (doc \\ "div").filter(attribute("id" -> "parenthesis"))
       div should have size (1)
       val text = (div \ "p")(0).text
       text should not include ("(")
@@ -216,7 +255,7 @@ class Semantics extends Spec with ShouldMatchers {
             new SpotMapping(m._1, Array(m._2): _*)).toArray: _*)
         page.at("#parenthesis").get(".text").cast(ttf)
       }
-      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+      val div = (doc \\ "div").filter(attribute("id" -> "parenthesis"))
       div should have size (1)
       val text = (div \ "p")(0).text
       text should not include ("(Markus)")
@@ -240,7 +279,7 @@ class Semantics extends Spec with ShouldMatchers {
         val ttf = new TextTransformation("The Good, the (bad) and the Ugly", "Bad")
         page.at("#parenthesis").get(".text").cast(ttf)
       }
-      val div = (doc \\ "div").filter(_.check("id" -> "parenthesis"))
+      val div = (doc \\ "div").filter(attribute("id" -> "parenthesis"))
       div should have size (1)
       val text = (div \ "p")(0).text
       text should not include ("the bad")
@@ -257,8 +296,8 @@ class Semantics extends Spec with ShouldMatchers {
       text.replace("_", "").trim should startWith ("Markus")
       text.replace("_", "").trim should endWith("Spam4Free")
       val spans = div \ "p" \ "span"
-      val user = spans.find(_.check("id" -> "user")).getOrElse(fail())
-      val flavour = spans.find(_.check("id" -> "flavour")).getOrElse(fail())
+      val user = spans.find(attribute("id" -> "user")).getOrElse(fail())
+      val flavour = spans.find(attribute("id" -> "flavour")).getOrElse(fail())
       user.text should equal ("Markus")
       flavour.text should equal ("Spam4Free")
     }
