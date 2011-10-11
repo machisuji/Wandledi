@@ -9,6 +9,7 @@ import org.xml.sax.Attributes;
 public interface Spell {
 
     public void setParent(Spell spell);
+    public Spell getParent();
     public void startElement(String name, Attributes attributes);
     public void endElement(String name);
 

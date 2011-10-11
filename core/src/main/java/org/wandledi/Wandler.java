@@ -359,6 +359,10 @@ public class Wandler implements ContentHandler, Spell {
     public void setParent(Spell transformation) {
     }
 
+    public Spell getParent() {
+        return null;
+    }
+
     public void startTransformedElement(String name, org.xml.sax.Attributes attributes) {
         startElement(name, attributes);
     }

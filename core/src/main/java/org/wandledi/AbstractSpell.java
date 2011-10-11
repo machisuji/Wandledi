@@ -53,6 +53,10 @@ public abstract class AbstractSpell implements Spell {
         this.parent = parent;
     }
 
+    public Spell getParent() {
+        return this.parent;
+    }
+
     public void startTransformedElement(String name, Attributes attributes) {
         if (ignoreBounds()) {
             startElement(name, attributes);
