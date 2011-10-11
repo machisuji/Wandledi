@@ -46,6 +46,8 @@ public class Wandler implements ContentHandler, Spell {
     };
     private MagicReader magic = new MagicReader(null);
 
+    public static volatile boolean debug = false;
+
     protected Wandler(XMLReader xmlReader) {
         rootSpell.setParent(this);
         try {

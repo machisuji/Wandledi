@@ -102,6 +102,14 @@ public class ArchSpell extends AbstractSpell {
         checkSpell(name, atts);
         setIgnoreTransformationBounds(true);
         elementPath.add(new ElementStart(name, copy(atts)));
+
+        if (Wandler.debug) {
+            System.out.println("[DEBUG]: startElement(" + name + ", " + atts + "): ");
+            System.out.println("[ ARCH]      elementPath: " + elementPath);
+            System.out.println("[SPELL]      spell chain: " + getCurrentSpellChain());
+            System.out.println("[-----]");
+        }
+
         if (spellLevels.size() == 0) {
             parent.startElement(name, atts);
         } else {
@@ -145,6 +153,28 @@ public class ArchSpell extends AbstractSpell {
             SpellLevel level = spellLevels.getLast();
             level.spell.writeCharacters(characters, offset, length, safe);
         }
+    }
+
+    /**
+     * Returns the currently active chain of spells.
+     * The first item is the first Spell to receive incoming events,
+     * which are then passed through to the next spell and so on.
+     */
+    protected List<Spell> getCurrentSpellChain() {
+        List<Spell> spellChain = new LinkedList<Spell>();
+
+        if (!spellLevels.isEmpty()) {
+            Spell first = spellLevels.getLast().spell;
+            Spell parent = first.getParent();
+
+            spellChain.add(first);
+
+            while (parent != null) {
+                spellChain.add(parent);
+                parent = parent.getParent();
+            }
+        }
+        return spellChain;
     }
 
     @Override
