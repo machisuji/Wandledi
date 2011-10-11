@@ -92,18 +92,21 @@ public class Scroll implements Selectable {
         return passage;
     }
 
-    /**Finds the spells for the element with the given label
+    /**
+     * Finds the spells for the element with the given label
      * and the class and/or id read from the attributes.
      *
      * Found spells lose charges upon a call of this method!
      *
      *
-     * @param label
-     * @param attributes
-     * @param elementPath
+     * @param label Element label
+     * @param attributes Element's attributes
+     * @param elementPath Element's path
+     * @param reverse Yield the found spells in reverse order
+     *
      * @return The list of found spells, which is empty, if none were found.
      */
-    public List<Spell> readSpellsFor(String label, Attributes attributes, List<ElementStart> elementPath) {
+    public List<Spell> readSpellsFor(String label, Attributes attributes, List<ElementStart> elementPath, boolean reverse) {
 
         List<Spell> spells = new LinkedList<Spell>();
         for (Passage passage: passages) {
@@ -112,10 +115,29 @@ public class Scroll implements Selectable {
             }
         }
         for (Scroll scroll: scrolls) {
-            spells.addAll(scroll.readSpellsFor(label, attributes, elementPath));
+            spells.addAll(scroll.readSpellsFor(label, attributes, elementPath, false));
         }
-        Collections.reverse(spells);
+        if (reverse) {
+            Collections.reverse(spells);
+        }
         return spells;
+    }
+
+    /**
+     * Finds the spells for the element with the given label
+     * and the class and/or id read from the attributes.
+     *
+     * Found spells lose charges upon a call of this method!
+     *
+     *
+     * @param label Element label
+     * @param attributes Element's attributes
+     * @param elementPath Element's path
+     *
+     * @return The list of found spells, which is empty, if none were found.
+     */
+    public List<Spell> readSpellsFor(String label, Attributes attributes, List<ElementStart> elementPath) {
+        return readSpellsFor(label, attributes, elementPath, true);
     }
 
     /**
