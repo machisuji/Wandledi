@@ -4,7 +4,8 @@ import org.wandledi.AbstractSpell;
 import org.wandledi.Spell;
 import org.xml.sax.Attributes;
 
-/**Truncates a node, meaning that it drops outer nodes and only leaves the inner ones.
+/**
+ * Truncates a node, meaning that it drops outer nodes and only leaves the inner ones.
  * For instance if you truncate a list (ul) by 1 you will cut off the &lt;ul&gt; only
  * leaving the contained list items.
  *
