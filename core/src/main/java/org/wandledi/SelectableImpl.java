@@ -73,7 +73,6 @@ public class SelectableImpl implements Selectable {
      * @return A new Selectable
      */
     public SelectableElement at(Selector selector) {
-
         Scroll nestedScroll = new Scroll();
         LocalSpells localSpell = new LocalSpells(scroll, nestedScroll);
         scroll.addSpell(selector, localSpell);
