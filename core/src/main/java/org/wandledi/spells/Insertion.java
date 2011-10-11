@@ -57,7 +57,11 @@ public class Insertion extends AbstractSpell {
 
     @Override
     public Insertion clone() {
-
         return new Insertion(insertAtEnd, intent);
+    }
+
+    @Override
+    public String toString() {
+        return "Insertion(atEnd: " + insertAtEnd + ", intent: " + intent + ")";
     }
 }

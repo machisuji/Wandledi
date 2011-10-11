@@ -108,4 +108,19 @@ public class Changeling extends AbstractSpell {
         }
         return new Changeling(copies);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Changeling(identities: ");
+        if (identities.length == 0) {
+            sb.append(")");
+        } else {
+            sb.append(identities[0]);
+            for (int i = 1; i < identities.length; ++i) {
+                sb.append(", "); sb.append(identities[i]);
+            }
+            sb.append(")");
+        }
+        return sb.toString();
+    }
 }

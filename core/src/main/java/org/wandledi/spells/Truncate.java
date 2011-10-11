@@ -63,4 +63,9 @@ public class Truncate extends AbstractSpell{
             super.writeCharacters(characters, offset, length, safe);
         }
     }
+
+    @Override
+    public String toString() {
+        return "Truncate(depth: " + depth + ")";
+    }
 }

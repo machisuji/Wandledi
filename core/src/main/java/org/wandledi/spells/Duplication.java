@@ -100,19 +100,21 @@ public class Duplication extends AbstractSpell {
 
     @Override
     public void startElement(String name, Attributes attributes) {
-
         pushLine(new ElementStart(name, new SimpleAttributes(attributes)));
     }
 
     @Override
     public void endElement(String name) {
-
         pushLine(new ElementEnd(name));
     }
 
     @Override
     public void writeCharacters(char[] characters, int offset, int length, boolean safe) {
-
         pushLine(new Characters(characters, offset, length, safe));
+    }
+
+    @Override
+    public String toString() {
+        return "Duplication(number: " + intent.duplications() + ", modification: " + intent.modification() + ")";
     }
 }

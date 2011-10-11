@@ -25,6 +25,11 @@ public class Extraction extends ComplexSpell {
         main.getScroll().addSpell(selector, new Pass());
     }
 
+    @Override
+    public String toString() {
+        return "Extraction(selector: " + selector + ")";
+    }
+
     class Consume extends AbstractSpell {
         @Override
         public Spell clone() {
@@ -67,6 +72,11 @@ public class Extraction extends ComplexSpell {
             if (extract) {
                 super.writeCharacters(chars, offset, length, safe);
             }
+        }
+
+        @Override
+        public String toString() {
+            return Extraction.this.toString() + "'s Consume(extract: " + extract + ")";
         }
     }
 

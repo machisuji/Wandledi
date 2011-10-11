@@ -30,4 +30,9 @@ public class TransformedAttribute {
             return null;
         }
     }
+
+    @Override
+    public String toString() {
+        return "TransformedAttribute(name: " + name + ", transformation: " + transformation + ")";
+    }
 }

@@ -142,4 +142,9 @@ public class Inclusion extends ArchSpell implements ContentHandler {
         writeString(name, true);
         writeString(";", true);
     }
+
+    @Override
+    public String toString() {
+        return "Inclusion(useMagic: " + useMagic + ", file: " + intent.getFile() + ", intent: " + intent + ")";
+    }
 }

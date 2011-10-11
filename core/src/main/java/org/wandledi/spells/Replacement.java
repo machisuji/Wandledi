@@ -79,4 +79,9 @@ public class Replacement extends AbstractSpell {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return "Replacement(contentsOnly: " + contentsOnly + ", intent: " + intent + ")";
+    }
 }

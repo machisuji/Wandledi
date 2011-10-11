@@ -274,6 +274,11 @@ public class TextTransformation extends AbstractSpell {
         return new TextTransformation(regex, transformation);
     }
 
+    @Override
+    public String toString() {
+        return "TextTransformation(regex: " + regex + ", transformation: " + transformation + ")";
+    }
+
     /**Indicates whether or not empty text is considered for transformation.
      * Per default it is not. That is with the following element
      * the transformation will have no effect:

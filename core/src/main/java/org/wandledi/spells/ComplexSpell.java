@@ -62,4 +62,19 @@ public class ComplexSpell extends AbstractSpell {
         }
         return new ComplexSpell(copies);
     }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("ComplexSpell(");
+        if (spells.length == 0) {
+            sb.append(")");
+        } else {
+            sb.append(spells[0]);
+            for (int i = 1; i < spells.length; ++i) {
+                sb.append(", "); sb.append(spells[i]);
+            }
+            sb.append(")");
+        }
+        return sb.toString();
+    }
 }

@@ -37,6 +37,10 @@ public class AttributeTransformation extends AbstractSpell {
             public Attribute[] getAttributes(String element, Attributes atts) {
                 return attributes;
             }
+
+            public String toString() {
+                return "AttributeTransformationIntent(" + attributes.toString() + ")";
+            }
         });
     }
 
@@ -57,6 +61,10 @@ public class AttributeTransformation extends AbstractSpell {
                 }
                 return transformed.toArray(new Attribute[transformed.size()]);
             }
+
+            public String toString() {
+                return "AttributeTransformationIntent(" + attributes + ")";
+            }
         });
     }
 
@@ -76,6 +84,10 @@ public class AttributeTransformation extends AbstractSpell {
                     remains.add(new Attribute(attr, attributes.getValue(i)));
                 }
                 return remains.toArray(new Attribute[remains.size()]);
+            }
+
+            public String toString() {
+                return "AttributeTransformationIntent(remove: " + attributesToBeRemoved + ")";
             }
         }, false);
     }
@@ -98,18 +110,6 @@ public class AttributeTransformation extends AbstractSpell {
     }
 
     public String toString() {
-        StringBuilder sb = new StringBuilder("AttrTrans [");
-        Attribute[] attributes = intent.getAttributes("", new AttributesImpl());
-        for (int i = 0; i < attributes.length; ++i) {
-            if (i > 0) {
-                sb.append(", ");
-            }
-            sb.append(attributes[i].getName());
-            sb.append(" -> '");
-            sb.append(attributes[i].getValue());
-            sb.append("'");
-        }
-        sb.append("]");
-        return sb.toString();
+        return "AttributeTransformation(merge: " + merge + ", intent: " + intent + ")";
     }
 }
