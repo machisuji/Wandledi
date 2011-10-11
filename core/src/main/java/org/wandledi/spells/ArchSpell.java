@@ -62,9 +62,10 @@ public class ArchSpell extends AbstractSpell {
         }
     }
 
-    /**Sadly I have no idea what the heck this is good for.
-     * But I know that there was a very good reason!
-     * Just not what it was ...
+    /**
+     * Makes the Spell after the first spell to be called in the chain ignore transformation bounds.
+     * That is if it receives a #startTransformedElement this was actually directed at the first spell,
+     * so it must treat it as a mere #startElement.
      *
      * @param ignore
      */
