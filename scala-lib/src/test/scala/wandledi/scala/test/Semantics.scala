@@ -120,6 +120,23 @@ class Semantics extends Spec with ShouldMatchers {
       p.get.text should include ("inclusion")
       p.get.attribute("color") should be ('defined)
     }
+
+    it("should be used (and usable) for modules") {
+      trait Module extends Selectable {
+        def clearBody() {
+          $("body").replace(true, "")
+        }
+      }
+      val page = new org.wandledi.scala.SelectableImpl(new Scroll) with Module {
+        clearBody()
+      }
+      val doc = XML.loadString(wandle("test.xhtml", page.getScroll).get)
+      val body = doc \\ "body" head
+
+      body.text.trim should equal ("")
+      body.child should have size (1)
+      body.child.head.isInstanceOf[xml.Text] should be (true)
+    }
   }
 
   describe("scala.Element") {
