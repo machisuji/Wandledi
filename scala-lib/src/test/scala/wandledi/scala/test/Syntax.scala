@@ -42,7 +42,7 @@ class SyntaxTest {
 
 class Page extends SelectableImpl(new Scroll)
 
-class HomePage extends Page {
+class HomePage extends Page with Module {
   def index() {
     $("body").setAttribute("style", "background-color: white;")
     $$(".title") {
@@ -50,12 +50,12 @@ class HomePage extends Page {
       $("h1").changeAttribute("class", "header " + _)
     }
     $$("class" -> "header") { }
-    Module.insertName("Hans Wurst")
+    insertName("Hans Wurst")
   }
 }
 
-object Module extends Paragraphs {
-  def insertName(name: String)(implicit context: Selectable) = using(context) {
+trait Module extends Selectable {
+  def insertName(name: String) {
     $(".name").text = name
   }
 }
