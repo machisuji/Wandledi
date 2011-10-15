@@ -14,10 +14,8 @@ trait Selectable extends org.wandledi.Selectable {
 
   protected type SelectContext = DynamicVariable[Selectable]
   protected val selectContext = new SelectContext(this)
-  /**
-   * Current Selectable used by the selection methods ($).
-   */
-  protected implicit def enclosingSelectable = selectContext.value
+
+  protected implicit def enclosingSelectable = this
 
   /**
    * Selects elements matched by a given Selector.
