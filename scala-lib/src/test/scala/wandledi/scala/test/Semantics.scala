@@ -94,7 +94,7 @@ class Semantics extends Spec with ShouldMatchers {
         $(Nil).extract("table.data")
         $$("table.data") {
           $("tr.transaction").foreachIn(rows, reduceBefore = true) { (tr, row) =>
-            tr.replace(true, row)
+            $("tr").replace(true, row)
           } // adds two local spells: reduction, then duplication - not the other way around
         }
       }
