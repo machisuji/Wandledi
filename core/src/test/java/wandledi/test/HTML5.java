@@ -1,6 +1,7 @@
 package wandledi.test;
 
 import org.wandledi.*;
+import org.wandledi.io.MagicReader;
 import org.wandledi.spells.*;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -80,6 +81,22 @@ public class HTML5 {
 
         assertTrue(result.contains("&#169;"), "copyright sign");
         assertTrue(result.contains("&lt;div class=&quot;header&quot;&gt;"));
+    }
+
+    @Test
+    public void ampersandsInAttributes() {
+        final StringBuilder buffer = new StringBuilder();
+        page.get("a").changeAttribute("href", new StringTransformation() {
+            public String transform(String input) {
+                buffer.append(input);
+                return input;
+            }
+        });
+        System.out.println(wandle("evil-attributes.html"));
+        String href = buffer.toString();
+
+        assertTrue(href.contains("&"), "ampersand shall remain");
+        assertTrue(href.indexOf(MagicReader.MAGIC_CHARACTER) == -1, "magic char shall be no more");
     }
 
     @Test

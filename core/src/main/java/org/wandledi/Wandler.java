@@ -262,7 +262,7 @@ public class Wandler implements ContentHandler, Spell {
     public void startElement(String uri, String localName, String qName, org.xml.sax.Attributes atts)
             throws SAXException {
         try {
-            rootSpell.startElement(localName, atts);
+            rootSpell.startElement(localName, new DisenchantedAttributes(atts));
         } catch (Exception e) {
             throw new SAXException("Could not start " + stringFor(localName, atts), e);
         }
