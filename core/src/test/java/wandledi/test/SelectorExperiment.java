@@ -34,7 +34,14 @@ public class SelectorExperiment {
 
         assertEquals(alike1, alike2, "selectors should be equal");
         assertTrue(text.matches(alike1), ".text should match span.text.i18n");
-        assertNotSame(text, alike1, ".text should not equal span.text.i18n though");
+        assertFalse(text.equals(alike1), ".text should not equal span.text.i18n though");
+
+        CssSelector hello = CssSelector.valueOf("div.content[title=hello, data-active=\"true\"]");
+        CssSelector bye = CssSelector.valueOf("div.content[title=bye]");
+        CssSelector hello2 = CssSelector.valueOf("div.content[title = 'hello', data-active=true]");
+
+        assertFalse(hello.equals(bye), "selector");
+        assertTrue(hello.equals(hello2), "selector");
     }
 
     @Test

@@ -6,43 +6,26 @@ import java.util.List;
 
 import static org.wandledi.util.Methods.select;
 
-/**A UniversalSelector can match an element against arbitrary attributes.
- *
+/**
+ * A UniversalSelector can match an element against arbitrary attributes.
  */
 public class UniversalSelector implements Selector {
 
     protected String label;
     protected Attribute[] attributes;
 
-    public UniversalSelector(CssSelector selector) {
-
-        if (selector.isId()) {
-            this.attributes = new Attribute[] { new Attribute("id", selector.getId()) };
-        } else {
-            this.label = selector.getLabel();
-            if (selector.gotElementClass()) {
-                this.attributes = new Attribute[] { new Attribute("class", selector.getElementClass()) };
-            }
-        }
-    }
-
-    public UniversalSelector(String cssSelector) {
-
-        this(CssSelector.valueOf(cssSelector));
-    }
-
     public UniversalSelector(String label, String attrName, String attrValue) {
 
         this(label, new Attribute(attrName, attrValue));
     }
 
-    /**Creates a new UniversalSelector
+    /**
+     * Creates a new UniversalSelector
      *
      * @param label (optional) element label, if null, any element will be matched regardless of its label
      * @param attributes element attributes, must contain all attributes of this selector to match
      */
     public UniversalSelector(String label, Attribute... attributes) {
-
         this.label = label;
         this.attributes = attributes;
     }

@@ -157,4 +157,13 @@ public class SimpleAttributes implements Attributes {
         sb.append("]");
         return sb.toString();
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 3;
+        for (Attribute attr: attributes) {
+            hash += 7 * (attr.getName().hashCode() + 5 * attr.getValue().hashCode());
+        }
+        return hash;
+    }
 }

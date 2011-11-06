@@ -28,3 +28,6 @@ Wandledi Changelog
 
 # V0.7
  - changed Element#foreachIn's and Element#foreachWithIndexIn's signature to include a third parameter list with the current context (Selectable)
+
+# V0.8
+ - dropped scala.Paragraphs

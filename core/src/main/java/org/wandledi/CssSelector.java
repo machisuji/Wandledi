@@ -5,86 +5,122 @@ import org.xml.sax.Attributes;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.regex.PatternSyntaxException;
 
 import static org.wandledi.util.Methods.select;
 
 
-/**Note: This class has a natural ordering that is inconsistent with equals.
+/**
+ * Note: This class has a natural ordering that is inconsistent with equals.
  *
  * This class implements simple CSS Selectors.
- * It does not support selection after arbitrary attributes such as in
- * 'input[type="submit"]' for now.
+ * Support for labels, IDs, classes, general attributes and nesting.
  *
  * @author Markus Kahl
  */
 public class CssSelector implements Selector {
 
-    private String id;
     private String label;
-    private String elementClass;
+    private Attributes attributes;
     private CssSelector[] parents = new CssSelector[0];
 
-    protected CssSelector(String label, String elementClass, String id) {
-
-        this.label = label;
-        this.elementClass = elementClass != null ? elementClass.replace(" ", ".") : null;
-        this.id = id;
-    }
-
-    public CssSelector(String id) {
-        this(null, null, id);
-    }
-
     public CssSelector(String label, Attributes attributes) {
-        this(label, attributes.getValue("class"), attributes.getValue("id"));
+        this.label = label;
+        this.attributes = attributes;
     }
 
     public CssSelector(String label, Attribute... attributes) {
-        this(label, select("class", attributes), select("id", attributes));
+        this(label, new SimpleAttributes(attributes));
     }
 
+    /**
+     * Parses a given css selector, which may be nested, too.
+     *
+     * @param selector CSS selector to be parsed
+     * @return A corresponding CssSelector instance
+     *
+     * @throws IllegalArgumentException if the given css selector is invalid or not supported.
+     */
     public static CssSelector valueOf(String selector) {
-        String[] selectors = selector.split(" ");
-        CssSelector sel = parseSingleSelector(selectors[selectors.length - 1]);
-        if (selectors.length > 1) {
-            sel.parents = new CssSelector[selectors.length - 1];
-            for (int i = 0; i < selectors.length - 1; ++i) {
-                sel.parents[i] = parseSingleSelector(selectors[i]);
-            }
+        LinkedList<CssSelector> selectors = new LinkedList<CssSelector>();
+        StringBuilder sb = new StringBuilder(selector);
+        while (sb.length() > 0) {
+            CssSelector sel = parseSingleSelector(sb);
+            selectors.add(sel);
         }
+        CssSelector sel = selectors.removeLast();
+        sel.parents = selectors.toArray(new CssSelector[selectors.size()]);
+
         return sel;
     }
 
     public Attributes getAttributes() {
-        if (gotElementClass()) {
-            return new SimpleAttributes(new Attribute("class", elementClass.replace(".", " ")));
-        } else if (isId()) {
-            return new SimpleAttributes(new Attribute("id", id));
-        } else {
-            return new SimpleAttributes();
-        }
+        return attributes;
     }
 
-    private static CssSelector parseSingleSelector(String selector) {
-        CssSelector ret;
-        int attrListIndex = selector.indexOf("[");
-        String attrList = null;
-        if (attrListIndex != -1) {
-            attrList = selector.substring(attrListIndex, selector.length() - 1);
-            selector = selector.substring(0, attrListIndex);
+    /**
+     * Parses a single, flat css selector. No nesting supported.
+     *
+     * @param selector CSS selector to be parsed
+     * @return A corresponding CssSelector instance
+     *
+     * @throws IllegalArgumentException if the given css selector is invalid or not supported.
+     */
+    private static CssSelector parseSingleSelector(StringBuilder selector) {
+        String attr = "(?:([\\w-]+)\\s*=\\s*(?:([\\w./:&&[^,]]*)|(?:\"([^\"]*)\")|(?:'([^']*)')))";
+        String regex = "(\\w+)?((?:\\.\\w+)+)?(#\\w+)?(\\[" + attr + "(?:,\\s*" + attr + ")*\\])?";
+        try {
+            Pattern c3s = Pattern.compile(regex);
+            Pattern atts = Pattern.compile(attr + "(?:,|\\s*\\])");
+            Matcher matcher = c3s.matcher(selector.toString());
+
+            if (matcher.find()) {
+                String label = matcher.group(1);
+                String classes = matcher.group(2);
+                String id = matcher.group(3);
+                String attsString = matcher.group(4);
+                List<Attribute> attributes = new LinkedList<Attribute>();
+
+                if (classes != null) {
+                    StringBuilder value = new StringBuilder();
+                    for (String klass: classes.split("\\.")) {
+                        if (!klass.isEmpty()) {
+                            value.append(klass);
+                            value.append(" ");
+                        }
+                    }
+                    if (value.charAt(value.length() - 1) == ' ') {
+                        value.setLength(value.length() - 1);
+                    }
+                    attributes.add(new Attribute("class", value.toString()));
+                }
+                if (id != null) {
+                    attributes.add(new Attribute("id", id.substring(1)));
+                }
+                if (attsString != null) {
+                    Matcher am = atts.matcher(attsString);
+                    while (am.find()) {
+                        String name = am.group(1);
+                        String value = am.group(2);
+                        if (value == null) {
+                            value = am.group(3);
+                        }
+                        if (value == null) {
+                            value = am.group(4);
+                        }
+                        attributes.add(new Attribute(name, value));
+                    }
+                }
+                selector.delete(0, matcher.end() + 1);
+                return new CssSelector(label, new SimpleAttributes(attributes.toArray(new Attribute[attributes.size()])));
+            } else {
+                throw new IllegalArgumentException("\"" + selector + "\" is not a valid/supported css selector.");
+            }
+        } catch (PatternSyntaxException e) {
+            throw new RuntimeException("Invalid regex (for css selector): " + e.getMessage(), e);
         }
-        if (selector.indexOf("#") != -1) { // ids
-            String id = selector.substring(selector.indexOf('#') + 1);
-            ret = new CssSelector(id);
-        } else if (selector.indexOf(".") != -1) { // classes
-            String klass = selector.substring(selector.indexOf('.') + 1);
-            String label = selector.substring(0, selector.indexOf('.'));
-            ret = new CssSelector(label.length() > 0 ? label : null, klass, null);
-        } else { // labels
-            String label = selector;
-            ret = new CssSelector(label, null, null);
-        }
-        return ret;
     }
 
     @Override
@@ -94,17 +130,34 @@ public class CssSelector implements Selector {
             sb.append(parent.toString());
             sb.append(" ");
         }
-        if (isId()) {
+        String id = getId();
+        String klass = getElementClass();
+        if (label != null) {
+            sb.append(label);
+        }
+        if (klass != null) {
+            sb.append(".");
+            sb.append(klass.replace(' ', '.'));
+        }
+        if (id != null) {
             sb.append("#");
             sb.append(id);
-        } else {
-            if (gotLabel()) {
-                sb.append(label);
+        }
+        if (attributes != null && attributes.getLength() > (klass == null ? 0 : 1) + (id == null ? 0 : 1)) {
+            sb.append("[");
+            for (int i = 0; i < attributes.getLength(); ++i) {
+                String name = attributes.getLocalName(i);
+                String value = attributes.getValue(i);
+                if (!"class".equals(name) && !"id".equals(name)) {
+                    if (sb.charAt(sb.length() - 1) != '[') {
+                        sb.append(", ");
+                    }
+                    sb.append(name);
+                    sb.append("=");
+                    sb.append(value);
+                }
             }
-            if (gotElementClass()) {
-                sb.append(".");
-                sb.append(elementClass);
-            }
+            sb.append("]");
         }
         sb.append(")");
         return sb.toString();
@@ -138,20 +191,24 @@ public class CssSelector implements Selector {
     }
 
     protected boolean matches(String label, Attributes attributes) {
-        if (isId()) {
-            return this.id.equals(attributes.getValue("id"));
-        } else {
-            boolean equals = gotLabel() || gotElementClass();
-            if (gotLabel()) {
-                equals &= this.label.equals(label);
-            }
-            if (gotElementClass()) {
-                List<String> theseClasses = split(elementClass, "\\.", true);
-                List<String> thoseClassses = split(attributes.getValue("class"), " ", true);
-                equals &= thoseClassses.containsAll(theseClasses);
-            }
-            return equals;
+        boolean match = true;
+        if (this.label != null) {
+            match &= this.label.equals(label);
         }
+        for (int i = 0; i < this.attributes.getLength(); ++i) {
+            String name = this.attributes.getLocalName(i);
+            String value = this.attributes.getValue(i);
+            if (name != null && value != null) {
+                if ("class".equalsIgnoreCase(name)) {
+                    List<String> theseClasses = split(value, " ", true);
+                    List<String> thoseClassses = split(attributes.getValue("class"), " ", true);
+                    match &= thoseClassses.containsAll(theseClasses);
+                } else {
+                    match &= (value.equals(attributes.getValue(name)));
+                }
+            }
+        }
+        return match;
     }
 
     protected List<String> split(String value, String delim, boolean toLowerCase) {
@@ -169,35 +226,24 @@ public class CssSelector implements Selector {
     @Override
     public int hashCode() {
         int hash = 3;
-        if (isId()) {
-            hash += 5 * id.hashCode();
-        } else {
-            if (gotLabel()) {
-                hash += 7 * label.hashCode();
-            }
-            if (gotElementClass()) {
-                String[] classes = elementClass.split(" ");
-                for (String klass: classes) {
-                    hash += 11 * klass.hashCode();
-                }
-            }
-        }
+        hash += 5 * label.hashCode();
+        hash += 7 * attributes.hashCode();
         return hash;
     }
 
     public int compareTo(Selector o) {
         if (o instanceof CssSelector) {
             CssSelector selector = (CssSelector) o;
-            if (this.isId() && selector.isId()) {
+            if (this.getId() != null && selector.getId() != null) {
                 return 0;
-            } else if (this.isId() && !selector.isId()) {
+            } else if (this.getId() != null && selector.getId() == null) {
                 return -2;
-            } else if (!this.isId() && selector.isId()) {
+            } else if (this.getId() == null && selector.getId() != null) {
                 return 2;
             } else {
-                if (this.gotElementClass() && !selector.gotElementClass()) {
+                if (this.getElementClass() != null && selector.getElementClass() == null) {
                     return -1;
-                } else if (!this.gotElementClass() && selector.gotElementClass()) {
+                } else if (this.getElementClass() == null && selector.getElementClass() != null) {
                     return 1;
                 } else {
                     return 0;
@@ -208,23 +254,11 @@ public class CssSelector implements Selector {
         }
     }
 
-    public final boolean isId() {
-        return id != null;
-    }
-
-    public final boolean gotLabel() {
-        return label != null;
-    }
-
-    public final boolean gotElementClass() {
-        return elementClass != null;
-    }
-
     /**
      * @return the id
      */
     public String getId() {
-        return id;
+        return attributes.getValue("id");
     }
 
     /**
@@ -238,6 +272,6 @@ public class CssSelector implements Selector {
      * @return the elementClass
      */
     public String getElementClass() {
-        return elementClass;
+        return attributes.getValue("class");
     }
 }
