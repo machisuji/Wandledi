@@ -69,8 +69,8 @@ public class CssSelector implements Selector {
      * @throws IllegalArgumentException if the given css selector is invalid or not supported.
      */
     private static CssSelector parseSingleSelector(StringBuilder selector) {
-        String attr = "(?:([\\w-]+)\\s*=\\s*(?:([\\w./:&&[^,]]*)|(?:\"([^\"]*)\")|(?:'([^']*)')))";
-        String regex = "(\\w+)?((?:\\.\\w+)+)?(#\\w+)?(\\[" + attr + "(?:,\\s*" + attr + ")*\\])?";
+        String attr = "(?:([\\w\\-_]+)\\s*=\\s*(?:([\\w\\./:\\-_&&[^,]]*)|(?:\"([^\"]*)\")|(?:'([^']*)')))";
+        String regex = "(\\w+)?((?:\\.[\\w\\-_]+)+)?(#[\\w\\-_]+)?(\\[" + attr + "(?:,\\s*" + attr + ")*\\])?";
         try {
             Pattern c3s = Pattern.compile(regex);
             Pattern atts = Pattern.compile(attr + "(?:,|\\s*\\])");
