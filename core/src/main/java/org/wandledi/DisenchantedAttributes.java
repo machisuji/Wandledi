@@ -72,6 +72,16 @@ public class DisenchantedAttributes implements org.xml.sax.Attributes {
 
     @Override
     public String toString() {
-        return "DisenchantedAttributes(" + super.toString() + ")";
+        StringBuilder sb = new StringBuilder("DisenchantedAttributes(");
+        for (int i = 0; i < attr.getLength(); ++i) {
+            if (i > 0) {
+                sb.append(", ");
+            }
+            sb.append(attr.getLocalName(i));
+            sb.append("=");
+            sb.append(attr.getValue(i));
+        }
+        sb.append(")");
+        return sb.toString();
     }
 }
