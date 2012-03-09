@@ -11,6 +11,7 @@ object Wandledi extends Build {
     organization        := "org.wandledi",
     scalaVersion        := "2.8.1",
     crossScalaVersions  := Seq("2.8.0", "2.8.1", "2.8.2", "2.9.0", "2.9.1"),
+    parallelExecution in Test := false,
     publishTo           <<= (version) { version: String =>
       if (version.trim.endsWith("SNAPSHOT")) Some(
         "Sonatype Nexus Snapshots" at
