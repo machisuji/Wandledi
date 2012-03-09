@@ -92,7 +92,7 @@ public class HTML5 {
                 return input;
             }
         });
-        System.out.println(wandle("evil-attributes.html"));
+        wandle("evil-attributes.html");
         String href = buffer.toString();
 
         assertTrue(href.contains("&"), "ampersand shall remain");
