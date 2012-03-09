@@ -128,6 +128,39 @@ public class SpellExperiment {
     }
 
     @Test
+    public void testAncestorSelectors() {
+        String text = "dust in the wind";
+        Element e = pages.get("div > span");
+        e.replace(true, text);
+
+        String result = wandle("selectors.xhtml");
+        Document doc = parseXML(result);
+
+        NodeList spans = doc.getElementsByTagName("span");
+        assertEquals(countNodesWithContent(spans, text), 1, "number of occurences");
+
+        text = "above the winter moonlight";
+        e = pages.get("div span");
+        e.replace(true, text);
+
+        result = wandle("selectors.xhtml");
+        doc = parseXML(result);
+
+        spans = doc.getElementsByTagName("span");
+        assertEquals(countNodesWithContent(spans, text), 3, "number of occurences");
+    }
+
+    protected int countNodesWithContent(NodeList nodes, String content) {
+        int occurences = 0;
+        for (int i = 0; i < nodes.getLength(); ++i) {
+            if (content.equals(nodes.item(i).getTextContent())) {
+                ++occurences;
+            }
+        }
+        return occurences;
+    }
+
+    @Test
     public void testAttributeTransformation() {
 
         String style = "background-color: black;";

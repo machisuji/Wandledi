@@ -24,7 +24,7 @@ public class CssSelector implements Selector {
 
     private String label;
     private Attributes attributes;
-    private CssSelector[] parents = new CssSelector[0];
+    private CssSelectorChain parents = new CssSelectorChain();
 
     public CssSelector(String label, Attributes attributes) {
         this.label = label;
@@ -44,14 +44,15 @@ public class CssSelector implements Selector {
      * @throws IllegalArgumentException if the given css selector is invalid or not supported.
      */
     public static CssSelector valueOf(String selector) {
-        LinkedList<CssSelector> selectors = new LinkedList<CssSelector>();
+        LinkedList<CssSelectorChain.Entry> selectors = new LinkedList<CssSelectorChain.Entry>();
         StringBuilder sb = new StringBuilder(selector);
         while (sb.length() > 0) {
             CssSelector sel = parseSingleSelector(sb);
-            selectors.add(sel);
+            boolean anscestor = parseAncestor(sb);
+            selectors.add(new CssSelectorChain.Entry(sel, anscestor));
         }
-        CssSelector sel = selectors.removeLast();
-        sel.parents = selectors.toArray(new CssSelector[selectors.size()]);
+        CssSelector sel = selectors.removeLast().getSelector();
+        sel.parents = new CssSelectorChain(selectors);
 
         return sel;
     }
@@ -67,6 +68,8 @@ public class CssSelector implements Selector {
      * @return A corresponding CssSelector instance
      *
      * @throws IllegalArgumentException if the given css selector is invalid or not supported.
+     *
+     * @TODO make parse methods instance methods and don't recreate regex every time
      */
     private static CssSelector parseSingleSelector(StringBuilder selector) {
         String attr = "(?:([\\w\\-_]+)\\s*=\\s*(?:([\\w\\./:\\-_&&[^,]]*)|(?:\"([^\"]*)\")|(?:'([^']*)')))";
@@ -114,7 +117,8 @@ public class CssSelector implements Selector {
                     }
                 }
                 selector.delete(0, matcher.end() + 1);
-                return new CssSelector(label, new SimpleAttributes(attributes.toArray(new Attribute[attributes.size()])));
+                return new CssSelector(label,
+                        new SimpleAttributes(attributes.toArray(new Attribute[attributes.size()])));
             } else {
                 throw new IllegalArgumentException("\"" + selector + "\" is not a valid/supported css selector.");
             }
@@ -123,11 +127,21 @@ public class CssSelector implements Selector {
         }
     }
 
+    private static boolean parseAncestor(StringBuilder selector) {
+        Pattern regex = Pattern.compile("\\s*>\\s*");
+        Matcher matcher = regex.matcher(selector.toString());
+        if (matcher.find()) {
+            selector.delete(matcher.start(), matcher.end());
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("CssSelector(");
-        for (CssSelector parent: parents) {
-            sb.append(parent.toString());
+        sb.append(parents.toString());
+        if (parents.size() > 0) {
             sb.append(" ");
         }
         String id = getId();
@@ -164,17 +178,7 @@ public class CssSelector implements Selector {
     }
 
     public boolean matches(String label, Attributes attributes, List<ElementStart> elementPath) {
-        if (parents.length > 0) {
-            int i = 0;
-            for (ElementStart e: elementPath) {
-                if (i == parents.length) break;
-                if (parents[i].matches(e.getName(), e.getAttributes())) {
-                    ++i;
-                }
-            }
-            if (i != parents.length) return false;
-        }
-        return matches(label, attributes);
+        return parents.matches(elementPath) && matches(label, attributes);
     }
 
     @Override
