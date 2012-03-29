@@ -1,0 +1,10 @@
+
+# 1
+  - reinventing the wheel
+  - opportunity cost
+  - view logic inside controllers
+  - essentially your controller becomes your controller and template
+
+  =>
+    -> compare related work (Wicket, Lift, ...)
+    -> state intended pattern (~MVPC)
