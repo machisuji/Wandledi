@@ -11,10 +11,8 @@ which is a library for using Wandledi in Servlet API based applications.
 Repository structure
 --------------------
 
-* **core** - The actual Wandledi project
-* **scala-lib** - Wandledi Wrapper for Scala
-* **wandlet** - Wandledi for the Servlet API
-* **wandlet-scala** - Wandlet for Scala
+* **core** - The actual Wandledi project (including Wandlet)
+* **scala-lib** - Wandledi Wrapper for Scala (including scala.Wandlet)
 
 Building Wandledi
 -----------------
