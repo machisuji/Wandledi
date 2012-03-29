@@ -7,7 +7,7 @@ object Wandledi extends Build {
   val description = SettingKey[String]("description")
 
   val wandlediSettings = Defaults.defaultSettings ++ Seq (
-    version             := "0.8.2-SNAPSHOT",
+    version             := "0.8.3-SNAPSHOT",
     organization        := "org.wandledi",
     scalaVersion        := "2.8.1",
     crossScalaVersions  := Seq("2.8.0", "2.8.1", "2.8.2", "2.9.0", "2.9.1"),
@@ -61,17 +61,18 @@ object Wandledi extends Build {
     "wandledi-project",
     file("."),
     settings = wandlediSettings ++ Seq (
+
       description := "An HTML transformation library",
       publishArtifact in Compile := false
     )
-  ).aggregate(wandlediCore, wandlediScala, wandletCore, wandletScala)
+  ).aggregate(wandlediCore, wandlediScala)
 
   lazy val wandlediCore = Project (
     "wandledi",
     file("core"),
     settings = javaSettings ++ Seq (
       description := "Wandledi Java Core",
-      libraryDependencies ++= Seq(htmlparser, testng),
+      libraryDependencies ++= Seq(htmlparser, testng, servletApi),
       libraryDependencies <+= scalaVersion(scalatest(_))
     )
   )
@@ -84,26 +85,6 @@ object Wandledi extends Build {
       libraryDependencies <+= scalaVersion(scalatest(_))
     )
   ).dependsOn(wandlediCore % "compile;provided->provided;test->test")
-
-  lazy val wandletCore = Project (
-    "wandlet",
-    file("wandlet"),
-    settings = javaSettings ++ Seq (
-      description := "Wandledi utilities for Servlet API based Java applications",
-      libraryDependencies ++= Seq(servletApi)
-    )
-  ).dependsOn(wandlediCore % "compile;provided->provided;test->test")
-
-  lazy val wandletScala = Project (
-    "wandlet-scala",
-    file("wandlet-scala"),
-    settings = scalaSettings ++ Seq (
-      description := "Wandledi utilities for Servlet API based Scala applications"
-    )
-  ).dependsOn(
-    wandlediScala % "compile;provided->provided;test->test",
-    wandletCore % "compile;provided->provided;test->test"
-  )
 }
 
 object Dependencies {

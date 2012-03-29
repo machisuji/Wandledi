@@ -4,10 +4,10 @@ import org.wandledi.CssSelector
 import org.wandledi.Selector
 
 class EmbeddedPage(
-  file: String,
-  hostFile: String,
-  embedAt: Selector
-) extends Page(null) {
+                    file: String,
+                    hostFile: String,
+                    embedAt: Selector
+                    ) extends Page(null) {
   val gantry = new Page(hostFile)
   gantry.get(embedAt).includeFile(file, scroll)
 
@@ -15,5 +15,6 @@ class EmbeddedPage(
     this(file, hostFile, CssSelector.valueOf(embedAt))
 
   override def getFile = gantry.getFile
+
   override def getScroll = gantry.getScroll
 }
