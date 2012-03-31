@@ -88,7 +88,7 @@ public class Scroll implements Selectable {
         Passage passage = new Passage(selector);
         passages.add(passage);
         Collections.sort(passages);
-        
+
         return passage;
     }
 
@@ -138,6 +138,26 @@ public class Scroll implements Selectable {
      */
     public List<Spell> readSpellsFor(String label, Attributes attributes, List<ElementStart> elementPath) {
         return readSpellsFor(label, attributes, elementPath, true);
+    }
+
+    /**
+     * Checks whether all contained Spells have been used
+     * and outputs warning for unused Spells.
+     *
+     * @param reset Reset the Spells' status back to unused.
+     */
+    public void checkUsed(boolean reset) {
+        for (Passage passage: passages) {
+            if (!passage.isUsed()) {
+                System.out.println("[WARNING] unused Spells under " + passage.toString());
+                if (reset) {
+                    passage.setUsed(false);
+                }
+            }
+        }
+        for (Scroll scroll: scrolls) {
+            scroll.checkUsed(reset);
+        }
     }
 
     /**

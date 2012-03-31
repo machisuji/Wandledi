@@ -10,6 +10,7 @@ public class Passage implements Selector {
     private List<Spell> spells = new LinkedList<Spell>();
     private Queue<ChargedEntry> transientSpells = new LinkedList<ChargedEntry>();
     private List<LateEntry> lateSpells = new ArrayList<LateEntry>();
+    private boolean used = false;
 
     public Passage(Selector selector) {
         this.selector = selector;
@@ -69,6 +70,9 @@ public class Passage implements Selector {
      * @param spells
      */
     public void transferSpellsInto(Collection<Spell> spells) {
+        if (!isUsed()) {
+            setUsed(true);
+        }
         spells.addAll(this.spells);
         transferTransientSpellsInto(spells);
         transferLateSpellsInto(spells);
@@ -109,6 +113,22 @@ public class Passage implements Selector {
 
     public int hashCode() {
         return selector.hashCode();
+    }
+
+    public void setUsed(boolean used) {
+        this.used = used;
+    }
+
+    /**
+     * Indicates whether this Passage has been used or not.
+     */
+    public boolean isUsed() {
+        return used;
+    }
+
+    @Override
+    public String toString() {
+        return "Passage at " + selector.toString();
     }
 
     private static class ChargedEntry {

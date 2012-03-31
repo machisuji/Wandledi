@@ -104,7 +104,7 @@ public class ArchSpell extends AbstractSpell {
         setIgnoreTransformationBounds(true);
         elementPath.add(new ElementStart(name, copy(atts)));
 
-        if (Wandler.debug) {
+        if (Wandler.dlogLevel >= Wandler.DLOG_LEVEL_3) {
             System.out.println("[DEBUG]: startElement(" + name + ", " + atts + "): ");
             System.out.println("[ ARCH]      elementPath: " + elementPath);
             System.out.println("[SPELL]      spell chain: " + getCurrentSpellChain());

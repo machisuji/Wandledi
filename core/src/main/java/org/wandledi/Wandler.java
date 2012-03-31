@@ -46,7 +46,18 @@ public class Wandler implements ContentHandler, Spell {
     };
     private MagicReader magic = new MagicReader(null);
 
-    public static volatile boolean debug = false;
+    /**
+     * Debug Log Level
+     */
+    public static volatile int dlogLevel = 0;
+
+    public static final int DLOG_LEVEL_0 = 0;
+    public static final int DLOG_LEVEL_1 = 1;
+    public static final int DLOG_LEVEL_2 = 2;
+    public static final int DLOG_LEVEL_3 = 3;
+
+    public static final int DLOG_OFF_LEVEL = DLOG_LEVEL_0;
+    public static final int DLOG_MAX_LEVEL = DLOG_LEVEL_3;
 
     protected Wandler(XMLReader xmlReader) {
         rootSpell.setParent(this);
@@ -170,6 +181,9 @@ public class Wandler implements ContentHandler, Spell {
                 } catch (IOException ex) {
                     Logger.getLogger(Wandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
+            }
+            if (dlogLevel >= DLOG_LEVEL_1) {
+                rootSpell.getScroll().checkUsed(true);
             }
         }
     }
