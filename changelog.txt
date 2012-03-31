@@ -31,3 +31,6 @@ Wandledi Changelog
 
 # V0.8
  - dropped scala.Paragraphs
+
+# V0.9
+ - replaced Wandler#debug with Wandler#dlogLevel; warnings for unused Spells at DLOG_LEVEL_1
