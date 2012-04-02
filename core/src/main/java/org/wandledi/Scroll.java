@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Logger;
+
 import org.xml.sax.Attributes;
 
 /**A Scroll contains a number of spells which can be applied using the scroll.
@@ -149,7 +151,7 @@ public class Scroll implements Selectable {
     public void checkUsed(boolean reset) {
         for (Passage passage: passages) {
             if (!passage.isUsed()) {
-                System.out.println("[WARNING] unused Spells under " + passage.toString());
+                Logger.getLogger(getClass().getName()).warning("Unused Spells under " + passage.toString());
                 if (reset) {
                     passage.setUsed(false);
                 }
