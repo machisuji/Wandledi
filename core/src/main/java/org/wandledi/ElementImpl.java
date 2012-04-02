@@ -2,6 +2,7 @@ package org.wandledi;
 
 import java.util.Collection;
 import org.wandledi.spells.*;
+import org.wandledi.wandlet.Response;
 import org.xml.sax.Attributes;
 
 
@@ -81,6 +82,10 @@ public class ElementImpl implements Element {
 
     public void includeFile(String name, Scroll scroll) {
         cast(new Inclusion(name, scroll));
+    }
+
+    public void includeFile(Response response) {
+        cast(new Inclusion(response.getFile(), response.getScroll()));
     }
 
     public void insert(boolean atEnd, InsertionIntent intent) {

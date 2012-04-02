@@ -24,6 +24,11 @@ import org.wandledi.VoidResolver;
  * You could say that it is sacrificed for the summoning of the
  * new content.
  *
+ * On another note: if the root element of the included file is `html` it will be dropped
+ * because it doesn't make much sense to include an html element into another one.
+ * The main motivation for this is being able to have (more or less) valid xhtml documents (with a single root node)
+ * for html fragments.
+ *
  * @author Markus Kahl
  */
 public class Inclusion extends ArchSpell implements ContentHandler {

@@ -5,6 +5,7 @@ import org.wandledi.spells.InsertionIntent;
 import org.wandledi.spells.ReplacementIntent;
 import org.wandledi.spells.StringTransformation;
 import org.wandledi.spells.TransformedAttribute;
+import org.wandledi.wandlet.Response;
 
 /**
  *
@@ -105,6 +106,10 @@ public class SelectableElementImpl implements SelectableElement {
 
     public void insert(boolean atEnd, InsertionIntent intent) {
         element.insert(atEnd, intent);
+    }
+
+    public void includeFile(Response response) {
+        element.includeFile(response);
     }
 
     public void insert(String content) {

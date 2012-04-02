@@ -20,6 +20,7 @@ import org.wandledi.{Selectable => _, _}
 import org.wandledi.spells.SpotMapping
 import org.wandledi.spells.TextTransformation
 import org.wandledi.scala._
+import wandlet.scala.Page
 
 class Semantics extends Spec with ShouldMatchers {
   val testFileDirectory = "core/src/test/java/wandledi/test/"
@@ -378,18 +379,35 @@ class Semantics extends Spec with ShouldMatchers {
   describe("Truncate") {
     it("should work within Extractions too") {
       val doc = transform("test.xhtml") { page => import page._
-        get("title").includeFile("strings.xhtml")(using(_) {
-          $(new PathSelector).extract("head")
+        $("title").includeFile("strings.xhtml")(using(_) {
+          $(Nil).extract("head")
           $("head").truncate(1)
           $("meta").hide()
         })
       }
       val title = doc \\ "title"
       val head = doc \\ "head"
+      val bodyInHead = head \ "body"
 
       head should have size (1)
       title should have size (1)
       title(0).text should include ("String Insertion Test")
+      bodyInHead should be ('empty)
+    }
+  }
+
+  describe("Inclusion") {
+    it("should correctly work with Pages through the Element API") {
+      val incl = new Page("noText.xhtml") {
+        $(Nil).extract("title")
+      }
+      val doc = transform("test.xhtml") { page => import page._
+        $("html").includeFile(incl)
+      }
+
+      doc should have size (1)
+      doc.head.text should equal ("Elements with no text")
+      doc.head.label should equal ("title")
     }
   }
 
@@ -406,7 +424,7 @@ class Semantics extends Spec with ShouldMatchers {
       $(Nil).getSelector.getClass should equal (classOf[PathSelector])
     }
   }
-  
+
   def wandle(file: String, scroll: Scroll): Option[String] = {
     val wandler = if (file.endsWith(".xhtml")) Wandler.forXHTML else Wandler.forHTML
     val output = new StringWriter

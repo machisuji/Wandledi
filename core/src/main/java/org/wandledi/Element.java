@@ -6,6 +6,7 @@ import org.wandledi.spells.InsertionIntent;
 import org.wandledi.spells.ReplacementIntent;
 import org.wandledi.spells.StringTransformation;
 import org.wandledi.spells.TransformedAttribute;
+import org.wandledi.wandlet.Response;
 
 /**An HTML element.
  *
@@ -57,6 +58,7 @@ public interface Element {
 
     public void includeFile(String name);
     public void includeFile(String name, Scroll scroll);
+    public void includeFile(Response response);
 
     public void insert(boolean atEnd, InsertionIntent intent);
     public void insert(String content);
@@ -72,7 +74,7 @@ public interface Element {
 
     public <T> ElementForeach<T> foreachIn(Collection<T> collection);
     public <T> ElementForeach<T> foreachIn(Collection<T> collection, boolean reduceBefore);
-    
+
     public void hide();
     public TextContent getText();
 }
