@@ -89,6 +89,10 @@ public class Inclusion extends ArchSpell implements ContentHandler {
             String message = "Error parsing " + intent.getFile() +
                 (lineNumber != -1 ? " at line " + lineNumber : "");
             Logger.getLogger(Inclusion.class.getName()).log(Level.SEVERE, message, ex);
+        } finally {
+            if (Wandler.dlogLevel >= Wandler.DLOG_LEVEL_1 && intent.getScroll() != null) {
+                intent.getScroll().checkUsed(true);
+            }
         }
     }
 
