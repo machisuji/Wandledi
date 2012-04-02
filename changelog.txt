@@ -34,3 +34,4 @@ Wandledi Changelog
 
 # V0.9
  - replaced Wandler#debug with Wandler#dlogLevel; warnings for unused Spells at DLOG_LEVEL_1
+ - changed signature of scala.Element#includeFile(String)((Selectable) => Unit) to #includeFile(String)(=> Unit)(implicit context: Selectable)

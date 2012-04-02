@@ -85,12 +85,12 @@ trait Element extends org.wandledi.Element {
    * Includes the given file in the place of this Element during which this Element is consumed.
    *
    * @param file The HTML file to be included.
-   * @param magic A function taking a Selectable and optionally applying transformations to the included HTML
-   *              using that Selectable.
+   * @param magic A function for performing transformations on the included markup.
+   * @param context The Selectable to be used for the magic.
    *
    * @see org.wandledi.spells.Inclusion
    */
-  def includeFile(file: String)(magic: (Selectable) => Unit): Unit
+  def includeFile(file: String)(magic: => Unit)(implicit context: Selectable): Unit
 
   /**
    * Inserts XML into this Element.

@@ -109,11 +109,9 @@ class Semantics extends Spec with ShouldMatchers {
     }
 
     it("should make it possible to switch context via #using") {
-      val doc = transform("selectors.xhtml") { page => import page._
-        $("p").includeFile("inclusion.xhtml") { page =>
-          using(page) {
-            $("p").setAttribute("color", "red")
-          }
+      val doc = transform("selectors.xhtml") { implicit page => import page._
+        $("p").includeFile("inclusion.xhtml") {
+          $("p").setAttribute("color", "red")
         }
       }
       val p = (doc \\ "p").headOption
@@ -378,12 +376,12 @@ class Semantics extends Spec with ShouldMatchers {
 
   describe("Truncate") {
     it("should work within Extractions too") {
-      val doc = transform("test.xhtml") { page => import page._
-        $("title").includeFile("strings.xhtml")(using(_) {
+      val doc = transform("test.xhtml") { implicit page => import page._
+        $("title").includeFile("strings.xhtml") {
           $(Nil).extract("head")
           $("head").truncate(1)
           $("meta").hide()
-        })
+        }
       }
       val title = doc \\ "title"
       val head = doc \\ "head"

@@ -71,9 +71,10 @@ extends org.wandledi.ElementImpl(aSelector, aScroll) with Element {
     setAttributes(attr.map(t => new Attribute(t._1, t._2)): _*)
   }
 
-  def includeFile(file: String)(magic: (Selectable) => Unit) {
+  def includeFile(file: String)(magic: => Unit)(implicit context: Selectable) {
     val scroll = new Scroll
-    magic(new SelectableImpl(scroll))
+    val sel = new SelectableImpl(scroll)
+    context.using(sel)(magic)
     includeFile(file, scroll)
   }
 

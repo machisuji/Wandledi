@@ -37,8 +37,8 @@ class SelectableElementImpl(
   def setAttributes(attr: (String, String)*) =
     element.setAttributes(attr: _*)
 
-  def includeFile(file: String)(magic: (Selectable) => Unit) =
-    element.includeFile(file)(magic)
+  def includeFile(file: String)(magic: => Unit)(implicit context: Selectable) =
+    element.includeFile(file)(magic)(context)
 
   def insert(atEnd: Boolean)(insertion: (Spell) => Unit) =
     element.insert(atEnd)(insertion)

@@ -23,9 +23,6 @@ class SyntaxTest {
   e.foreachIn(1 to 10 toList, reduceBefore = true)((e, item) =>
     e.hide)
 
-  e.includeFile("/home/post.xhtml") { page => import page._
-    $("#right").insert("message")
-  }
   e.insert(true) { (spell) =>
     spell.writeString("Hallo Welt", true)
   }
