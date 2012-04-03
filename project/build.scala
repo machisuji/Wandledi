@@ -7,7 +7,7 @@ object Wandledi extends Build {
   val description = SettingKey[String]("description")
 
   val wandlediSettings = Defaults.defaultSettings ++ Seq (
-    version             := "0.9.0",
+    version             := "0.9.0-SNAPSHOT",
     organization        := "org.wandledi",
     scalaVersion        := "2.8.1",
     crossScalaVersions  := Seq("2.8.0", "2.8.1", "2.8.2", "2.9.0", "2.9.1"),
