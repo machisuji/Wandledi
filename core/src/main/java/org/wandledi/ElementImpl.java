@@ -52,10 +52,16 @@ public class ElementImpl implements Element {
         cast(new AttributeTransformation(attributes));
     }
 
-    public void changeAttribute(String name, final String value) {
+    public void changeAttribute(final String name, final String value) {
         cast(new AttributeTransformation(new TransformedAttribute(name, new StringTransformation() {
             public String transform(String input) {
                 return value.replace("$val", input);
+            }
+
+            public String toString() {
+                return String.format(
+                    "StringTransformation(change: '%s' -> '%s')",
+                    name, value);
             }
         })));
     }
@@ -100,10 +106,14 @@ public class ElementImpl implements Element {
         insert(content, true);
     }
 
-    public void insert(final String content, boolean atEnd) {
+    public void insert(final String content, final boolean atEnd) {
         InsertionIntent intent = new InsertionIntent() {
             public void insert(Spell parent) {
                 parent.writeString(content, true);
+            }
+
+            public String toString() {
+                return String.format("InsertionIntent(content: %s)", content);
             }
         };
         cast(new Insertion(atEnd, intent));
@@ -113,10 +123,14 @@ public class ElementImpl implements Element {
         cast(new Replacement(intent, contentsOnly));
     }
 
-    public void replace(boolean contentsOnly, final String content) {
+    public void replace(final boolean contentsOnly, final String content) {
         ReplacementIntent intent = new ReplacementIntent() {
             public void replace(String label, Attributes attributes, Spell parent) {
                 parent.writeString(content, true);
+            }
+
+            public String toString() {
+                return String.format("ReplacementIntent(content: %s)", content);
             }
         };
         cast(new Replacement(intent, contentsOnly));
