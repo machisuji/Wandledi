@@ -191,15 +191,19 @@ class Semantics extends Spec with ShouldMatchers {
       val label = "uiuiuiuiui"
       val page = new org.wandledi.scala.SelectableImpl(new Scroll) {
         $("#Sidebar").foreachIn(label :: Nil) { (section, txt) =>
+          $.setAttribute("style", "foobar")
           $("div").replace(true, txt)
           // if the context isn't switched implictly, *all* divs in the document will be affected
           // note: Selectable used to switch context provided by SelectableImpl (Selectable)
         }
       }
-      val doc = XML.loadString(wandle("html5.html", page.getScroll).get)
+      val doc = XML.loadString(wandle("html5.html", page.getScroll).get);
       val sideDivs = (doc \\ "section").filter(_.check("id" -> "Sidebar")) \ "div"
 
-      (doc \\ "div").foldLeft(true)((all, div) => all && (div.text.trim == label)) should be (false) // not all divs should've been affected
+      (doc \\ "div").foldLeft(true)((all, div) =>
+        all && (div.text.trim == label)) should be (false) // not all divs should've been affected
+      (doc \\ "section").filter(_.check("id" -> "Sidebar")).foreach(sec =>
+        sec.attribute("style").map(_.text).mkString should equal ("foobar"))
       sideDivs.forall(div => div.text.trim == label) should be (true)
     }
 
