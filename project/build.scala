@@ -48,7 +48,10 @@ object Wandledi extends Build {
   ) ++ Unidoc.settings
 
   val javaSettings = wandlediSettings ++ Seq (
-    javacOptions      := Seq("-target", "5", "-Xlint:unchecked"),
+    javacOptions      := Seq(
+                           "-source", "5",
+                           "-target", "5",
+                           "-Xlint:unchecked"),
     autoScalaLibrary  := false,
     crossPaths        := false
   )
