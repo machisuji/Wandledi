@@ -58,6 +58,9 @@ public abstract class AbstractSpell implements Spell {
     }
 
     public void startTransformedElement(String name, Attributes attributes) {
+        if (Wandler.dlogLevel >= Wandler.DLOG_LEVEL_2) {
+            System.out.println("[info] Casting " + toString());
+        }
         if (ignoreBounds()) {
             startElement(name, attributes);
         } else {
