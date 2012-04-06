@@ -1,6 +1,8 @@
 Wandledi Changelog
 ------------------
 
+Note: contains mostly the reasons (changes) for increasing the major versions only
+
 # V0.1
  -
 
@@ -33,5 +35,6 @@ Wandledi Changelog
  - dropped scala.Paragraphs
 
 # V0.9
- - replaced Wandler#debug with Wandler#dlogLevel; warnings for unused Spells at DLOG_LEVEL_1
+ - fixed critical bug (Passage order) which broke Wandledi when using Java 7 instead of Java 6
+ - replaced Wandler#debug with Wandler#dlogLevel
  - changed signature of scala.Element#includeFile(String)((Selectable) => Unit) to #includeFile(String)(=> Unit)(implicit context: Selectable)
