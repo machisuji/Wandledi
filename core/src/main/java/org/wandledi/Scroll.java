@@ -89,7 +89,6 @@ public class Scroll implements Selectable {
         }
         Passage passage = new Passage(selector);
         passages.add(passage);
-        Collections.sort(passages);
 
         return passage;
     }
