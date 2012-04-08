@@ -22,9 +22,7 @@ object Wandledi extends Build {
       )
     },
     credentials += Credentials(Path.userHome / ".ivy2" / ".credentials"),
-    pomExtra <<= (pomExtra, name, description) { (extra, name, desc) => extra ++ Seq(
-      <name>{name}</name>,
-      <description>{desc}</description>,
+    pomExtra <<= (pomExtra) { (extra) => extra ++ Seq(
       <url>http://wandledi.org</url>,
       <licenses>
         <license>
