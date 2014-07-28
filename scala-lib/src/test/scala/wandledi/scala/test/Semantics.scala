@@ -7,8 +7,7 @@ import java.io.Reader
 import java.io.StringReader
 import java.io.StringWriter
 
-import org.scalatest.Spec
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest._
 
 import javax.xml.parsers.DocumentBuilderFactory
 import org.w3c.dom.Document
@@ -22,7 +21,7 @@ import org.wandledi.spells.TextTransformation
 import org.wandledi.scala._
 import wandlet.scala.Page
 
-class Semantics extends Spec with ShouldMatchers {
+class Semantics extends FunSpec with Matchers {
   val testFileDirectory = "core/src/test/java/wandledi/test/"
 
   def transform(file: String, debug: Boolean = false)(magic: (Selectable) => Unit): NodeSeq = {
@@ -169,7 +168,7 @@ class Semantics extends Spec with ShouldMatchers {
       val reducedSections = (reduced \\ "section").size
 
       unreducedSections should be > (1)
-      reducedSections should be === (1)
+      reducedSections should equal (1)
     }
 
     it("should support foreach-integrated reductions") {
@@ -182,9 +181,9 @@ class Semantics extends Spec with ShouldMatchers {
       }
       val numNewSections = (doc \\ "section").size
 
-      numNewSections should be === (labels.size)
-      numNewSections should not be === (numSections)
-      numNewSections should not be === (numSections * labels.size)
+      numNewSections should equal (labels.size)
+      numNewSections should not equal (numSections)
+      numNewSections should not equal (numSections * labels.size)
     }
 
     it("should implicitly switch context to the duplicated item during foreach when inside another Selectable") {
